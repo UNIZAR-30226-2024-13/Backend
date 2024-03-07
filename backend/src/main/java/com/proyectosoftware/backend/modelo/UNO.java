@@ -1,6 +1,6 @@
 package com.proyectosoftware.backend.modelo;
 
-public class UNO {
+public class UNO extends Partida{
      private int id;
      private int sentido;
      private Carta[] mazo;
@@ -10,7 +10,9 @@ public class UNO {
          
          this.id =id;
          this.sentido=sentido;
-         this.mazo=mazo;
-         this.ultimaCarta=ultimaCarta;
+         Carta carta = new Carta();
+
+         this.mazo= carta.parseStringCartas(mazo);
+         this.ultimaCarta= carta.parseStringCartas(ultimaCarta);
      }
 }
