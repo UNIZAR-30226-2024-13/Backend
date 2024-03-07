@@ -7,20 +7,15 @@ public class UNO extends Partida{
      private Carta ultimaCarta;
      
      public UNO(int id, int sentido, String mazo, String ultimaCarta){
-         
-<<<<<<< HEAD
          this.id =id;
          this.sentido=sentido;
          Carta carta = new Carta();
-
          this.mazo= carta.parseStringCartas(mazo);
          this.ultimaCarta= carta.parseStringCartas(ultimaCarta);
-=======
          this.id = id;
          this.sentido = sentido;
          this.mazo = parseStringMazo(mazo);
          this.ultimaCarta = parseStringUltCarta(ultimaCarta);
->>>>>>> 9791560c7a257a9d64feede4c32271d5772cf9f0
      }
 
      /**
