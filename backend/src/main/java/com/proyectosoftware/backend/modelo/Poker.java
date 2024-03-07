@@ -17,6 +17,4 @@ public class Poker extends Partida{
         this.mazo = carta.parseStringCartas(mazo);
         this.cartas_mesa = carta.parseStringCartas(cartas_mesa);
     }
-
-    
 }

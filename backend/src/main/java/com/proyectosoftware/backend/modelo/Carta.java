@@ -39,8 +39,9 @@ public class Carta {
     }
  
     /**
-     * 
-     * @param cadenaCartas, contiene la cadena de carecteres recibida desde la Base de Datos
+     * Combierte una cadena que sigue el formato "color, nombre: color, nombre: ..."
+     * en un vector de Carta
+     * @param cadenaCartas, contiene la cadena de carecteres a formatear
      * @return retVal, contiene el vector de Carta que representa la baraja de juego
      */
     public Carta[] parseStringCartas(String cadenaCartas){
