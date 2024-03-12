@@ -1,10 +1,21 @@
 package com.proyectosoftware.backend.modelo;
 
+/**
+ * Abstraccion de una carta de juego de mesa
+ */
 public class Carta {
     private int numero;
     private int color;
 
-    public Carta(){}
+    /**
+     * Constructor de la carta
+     * @param numero    - numero de la carta
+     * @param color     - color de la carta
+     */
+    public Carta(int numero, int color){
+        this.numero = numero;
+        this.color = color;
+    }
 
     /**
      * Devuelve el numero de la carta
@@ -21,28 +32,12 @@ public class Carta {
     public int getColor(){
         return color;
     }
-
-    /**
-     * Establece el numero de la carta
-     * @param numero
-     */
-    public void setNumero(int numero){
-        this.numero = numero;
-    }
-
-    /**
-     * Establece el color de la carta
-     * @param color
-     */
-    public void setColor(int color){
-        this.color = color;
-    }
-
+    
     /**
      * 
      * @param cadenaCartas, contiene la cadena de carecteres recibida desde la Base de Datos
      * @return retVal, contiene el vector de Carta que representa la baraja de juego
-     */
+     *//*
     public Carta[] parseStringCartas(String cadenaCartas){
         Carta[] retVal = new Carta[52];
         String[] cartas_mazo = cadenaCartas.split(";");
@@ -66,5 +61,5 @@ public class Carta {
             i++;    
         }
         return retVal;
-    }
+    }*/
 }

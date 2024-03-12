@@ -1,6 +1,10 @@
-package com.proyectosoftware.backend.modelo;
+package com.proyectosoftware.backend.modelo.juegos;
 
-public class BlackJack extends Partida{
+import com.proyectosoftware.backend.modelo.Carta;
+import com.proyectosoftware.backend.modelo.Partida;
+import com.proyectosoftware.backend.modelo.interfaces.JuegoConApuesta;
+
+public class BlackJack implements JuegoConApuesta{
     private Carta[] cartas_banca;
     private Carta[] mazo;
 
