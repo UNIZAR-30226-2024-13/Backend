@@ -4,6 +4,7 @@ import com.proyectosoftware.backend.modelo.interfaces.UniqueIDGenerator;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Usuario
@@ -45,10 +46,7 @@ public class Usuario implements UniqueIDGenerator{
         mensaje.append("-");
         mensaje.append(this.nombre);
         mensaje.append("-"); 
-        /* 
-         *  TODO: funccion para añadir el numero
-         *  mensaje.append( <numero de "this.nombre" de la base de datos> ); 
-         */
+        mensaje.append(UUID.randomUUID().toString().split("-")[0]);
         return mensaje.toString();
     }
 
@@ -70,5 +68,26 @@ public class Usuario implements UniqueIDGenerator{
      */
     public boolean quitarAmigos(String IDUsuario){
         return IDsAmigos.remove(IDUsuario);
+    }
+
+    /**
+     * Realiza una apusta con el dienero del usuario
+     * @param cantidad  - cantidad de la apuesta
+     * @return {@code true} si el usuario tiene dinero suficiente para apostar
+     */
+    public boolean apostar(double cantidad){
+        if(dinero >= cantidad){
+            dinero -= cantidad;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Añade a la cartera del usuario la cantidad ganada
+     * @param cantidad - cantidad a añadir
+     */
+    public void ganaApuesta(double cantidad){
+        dinero += cantidad;
     }
 }

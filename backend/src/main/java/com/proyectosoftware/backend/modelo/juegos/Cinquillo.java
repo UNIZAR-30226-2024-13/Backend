@@ -1,18 +1,33 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
-import com.proyectosoftware.backend.modelo.Carta;
-import com.proyectosoftware.backend.modelo.Partida;
+import com.proyectosoftware.backend.modelo.Usuario;
+import com.proyectosoftware.backend.modelo.barajas.BarajaEspaniola;
+import com.proyectosoftware.backend.modelo.interfaces.Baraja;
 import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
 
+/**
+ * Juego del chinquillo
+ */
 public class Cinquillo implements JuegoSinApuesta{
     private Baraja baraja;
 
-    public Cinquillo(int id, int turno, String escaleras) {
-        super(id, turno);
-        Carta carta = new Carta();
+    /**
+     * Constructor por defecto
+     * @param id
+     * @param turno
+     * @param escaleras
+     */
+    public Cinquillo() {
+        baraja = BarajaEspaniola.devolverInstancia();
+    }
 
-        this.escaleras = carta.parseStringCartas(escaleras);
+    /**
+     * Cargar un juego de cinquillo dado un estado
+     * @param estado
+     */
+    public Cinquillo(Estado estado){
+
     }
 
     @Override
@@ -39,9 +54,10 @@ public class Cinquillo implements JuegoSinApuesta{
         throw new UnsupportedOperationException("Unimplemented method 'crearEstado'");
     }
 
+
     @Override
-    public String generateID() {
+    public void siguenteTurno() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generateID'");
+        throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
     }
 }

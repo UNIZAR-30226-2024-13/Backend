@@ -1,12 +1,14 @@
 package com.proyectosoftware.backend.modelo.barajas;
 
-import com.proyectosoftware.backend.modelo.Carta;
+import java.util.List;
 
-public class BarajaFrancesa extends BarajaAbstracta{
+import com.proyectosoftware.backend.modelo.Carta;
+import com.proyectosoftware.backend.modelo.interfaces.Baraja;
+
+public class BarajaFrancesa implements Baraja{
 
     public BarajaFrancesa(int numeroCartas, String cartasBaraja) {
-        super(numeroCartas, cartasBaraja);
-        //TODO Auto-generated constructor stub
+
     }
 
     /**
@@ -25,6 +27,24 @@ public class BarajaFrancesa extends BarajaAbstracta{
     public boolean esCartaDeLaBaraja(int color, int numero) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'esCartaDeLaBaraja'");
+    }
+
+    @Override
+    public String colorReal(int color) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'colorReal'");
+    }
+
+    @Override
+    public String numeroReal(int numero) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'numeroReal'");
+    }
+
+    @Override
+    public List<Carta> devolverCartas() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'devolverCartas'");
     }
     
 }
