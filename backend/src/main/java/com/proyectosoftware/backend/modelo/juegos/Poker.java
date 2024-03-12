@@ -1,6 +1,10 @@
-package com.proyectosoftware.backend.modelo;
+package com.proyectosoftware.backend.modelo.juegos;
 
-public class Poker extends Partida{
+import com.proyectosoftware.backend.modelo.Carta;
+import com.proyectosoftware.backend.modelo.Partida;
+import com.proyectosoftware.backend.modelo.interfaces.JuegoConApuesta;
+
+public class Poker implements JuegoConApuesta{
     private int bote;
     private int ultima_apuesta;
     private Carta[] cartas_mesa;

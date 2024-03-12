@@ -1,6 +1,10 @@
-package com.proyectosoftware.backend.modelo;
+package com.proyectosoftware.backend.modelo.juegos;
 
-public class UNO extends Partida{
+import com.proyectosoftware.backend.modelo.Carta;
+import com.proyectosoftware.backend.modelo.Partida;
+import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
+
+public class UNO implements JuegoSinApuesta{
     private int sentido;
     private Carta[] mazo;
     private Carta[] ultimaCarta;
