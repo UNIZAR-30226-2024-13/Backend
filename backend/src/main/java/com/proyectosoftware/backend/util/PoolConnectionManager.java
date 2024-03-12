@@ -13,7 +13,7 @@ public class PoolConnectionManager {
 		try {
 			Context initCtx = new InitialContext();
 			Context envCtx = (Context) initCtx.lookup("java:comp/env");
-			DataSource ds = (DataSource) envCtx.lookup("jdbc/CartaVerseDataBase");
+			DataSource ds = (DataSource) envCtx.lookup("jdbc/ps");
 
 			Connection conn = ds.getConnection();
 			return conn;
