@@ -5,18 +5,24 @@ import com.proyectosoftware.backend.modelo.barajas.BarajaEspaniola;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
 import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
+import com.proyectosoftware.backend.modelo.Carta;
 
 /**
  * Juego del chinquillo
  */
 public class Cinquillo implements JuegoSinApuesta{
     private Baraja baraja;
+    //private Carta[] escaleras;  
+    private String escaleras;
+    private int id;
 
     /**
      * Constructor por defecto
      */
-    public Cinquillo() {
+    public Cinquillo(int id, String escaleras) {
         baraja = BarajaEspaniola.devolverInstancia();
+        this.id = id;
+        this.escaleras = "Funciona";
     }
 
     /**
@@ -56,5 +62,19 @@ public class Cinquillo implements JuegoSinApuesta{
     public void siguenteTurno() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
+    }
+
+    public String getEscaleras() {
+        return escaleras;
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setEscaleras(String escaleras) {
+        this.escaleras = escaleras;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 }
