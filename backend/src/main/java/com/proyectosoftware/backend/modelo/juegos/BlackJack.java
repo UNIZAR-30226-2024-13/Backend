@@ -13,7 +13,7 @@ import com.proyectosoftware.backend.modelo.interfaces.JuegoConApuesta;
 /**
  * Juego del blackjack
  */
-public class BlackJack implements JuegoConApuesta{
+public class BlackJack implements JuegoConApuesta, Estado{
     private List<Carta> cartas_banca;
     private List<Carta> mazo;
     private Baraja baraja;
@@ -21,12 +21,8 @@ public class BlackJack implements JuegoConApuesta{
     /**
      * Constructor por defecto
      */
-    public BlackJack(int id, int turno, String mazo, String cartas_banca) {
-        super(id, turno);
+    public BlackJack() {
         baraja = BarajaFrancesa.devolverInstancia();
-        this.mazo = baraja.parsearCartas(mazo);
-        this.cartas_banca = baraja.parsearCartas(cartas_banca);
-        
     }
 
     /**
@@ -73,5 +69,23 @@ public class BlackJack implements JuegoConApuesta{
     public void apostar(Usuario usaurio, double apuesta){
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'apostar'");
+    }
+
+    /**
+     * Genera un estado a partir de un string
+     * @param estadoString - String a parsear
+     * @return - Estado
+     */
+    public Estado recuperarEstado(String estadoString){
+
+    }
+
+    /**
+     * 
+     * @param estado
+     * @return
+     */
+    public String crearEstado(Estado estado){
+        
     }
 }

@@ -23,14 +23,8 @@ public class Poker implements JuegoConApuesta{
     /**
      * Constructor por defecto
      */
-    public Poker(int id, int turno, int bote, int ultima_apuesta, String mazo, String cartas_mesa) {
-        super(id, turno);
-        this.bote = bote;
-        this.ultima_apuesta = ultima_apuesta;
+    public Poker() {
         baraja = BarajaFrancesa.devolverInstancia();
-        this.mazo = baraja.parsearCartas(mazo);
-        this.cartas_mesa = baraja.parsearCartas(cartas_mesa);
-        
     }
 
     /**

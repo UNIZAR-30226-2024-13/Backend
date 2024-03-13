@@ -31,7 +31,7 @@ public class BarajaFrancesa implements Baraja{
      * @param numeroCartas  - cantidad de cartas de la baraja
      * @param cartasBaraja  - String representando las diferentes cartas de la baraja
      */
-    public BarajaFrancesa(int numeroCartas, String cartasBaraja) {
+    private BarajaFrancesa(int numeroCartas, String cartasBaraja) {
         this.numeroCartas = numeroCartas;
         this.cartas = Collections.unmodifiableList(parsearCartas(cartasBaraja));
         
