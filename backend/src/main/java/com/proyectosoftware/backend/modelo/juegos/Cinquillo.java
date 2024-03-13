@@ -14,9 +14,6 @@ public class Cinquillo implements JuegoSinApuesta{
 
     /**
      * Constructor por defecto
-     * @param id
-     * @param turno
-     * @param escaleras
      */
     public Cinquillo() {
         baraja = BarajaEspaniola.devolverInstancia();
