@@ -7,13 +7,13 @@ import java.sql.SQLException;
 
 import com.proyectosoftware.backend.modelo.juegos.Cinquillo;
 
-import com.proyectosoftware.backend.util.PoolConnectionManager;
+import com.proyectosoftware.backend.util.ConnectionUtil;
 
 public class CinquilloDAO {
 
 	// Creacion de una partida nueva
 	public int insert() throws SQLException {
-		Connection conn = PoolConnectionManager.getConnection();
+		Connection conn = ConnectionUtil.getConnection();
 		PreparedStatement statemenmt;
 		String id_max = "SELECT max(id) FROM Cinquillo";
 		statemenmt = conn.prepareStatement(id_max);
