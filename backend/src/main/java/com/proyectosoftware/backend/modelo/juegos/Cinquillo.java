@@ -5,7 +5,15 @@ import com.proyectosoftware.backend.modelo.barajas.BarajaEspaniola;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
 import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
+
+import jakarta.annotation.sql.DataSourceDefinition;
+
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+
 import com.proyectosoftware.backend.modelo.Carta;
+
+
+
 
 /**
  * Juego del chinquillo
