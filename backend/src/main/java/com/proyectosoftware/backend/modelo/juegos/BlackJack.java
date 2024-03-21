@@ -80,6 +80,14 @@ public class BlackJack implements JuegoConApuesta, Estado{
 
     }
 
+    public void pedirCarta(Usuario usuario) {
+        
+    }
+    
+    public void plantarse(Usuario usuario) {
+        
+    }
+
     /**
      * 
      * @param estado
