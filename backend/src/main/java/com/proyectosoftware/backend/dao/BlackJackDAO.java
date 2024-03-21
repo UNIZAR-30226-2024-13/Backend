@@ -5,32 +5,39 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import util.PoolConnectionManager;
-
+import com.proyectosoftware.backend.modelo.juegos.BlackJack;
 public class BlackJackDAO {
 
-	// Creacion de una partida nueva
-	public int insert(BlackJack blackjack) throws SQLException {
+	/**
+	 * Creación de una partida de blackjack
+	 * @param blackjack
+	 */
+	public int insert(Estado estado) throws SQLException {
 		Connection conn = PoolConnectionManager.getConnection();
 		PreparedStatement statemenmt;
-		String id_max = "SELECT max(id) FROM Blackjack";
+		String id_max = "SELECT max(id) FROM BlackJack";
 		statemenmt = conn.prepareStatement(id_max);
 		
 		ResultSet rSet = statemenmt.executeQuery();
 		rSet.next();
-		int id_nueva_partida = rSet.getInt(1) + 1; // Se le suma uno al ID de partida más alto
+		int id_nueva_partida = generateId(); // Se le suma uno al ID de partida más alto
 
-		Blackjack blackjack = new Blackjack();
 		
-		String sql = "INSERT INTO Blackjack(id, email, rol, nickname, password, pais) VALUES (?, ?, ?, ?, ?, ?)"; // Campos de Blackjack
+		String sql = "INSERT INTO BlackJack(id, mazo, cartas_banca) VALUES (?, ?, ?)"; // Campos de Blackjack
 		statemenmt = conn.prepareStatement(sql);
 
         // Campos de Blackjack
 		statemenmt.setInt(1, blackjack.getId());
-		statemenmt.setString(2, blackjack.getEmail());
-		statemenmt.setString(3, blackjack.getRol());
-		statemenmt.setString(4, blackjack.getNickname());
-		statemenmt.setString(5, blackjack.getPassword());
-		statemenmt.setString(6, blackjack.getPais());
+		statemenmt.setString(2, blackjack.getMazo());
+		statemenmt.setString(3, blackjack.getCartas_banca());
+		statemenmt.execute();  
+
+		String sql2 = "INSERT INTO Partida(id, turno) VALUES (?, ?)"; // Campos de Blackjack
+		statemenmt = conn.prepareStatement(sql2);
+
+        // Campos de Partida
+		statemenmt.setInt(1, partida.getId());
+		statemenmt.setString(2, partida.getTurno());
 		statemenmt.execute();  
 		
 		//asignarPuntuacion(idUser);
@@ -63,10 +70,13 @@ public class BlackJackDAO {
 		rSet.close();
 	}
 	*/
-	// Borrado de una partida de la base de datos cuando acabe
+	/**
+	 * Borrado de una partida de blackjack
+	 * @param id
+	 */
 	public int delete(int id) throws SQLException {
 		Connection conn = PoolConnectionManager.getConnection();
-		String sql = "DELETE FROM Blackjack WHERE id = " + id;
+		String sql = "DELETE FROM BlackJack WHERE id = " + id;
 		
 		PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.execute();   
@@ -76,7 +86,9 @@ public class BlackJackDAO {
         return 0;
 	}
 	
-	// Actualizacion de cualquiera de los campos de una partida a excepcion del identificador
+	/**
+	 * Actualizacion de cualquiera de los campos de una partida a excepcion del identificador
+	 */
 	public int update(int id, String email, String rol, String nickname, String pais, String password) throws SQLException { // Campos de Blackjack
 		Connection conn = PoolConnectionManager.getConnection();
 		String sql = "UPDATE public.\"UsuarioConCuenta\" SET email=?, rol=?, nickname=?, password=?, pais=? WHERE email = ?";
@@ -121,11 +133,14 @@ public class BlackJackDAO {
 		return result;
 	}
 	*/
-	// Recupera una partida identificada por un id al reanudarla
+	/**
+	 * Recupera una partida identificada por un id al reanudarla
+	 * @param id
+	 */
 	public Blackjack getPartida(int id) throws Exception {
 		// Abrimos la conexión e inicializamos los parámetros 
 		Connection conn = PoolConnectionManager.getConnection();
-		String sql = "SELECT * FROM Blackjack WHERE id = " + id;
+		String sql = "SELECT * FROM BlackJack WHERE id = " + id;
 		
 		PreparedStatement stm = conn.prepareStatement(sql);	
 		stm.setInt(1, id);
