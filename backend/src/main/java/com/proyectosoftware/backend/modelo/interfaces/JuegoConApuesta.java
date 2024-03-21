@@ -9,4 +9,18 @@ public interface JuegoConApuesta extends Juego{
      * @param apuesta   - Valor de la apuesta
      */
     public void apostar(Usuario usaurio, double apuesta);
+    
+    /**
+     * Aumenta el numero de fichas de un usuario
+     * @param usaurio   - Usuario que va a aumentar sus fichas
+     * @param apuesta   - Cantidad de fichas
+     */
+    public void sumarFichas(Usuario usuario, double fichas);
+    
+    /**
+     * Resta el numero de fichas de un usuario
+     * @param usaurio   - Usuario que va a perder fichas
+     * @param apuesta   - Cantidad de fichas
+     */
+    public void restarFichas(Usuario usuario, double fichas);
 }
