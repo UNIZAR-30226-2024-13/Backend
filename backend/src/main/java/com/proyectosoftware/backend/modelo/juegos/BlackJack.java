@@ -10,26 +10,26 @@ import com.proyectosoftware.backend.modelo.interfaces.Baraja;
 import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoConApuesta;
 
-/**
+/*
  * Juego del blackjack
- */
-public class BlackJack implements JuegoConApuesta, Estado{
+*/
+public class BlackJack implements JuegoConApuesta, Estado {
     private List<Carta> cartas_banca;
     private List<Carta> mazo;
     private Baraja baraja;
 
-    /**
+    /*
      * Constructor por defecto
-     */
+    */
     public BlackJack() {
         baraja = BarajaFrancesa.devolverInstancia();
     }
 
-    /**
+    /*
      * Cargar un juego de blackjack dado un estado
      * @param estado
-     */
-    public BlackJack(Estado estado){
+    */
+    public BlackJack(Estado estado) {
 
     }
 
@@ -66,34 +66,42 @@ public class BlackJack implements JuegoConApuesta, Estado{
 
 
     @Override
-    public void apostar(Usuario usaurio, double apuesta){
+    public void apostar(Usuario usaurio, double apuesta) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'apostar'");
     }
 
-    /**
+    /*
      * Genera un estado a partir de un string
      * @param estadoString - String a parsear
      * @return - Estado
-     */
-    public Estado recuperarEstado(String estadoString){
+    */
+    public Estado recuperarEstado(String estadoString) {
 
     }
-
+    
+    /*
+     * Suma una carta aleatoria a las cartas de un usuario
+     * @param usuario - Usuario que va a sumar una carta
+    */
     public void pedirCarta(Usuario usuario) {
         
     }
     
+    /*
+     * Planta al usuario con las cartas que tiene
+     * @param usuario - Usuario que se planta
+    */
     public void plantarse(Usuario usuario) {
         
     }
 
-    /**
+    /*
      * 
      * @param estado
      * @return
-     */
-    public String crearEstado(Estado estado){
+    */
+    public String crearEstado(Estado estado) {
         
     }
 }
