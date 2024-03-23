@@ -1,5 +1,6 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,6 @@ public class Poker implements JuegoConApuesta{
     private int bote;
     private int ultima_apuesta;
     private List<Carta> cartas_mesa;
-    private List<Carta> mazo;
     private Baraja baraja;
     private List<Map<Integer, Integer>> usuarios; //lista con los usuarios y sus fichas a usar para la partida
 
@@ -27,6 +27,10 @@ public class Poker implements JuegoConApuesta{
      */
     public Poker() {
         baraja = BarajaFrancesa.devolverInstancia();
+        bote = 0;
+        ultima_apuesta = 0;
+        cartas_mesa = new ArrayList<>();
+        usuarios = new ArrayList<>();
     }
 
     /**

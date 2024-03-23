@@ -17,10 +17,5 @@ public interface JuegoConApuesta extends Juego{
      */
     public void sumarFichas(Usuario usuario, int fichas);
     
-    /**
-     * Resta el numero de fichas de un usuario
-     * @param usaurio   - Usuario que va a perder fichas
-     * @param apuesta   - Cantidad de fichas
-     */
-    public void restarFichas(Usuario usuario, int fichas);
+
 }
