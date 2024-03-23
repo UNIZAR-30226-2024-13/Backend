@@ -67,4 +67,8 @@ public interface Baraja {
      */
     public List<Carta> devolverCartas();
     
+    /**
+     * 
+     */
+    public void barajar();
 }

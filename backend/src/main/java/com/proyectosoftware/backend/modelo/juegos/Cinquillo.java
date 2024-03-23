@@ -57,4 +57,20 @@ public class Cinquillo implements JuegoSinApuesta{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
     }
+
+    /**
+     * Juego completo del Cinquillo para 4 jugadores
+     */
+    public void jugar(){
+        baraja.barajar();
+
+        /**
+         * TODO:  repartir  a los 4 usuarios
+         */
+
+         boolean finJuego = false;
+         do{
+            
+         }while(!finJuego);
+    }
 }
