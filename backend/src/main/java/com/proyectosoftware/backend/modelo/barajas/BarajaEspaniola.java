@@ -35,10 +35,7 @@ public class BarajaEspaniola implements Baraja{
      * @param numeroCartas  - cantidad de cartas de la baraja
      * @param cartasBaraja  - String representando las diferentes cartas de la baraja
      */
-    private BarajaEspaniola(int numeroCartas, String cartasBaraja) {
-        this.numeroCartas = numeroCartas;
-        this.cartas = Collections.unmodifiableList(parsearCartas(cartasBaraja));
-        
+    private BarajaEspaniola() {
         this.coloresBaraja = new HashMap<>();
         coloresBaraja.put(0, OROS);
         coloresBaraja.put(1, COPAS);
@@ -56,19 +53,25 @@ public class BarajaEspaniola implements Baraja{
         numerosBaraja.put(8, "7");
         numerosBaraja.put(9, "Sota");
         numerosBaraja.put(10, "Caballo");        
-        numerosBaraja.put(11, "Rey");        
+        numerosBaraja.put(11, "Rey");  
+        
+        this.cartas = crearBaraja();
     }
 
     /**
-     * Devuelve la instancia de la baraja
-     * @return - instancia
-     * @see BarajaEspaniola
+     * Crea una baraja en base 
+     * @return - Devuelve una baraja española
      */
-    public static synchronized BarajaEspaniola devolverInstancia(int numeroCartas, String cartasBaraja){
-        if(instancia == null){
-            instancia = new BarajaEspaniola(numeroCartas, cartasBaraja);
+    private List<Carta> crearBaraja(){
+        List <Carta> baraja = new ArrayList<>();
+
+        for (int palo : coloresBaraja.keySet()) {
+            for (int numero : numerosBaraja.keySet()) {
+                Carta carta = new Carta(numero, palo);
+                baraja.add(carta);
+            }
         }
-        return instancia;
+        return baraja;
     }
 
     /**
@@ -78,9 +81,7 @@ public class BarajaEspaniola implements Baraja{
      */
     public static synchronized BarajaEspaniola devolverInstancia(){
         if(instancia == null){
-            /**
-             * TODO: lanzar error
-             */
+            instancia = new BarajaEspaniola();
         }
         return instancia;
     }
@@ -135,5 +136,17 @@ public class BarajaEspaniola implements Baraja{
         }
         return null;
     }
-    
+
+    /**
+     * 
+     */
+    @Override
+    public String toString(){
+        String res = "";
+
+        for (Carta carta : cartas) {
+            res += carta.toString() + ";";
+        }
+        return res;
+    }
 }
