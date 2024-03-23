@@ -1,6 +1,7 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
 import java.util.List;
+import java.util.Map;
 
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Partida;
@@ -19,6 +20,7 @@ public class Poker implements JuegoConApuesta{
     private List<Carta> cartas_mesa;
     private List<Carta> mazo;
     private Baraja baraja;
+    private List<Map<Integer, Integer>> usuarios; //lista con los usuarios y sus fichas a usar para la partida
 
     /**
      * Constructor por defecto
@@ -68,8 +70,29 @@ public class Poker implements JuegoConApuesta{
 
 
     @Override
-    public void apostar(Usuario usaurio, double apuesta){
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'apostar'");
+    public void apostar(Usuario usuario, int apuesta){
+        int fichas_disponibles = usuarios.get(usuario);
+        if (apuesta > fichas_disponibles) {
+            //Mandar error al control y esperar a nueva apuesta
+        }
+        else {
+            fichas_disponibles -= apuesta;
+            usuarios.put(usuario,fichas_disponibles);
+            //Mandar al control las fichas disponibles
+        }
+    }
+
+    @Override
+    public void sumarFichas(Usuario usuario, int fichas) {
+        int fichas_disponibles = usuarios.get(usuario);
+        fichas_disponibles += fichas;
+        usuarios.put(usuario,fichas_disponibles);
+        fichas_totales += fichas_disponibles;
+        //Almacenar fichas totales en la BD
+    }
+    
+
+    public void agnadirCartaCentro(Carta nueva_carta) {
+        cartas_mesa.add(nueva_carta);
     }
 }
