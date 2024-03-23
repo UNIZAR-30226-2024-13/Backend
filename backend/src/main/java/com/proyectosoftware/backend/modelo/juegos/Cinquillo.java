@@ -1,5 +1,10 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaEspaniola;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
@@ -11,12 +16,14 @@ import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
  */
 public class Cinquillo implements JuegoSinApuesta{
     private Baraja baraja;
+    private List <Carta> mazo;
 
     /**
      * Constructor por defecto
      */
     public Cinquillo() {
         baraja = BarajaEspaniola.devolverInstancia();
+        mazo = baraja.devolverCartas();
     }
 
     /**
@@ -62,7 +69,7 @@ public class Cinquillo implements JuegoSinApuesta{
      * Juego completo del Cinquillo para 4 jugadores
      */
     public void jugar(){
-        baraja.barajar();
+        Collections.shuffle(mazo);
 
         /**
          * TODO:  repartir  a los 4 usuarios
@@ -70,7 +77,7 @@ public class Cinquillo implements JuegoSinApuesta{
 
          boolean finJuego = false;
          do{
-            
+
          }while(!finJuego);
     }
 }

@@ -149,24 +149,4 @@ public class BarajaEspaniola implements Baraja{
         }
         return res;
     }
-
-    /**
-     * Mezcla la baraja
-     */
-    @Override
-    public void barajar(){
-        List<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < cartas.size(); i++) {
-            indices.add(i);
-        }
-        Collections.shuffle(indices);
-        
-        List<Carta> barajada = new ArrayList<>();
-        for (int index : indices) {
-            barajada.add(cartas.get(index));
-        }
-
-        cartas.clear();
-        cartas.addAll(barajada);
-    }
 }

@@ -66,9 +66,4 @@ public interface Baraja {
      * @return - Devuelve una copia de las cartas de la baraja
      */
     public List<Carta> devolverCartas();
-    
-    /**
-     * 
-     */
-    public void barajar();
 }
