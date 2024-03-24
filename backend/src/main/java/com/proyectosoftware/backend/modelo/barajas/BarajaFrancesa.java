@@ -28,9 +28,7 @@ public class BarajaFrancesa implements Baraja{
     private static volatile BarajaFrancesa instancia = null; //Singleton
 
     /**
-     * Constuctor Baraja
-     * @param numeroCartas  - cantidad de cartas de la baraja
-     * @param cartasBaraja  - String representando las diferentes cartas de la baraja
+     * Constuctor Baraja francesa
      */
     private BarajaFrancesa() {
         this.coloresBaraja = new HashMap<>();
