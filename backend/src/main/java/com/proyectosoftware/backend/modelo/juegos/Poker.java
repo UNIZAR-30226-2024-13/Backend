@@ -20,6 +20,7 @@ public class Poker implements JuegoConApuesta{
     private int ultima_apuesta;
     private List<Carta> cartas_mesa;
     private Baraja baraja;
+    
     private List<Map<Integer, Integer>> usuarios; //lista con los usuarios y sus fichas a usar para la partida
 
     /**

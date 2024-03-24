@@ -1,5 +1,6 @@
 package com.proyectosoftware.backend.modelo.barajas;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,10 +32,7 @@ public class BarajaFrancesa implements Baraja{
      * @param numeroCartas  - cantidad de cartas de la baraja
      * @param cartasBaraja  - String representando las diferentes cartas de la baraja
      */
-    private BarajaFrancesa(int numeroCartas, String cartasBaraja) {
-        this.numeroCartas = numeroCartas;
-        this.cartas = Collections.unmodifiableList(parsearCartas(cartasBaraja));
-        
+    private BarajaFrancesa() {
         this.coloresBaraja = new HashMap<>();
         coloresBaraja.put(0, PICAS);
         coloresBaraja.put(1, DIAMANTES);
@@ -55,19 +53,24 @@ public class BarajaFrancesa implements Baraja{
         numerosBaraja.put(11, "10");
         numerosBaraja.put(12, "Sota");
         numerosBaraja.put(13, "Caballo");        
-        numerosBaraja.put(14, "Rey");      
+        numerosBaraja.put(14, "Rey");
+        
+        this.cartas = crearBaraja();
     }
 
     /**
-     * Devuelve la instancia de la baraja
-     * @return - instancia
-     * @see BarajaFrancesa
+     * Crea una baraja en base
+     * @return - Devuelve una baraja francesa
      */
-    public static synchronized BarajaFrancesa devolverInstancia(int numeroCartas, String cartasBaraja){
-        if(instancia == null){
-            instancia = new BarajaFrancesa(numeroCartas, cartasBaraja);
+    private List<Carta> crearBaraja() {
+        List<Carta> baraja = new ArrayList<>();
+        for (int palo : coloresBaraja.keySet()) {
+            for (int numero : numerosBaraja.keySet()) {
+                Carta carta = new Carta(numero, palo);
+                baraja.add(carta);
+            }
         }
-        return instancia;
+        return baraja;
     }
 
     /**
@@ -77,9 +80,7 @@ public class BarajaFrancesa implements Baraja{
      */
     public static synchronized BarajaFrancesa devolverInstancia(){
         if(instancia == null){
-            /**
-             * TODO: lanzar error
-             */
+            instancia = new BarajaFrancesa();
         }
         return instancia;
     }
@@ -104,20 +105,20 @@ public class BarajaFrancesa implements Baraja{
 
     @Override
     public String colorReal(int color) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'colorReal'");
+        return coloresBaraja.get(color);
     }
 
     @Override
     public String numeroReal(int numero) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'numeroReal'");
+        return numerosBaraja.get(numero);
     }
 
     @Override
     public List<Carta> devolverCartas() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'devolverCartas'");
+        if (cartas != null) {
+            return new ArrayList<>(cartas);
+        }
+        return null;
     }
     
 }
