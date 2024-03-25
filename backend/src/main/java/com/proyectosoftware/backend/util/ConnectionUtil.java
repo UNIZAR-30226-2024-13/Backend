@@ -6,7 +6,7 @@ import java.sql.*;
 
 public class ConnectionUtil {
 	// JDBC nombre del driver y URL de BD 
-	private static final String JDBC_DRIVER = "org.postgresql.Driver";  
+	private static final String JDBC_DRIVER = ;  
 	private static final String DB_URL = ;
 	
 	// Credenciales de la Base de Datos
