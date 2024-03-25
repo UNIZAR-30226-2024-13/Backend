@@ -134,4 +134,12 @@ public class Poker implements JuegoConApuesta{
         cartas_mesa.add(mazo.get(0));
         mazo.remove(0);
     }
+
+
+    /**
+     * 
+     */
+    public Usuario ganadorPartida(){
+        
+    }
 }
