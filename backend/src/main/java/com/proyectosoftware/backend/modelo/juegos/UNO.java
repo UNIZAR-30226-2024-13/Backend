@@ -1,21 +1,68 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
+
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import com.proyectosoftware.backend.modelo.Carta;
-import com.proyectosoftware.backend.modelo.Partida;
+import com.proyectosoftware.backend.modelo.Usuario;
+import com.proyectosoftware.backend.modelo.barajas.BarajaUNO;
+import com.proyectosoftware.backend.modelo.interfaces.Baraja;
+import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
 
 public class UNO implements JuegoSinApuesta{
+    private Baraja baraja;
+    private List <Carta> mazo;
+    private List <Carta> ultimaCarta;
     private int sentido;
-    private Carta[] mazo;
-    private Carta[] ultimaCarta;
+  
     
-    public UNO(int id, int turno, int sentido, String mazo, String ultimaCarta){
-       super(id, turno);
-       this.sentido = sentido;
-       Carta carta = new Carta();
+    public UNO(){
+       baraja = BarajaEspaniola.devolverInstancia();
+       mazo = baraja.devolverCartas();
+    }
+    
+    /**
+     * Cargar un juego de uno dado un estado
+     * @param estado
+     */
+    public UNO(Estado estado){
 
-       this.mazo = carta.parseStringCartas(mazo);
-       this.ultimaCarta = carta.parseStringCartas(ultimaCarta);
+    }
+    
+    
+    @Override
+    public Estado guardar() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'guardar'");
+    }
+
+    @Override
+    public void cargar(Estado estado) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'cargar'");
+    }
+
+    @Override
+    public Estado recuperarEstado(String estadoString) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
+    }
+
+    @Override
+    public String crearEstado(Estado estado) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'crearEstado'");
+    }
+
+
+    @Override
+    public void siguenteTurno() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
     }
     
     // Comprueba si una carta es valida en función de la última carta jugada
@@ -46,48 +93,42 @@ public class UNO implements JuegoSinApuesta{
     }
     
     public void SaltoTurno(){
-        this.siguienteTurno();
-        this.siguienteTurno();
+        this.siguenteTurno();
+        this.siguenteTurno();
     }
     
     public void SumaCuatro(){
     
     }
-    
-    
-    public Carta ElegirCarta(Carta[] cartasUsuario, int n){
-        if(CartaValida(cartasUsuario[n])){
-            return cartasUsuario[n];
-        }
-        else{
-            return null;
-        }
-    }
-    
+   
     public void HacerJugada(){
         Carta carta = new Carta();
-
+        //carta = ;
         if (/*boton roba cartas*/){
-                
+                //roba carta
                 //salta turno
         }
         else if (/*boton carta*/){
-            while(carta == null){
-                carta = ElegirCarta();
-            }
             if(carta.numero() == 10){
-                //cambio sentido
+                CambioSentido();
+                //cambia el sentido del juego
             }
             else if (carta.numero() == 11){
-                //+2
+                SumaDos();
+                //+2 para el siguiente
             }
             else if(carta.numero() == 12){
-                //salto turno
+                SaltoTurno();
+                //salta el turno del siguiente
             }
             else if(carta.numero() == 14){
-                //+4
+                SumaCuatro();
+                //+4 para el siguiente
             }
-            ultimaCarta[ultimaCarta.length] = carta;
+            else{
+                this.siguenteTurno();
+            }
+            ultimaCarta.add(carta);
         }
     }
 }
