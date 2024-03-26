@@ -3,6 +3,7 @@ package com.proyectosoftware.backend.modelo.juegos;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,29 @@ public class Poker implements JuegoConApuesta{
     private static final int CABALLO = 12;
     private static final int REY = 13;
     private static final int AS = 14;
+
+    private static final String CARTA_ALTA = "carta_alta";
+    private static final String PAR = "pareja";
+    private static final String DOBLE_PAR = "doble_pareja";
+    private static final String TRIO = "trio";
+    private static final String ESC = "escalera";
+    private static final String COLOR = "color";
+    private static final String FULL = "full";
+    private static final String POKER = "poker";
+    private static final String ESC_COLOR = "escalera_color";
+    private static final String ESC_REAL = "escalera_real";
+
+    private static final int PRIO_CARTA_ALTA = 0;
+    private static final int PRIO_PAR = 1;
+    private static final int PRIO_DOBLE_PAR = 2;
+    private static final int PRIO_TRIO = 3;
+    private static final int PRIO_ESC = 4;
+    private static final int PRIO_COLOR = 5;
+    private static final int PRIO_FULL = 6;
+    private static final int PRIO_POKER = 7;
+    private static final int PRIO_ESC_COLOR = 8;
+    private static final int PRIO_ESC_REAL = 9;
+
 
     private int bote;
     private int ultima_apuesta;
@@ -171,12 +195,59 @@ public class Poker implements JuegoConApuesta{
 
 
     public Mano verificarMano(List<Carta> cartas_mano) {
-        // Comprobar escalera real
+        // Ordenar la lista de cartas de menor a mayor número
+        Collections.sort(cartas_mano, new Comparator<Carta>() {
+            @Override
+            public int compare(Carta carta1, Carta carta2) {
+                return Integer.compare(carta1.getNumero(), carta2.getNumero());
+            }
+        });
         Carta carta;
+        Carta carta_siguiente = cartas_mano.get(0);
+        int num_iguales = 1;
+        Mano mano = new Mano();
+        Mano mejor_mano = new Mano();
         for (int i = 0; i < cartas_mano.size(); i++) {
             carta = cartas_mano.get(i);
-            if (carta.getNumero() == AS or hayAS) {
-                
+            if (i < cartas_mano.size() - 1) {
+                carta_siguiente = cartas_mano.get(i+1);
+            }
+            if (carta.getNumero() == carta_siguiente.getNumero()) {
+                num_iguales++;
+                // Caso poker
+                if (num_iguales == 4) {
+                    mano.setMano(POKER);
+                    mano.setPrioridad(PRIO_POKER);
+                    mano.setValor(carta.getNumero());
+                }
+                // Caso full
+                else if ((num_iguales == 3 && (mejor_mano.getPrioridad() == PRIO_PAR || mejor_mano.getPrioridad() == PRIO_TRIO))
+                        || (num_iguales == 2 && mejor_mano.getPrioridad() == PRIO_TRIO)) {
+                    mano.setMano(FULL);
+                    mano.setPrioridad(PRIO_FULL);
+                    mano.setValor(carta.getNumero());
+                }
+                // Caso trio
+                else if (num_iguales == 3) {
+                    mano.setMano(TRIO);
+                    mano.setPrioridad(PRIO_TRIO);
+                    mano.setValor(carta.getNumero());
+                }
+                // Caso doble pareja
+                else if (num_iguales == 2 && mejor_mano.getPrioridad() == PRIO_PAR) {
+                    mano.setMano(DOBLE_PAR);
+                    mano.setPrioridad(PRIO_DOBLE_PAR);
+                    mano.setValor(carta.getNumero());
+                }
+                // Caso pareja
+                else {
+                    mano.setMano(PAR);
+                    mano.setPrioridad(PRIO_PAR);
+                    mano.setValor(carta.getNumero());
+                }
+            }
+            if (mano.getPrioridad() > mejor_mano.getPrioridad()) {
+                mejor_mano = mano;
             }
         }
     }
