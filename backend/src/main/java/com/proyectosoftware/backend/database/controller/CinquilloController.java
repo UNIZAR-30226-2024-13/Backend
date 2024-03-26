@@ -1,28 +1,39 @@
 package com.proyectosoftware.backend.database.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyectosoftware.backend.database.repository.CinquilloRepository;
+import com.proyectosoftware.backend.database.entidades.Cinquillo;
+import com.proyectosoftware.backend.database.services.CinquilloService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@RequestMapping("/Cinquillo")
 public class CinquilloController {
     
-    private final CinquilloRepository cinquilloRepository;
+   @Autowired
+   CinquilloService cinquilloService;
 
-    public CinquilloController(CinquilloRepository cinquilloRepository){
-        this.cinquilloRepository = cinquilloRepository;
-    }
+   @GetMapping("getCinquillos")
+   public List<Cinquillo> getAllCinquillo() {
+       return cinquilloService.getAllCinquillo();
+   } 
 
-    @SuppressWarnings("rawtypes")
-    @GetMapping
-    public ResponseEntity getAllCinquillo() {
-        return ResponseEntity.ok(this.cinquilloRepository.findAll());
-    }
-    
+   @PostMapping("addCinquillo")
+   public Cinquillo saveCinquillo(@RequestBody Cinquillo cinquillo) {
+        return cinquilloService.saveCinquillo(cinquillo);
+   }
+
+   @GetMapping("getCinquillo")
+   public Optional<Cinquillo> getCinquillo(@RequestParam Long idPartida) {
+       return cinquilloService.getCinquillo(idPartida);
+   }
+   
 }
