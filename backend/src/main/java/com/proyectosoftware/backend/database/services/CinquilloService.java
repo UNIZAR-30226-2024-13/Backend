@@ -13,11 +13,9 @@ import com.proyectosoftware.backend.database.repository.CinquilloRepository;
 public class CinquilloService {
 
     @Autowired 
-    CinquilloRepository cinquilloRepository;
+    private CinquilloRepository cinquilloRepository;
 
-    public CinquilloService(){
-
-    }
+    public CinquilloService(){}
 
     public List<Cinquillo> getAllCinquillo(){
         return cinquilloRepository.findAll();
@@ -27,8 +25,8 @@ public class CinquilloService {
         return cinquilloRepository.save(cinquillo);
     }
 
-    public Optional<Cinquillo> getCinquillo(Long idPartida) {
-        return cinquilloRepository.findById(idPartida);
+    public Optional<Cinquillo> getCinquillo(Long idCinquillo) {
+        return cinquilloRepository.findById(idCinquillo);
     }
     
 }

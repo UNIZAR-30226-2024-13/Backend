@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CinquilloController {
     
    @Autowired
-   CinquilloService cinquilloService;
+   private CinquilloService cinquilloService;
 
    @GetMapping("getCinquillos")
    public List<Cinquillo> getAllCinquillo() {
@@ -32,8 +32,8 @@ public class CinquilloController {
    }
 
    @GetMapping("getCinquillo")
-   public Optional<Cinquillo> getCinquillo(@RequestParam Long idPartida) {
-       return cinquilloService.getCinquillo(idPartida);
+   public Optional<Cinquillo> getCinquillo(@RequestParam Long idCinquillo) {
+       return cinquilloService.getCinquillo(idCinquillo);
    }
    
 }

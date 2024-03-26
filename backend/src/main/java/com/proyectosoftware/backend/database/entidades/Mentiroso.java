@@ -6,20 +6,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "cinquillo")
-public class Cinquillo {
-
+@Table(name = "mentiroso")
+public class Mentiroso {
+    
     @EmbeddedId
     private PartidaId id;
-    
-    @Column(name = "escaleras")
-    private String escaleras;
 
-    public Cinquillo() {}
+    @Column(name = "cartas_mesa")
+    private String cartasMesa;
 
-    public Cinquillo(PartidaId id, String escaleras) {
+    public Mentiroso() {}
+
+    public Mentiroso(PartidaId id, String cartasMesa) {
         this.id = id;
-        this.escaleras = escaleras;
+        this.cartasMesa = cartasMesa;
     }
 
     public PartidaId getId() {
@@ -30,11 +30,11 @@ public class Cinquillo {
         this.id = id;
     }
 
-    public String getEscaleras() {
-        return escaleras;
+    public String getCartasMesa() {
+        return cartasMesa;
     }
 
-    public void setEscaleras(String escaleras) {
-        this.escaleras = escaleras;
+    public void setCartasMesa(String cartasMesa) {
+        this.cartasMesa = cartasMesa;
     }
 }
