@@ -13,7 +13,7 @@ public interface JuegoConApuesta extends Juego{
     /**
      * Aumenta el numero de fichas de un usuario
      * @param usaurio   - Usuario que va a aumentar sus fichas
-     * @param apuesta   - Cantidad de fichas
+     * @param fichas   - Cantidad de fichas
      */
     public void sumarFichas(Usuario usuario, int fichas);
     

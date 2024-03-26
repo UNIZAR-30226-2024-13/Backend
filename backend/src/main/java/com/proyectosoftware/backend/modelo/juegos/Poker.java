@@ -19,6 +19,12 @@ import com.proyectosoftware.backend.modelo.interfaces.JuegoConApuesta;
  * Juego del poker
  */
 public class Poker implements JuegoConApuesta{
+
+    private static final int SOTA = 11;
+    private static final int CABALLO = 12;
+    private static final int REY = 13;
+    private static final int AS = 14;
+
     private int bote;
     private int ultima_apuesta;
     private List<Carta> cartas_mesa;
@@ -26,7 +32,7 @@ public class Poker implements JuegoConApuesta{
     private List<Carta> mazo;
     private Map<String, Integer> fichas_usuario; //Diccionario con los usuarios y sus fichas a usar en la partida
     private Map<String, List<Carta>> cartas_usuario; // Diccionario con los usuarios y sus cartas a usar en la partida
-
+    private Map<String, Mano> mano_usuario; //Diccionario con los usuarios y su mano en una partida
     /**
      * Constructor por defecto
      */
@@ -38,6 +44,7 @@ public class Poker implements JuegoConApuesta{
         cartas_mesa = new ArrayList<>();
         fichas_usuario = new HashMap<>();
         cartas_usuario = new HashMap<>();
+        mano_usuario = new HashMap<>();
     }
 
     /**
@@ -48,24 +55,43 @@ public class Poker implements JuegoConApuesta{
 
     }
 
+
+    /**
+     * Crea un estado con el estado actual del juego poker
+     * @return - estado
+     */
     @Override
     public Estado guardar() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'guardar'");
     }
 
+    /**
+     * Inicializa el juego poker con un estado dado
+     * @param estado - el estado a cargar
+     */
     @Override
     public void cargar(Estado estado) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cargar'");
     }
 
+    /**
+     * Genera un estado de poker a partir de un string
+     * @param estadoString - String a parsear
+     * @return - Estado
+     */
     @Override
     public Estado recuperarEstado(String estadoString) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
     }
 
+    /**
+     * 
+     * @param estado
+     * @return
+     */
     @Override
     public String crearEstado(Estado estado) {
         // TODO Auto-generated method stub
@@ -99,7 +125,11 @@ public class Poker implements JuegoConApuesta{
         }
     }
 
-
+    /**
+     * Apuesta que un usuario realiza
+     * @param usaurio   - Usuario que realiza la apuesta
+     * @param apuesta   - Valor de la apuesta
+     */
     @Override
     public void apostar(Usuario usuario, int apuesta){
         int fichas_disponibles = fichas_usuario.get(usuario.getId());
@@ -116,7 +146,11 @@ public class Poker implements JuegoConApuesta{
         }
     }
 
-
+    /**
+     * Aumenta el numero de fichas de un usuario
+     * @param usaurio   - Usuario que va a aumentar sus fichas
+     * @param fichas   - Cantidad de fichas
+     */
     @Override
     public void sumarFichas(Usuario usuario, int fichas) {
         int fichas_disponibles = fichas_usuario.get(usuario.getId());
@@ -136,10 +170,34 @@ public class Poker implements JuegoConApuesta{
     }
 
 
+    public Mano verificarMano(List<Carta> cartas_mano) {
+        // Comprobar escalera real
+        Carta carta;
+        for (int i = 0; i < cartas_mano.size(); i++) {
+            carta = cartas_mano.get(i);
+            if (carta.getNumero() == AS or hayAS) {
+                
+            }
+        }
+    }
+
+
     /**
-     * 
+     * Determina el ganador de una partida de poker
+     * @param usuarios - Lista de usuarios de la partida
+     * @return - Devuelve el usuario ganador
      */
-    public Usuario ganadorPartida(){
-        
+    public Usuario ganadorPartida(List<Usuario> usuarios){
+        String id_usuario;
+        Mano mano;
+        List<Carta> cartas_mano = new ArrayList<>();
+        for (int i = 0; i < usuarios.size(); i++) {
+            id_usuario = usuarios.get(i).getId();
+            cartas_mano = cartas_usuario.get(id_usuario);
+            for (int j = 0; j < cartas_mesa.size(); j++) {
+                cartas_mano.add(cartas_mesa.get(j));
+            }
+            mano = verificarMano(cartas_mano);
+        }
     }
 }
