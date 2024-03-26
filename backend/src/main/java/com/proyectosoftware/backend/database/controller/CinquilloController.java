@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@RequestMapping("/cinquillo")
+@RequestMapping("/Cinquillo")
 public class CinquilloController {
     
     private final CinquilloRepository cinquilloRepository;
@@ -19,6 +19,7 @@ public class CinquilloController {
         this.cinquilloRepository = cinquilloRepository;
     }
 
+    @SuppressWarnings("rawtypes")
     @GetMapping
     public ResponseEntity getAllCinquillo() {
         return ResponseEntity.ok(this.cinquilloRepository.findAll());

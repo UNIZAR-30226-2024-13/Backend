@@ -6,6 +6,4 @@ import org.springframework.stereotype.Repository;
 import com.proyectosoftware.backend.database.entidades.Cinquillo;
 
 @Repository
-public interface CinquilloRepository extends JpaRepository<Cinquillo, Long>{
-    
-}
+public interface CinquilloRepository extends JpaRepository<Cinquillo, Long>{}
