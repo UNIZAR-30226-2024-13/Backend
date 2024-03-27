@@ -25,7 +25,7 @@ public class PokerService {
         return pokerRepository.save(poker);
     }
 
-    public Optional<Poker> getUNO(Long idPoker){
+    public Optional<Poker> getPoker(Long idPoker){
         return pokerRepository.findById(idPoker);
     }
 }
