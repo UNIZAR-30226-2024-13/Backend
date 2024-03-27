@@ -223,8 +223,7 @@ public class Poker implements JuegoConApuesta{
             if (i < cartas_mano.size() - 1) {
                 carta_siguiente = cartas_mano.get(i+1);
             }
-            // FALTA TODO LO RELACIONADO CON EL COLOR
-            if (carta.getNumero() == carta_siguiente.getNumero()) {
+            if (carta.getNumero() == carta_siguiente.getNumero() && i != 6) {
                 num_iguales++;
                 // Caso poker
                 if (num_iguales == 4) {
@@ -259,41 +258,47 @@ public class Poker implements JuegoConApuesta{
                 }
             }
             else if (carta.getNumero() == (carta_siguiente.getNumero() - 1)){
-                // FALTA ESC REAL
-                if (carta.getColor() == carta_siguiente.getColor()) {
-                    esc_color++;
-                }
-                else {
-                    esc_color = 1;
-                }
                 if (carta.getNumero() == AS || carta.getNumero() == REY || carta.getNumero() == CABALLO ||
                     carta.getNumero() == SOTA || carta.getNumero() == 10) {
                     esc_real++;
                 }
-                num_iguales = 0;
-                num_esc++;
+                if (i != 6) {
+                    num_iguales = 0;
+                    num_esc++;
+                    if (carta.getColor() == carta_siguiente.getColor()) {
+                        esc_color++;
+                    }
+                    else {
+                        esc_color = 1;
+                    }
+                }
+                // Caso escalera real
                 if (num_esc == 5 && esc_color == 5 && esc_real == 5) {
                     mano.setMano(ESC_REAL);    
                     mano.setPrioridad(PRIO_ESC_REAL);
                     mano.setValor(carta.getNumero());
                 }
-                else if (num_esc == 5 && esc_color == 5) {
-                    mano.setMano(ESC_COLOR);    
-                    mano.setPrioridad(PRIO_ESC_COLOR);
-                    mano.setValor(carta.getNumero());
-                }
-                else if (num_esc == 5) {
-                    mano.setMano(ESC);
-                    mano.setPrioridad(PRIO_ESC);
-                    mano.setValor(carta.getNumero());
+                if (i != 6) {
+                    // Caso escalera color
+                    else if (num_esc == 5 && esc_color == 5) {
+                        mano.setMano(ESC_COLOR);    
+                        mano.setPrioridad(PRIO_ESC_COLOR);
+                        mano.setValor(carta.getNumero());
+                    }
+                    // Caso escalera
+                    else if (num_esc == 5) {
+                        mano.setMano(ESC);
+                        mano.setPrioridad(PRIO_ESC);
+                        mano.setValor(carta.getNumero());
+                    }
                 }
             }
             else {
-                // Verificar si puede ser color
                 num_esc = 1;
                 num_iguales = 1;
                 esc_color = 1;
                 boolean es_color = false;
+                // Caso color
                 for (int j = 0; j < 4; j++) {
                     if (num_color.get(j) == 5) {
                         mano.setMano(COLOR);
@@ -303,6 +308,7 @@ public class Poker implements JuegoConApuesta{
                         break;
                     }
                 }
+                // Caso carta alta
                 if (!es_color) {
                     mano.setMano(CARTA_ALTA);
                     mano.setPrioridad(PRIO_CARTA_ALTA);
@@ -334,6 +340,7 @@ public class Poker implements JuegoConApuesta{
                 cartas_mano.add(cartas_mesa.get(j));
             }
             mano = verificarMano(cartas_mano);
+            mano_usuario.put(id_usuario, mano);
         }
     }
 }
