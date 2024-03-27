@@ -18,8 +18,8 @@ public class BlackJack implements JuegoConApuesta, Estado {
     private List<Carta> mazo;
     private Baraja baraja;
     private int apuesta_mesa;
-    private Map<String, Integer> fichas_usuario; //Diccionario con los usuarios y sus fichas a usar en la partida
-    private Map<String, List<Carta>> cartas_usuario; // Diccionario con los usuarios y sus cartas a usar en la partida
+    private Map<String, Integer> fichas_usuario;        // Diccionario con los usuarios y sus fichas a usar en la partida
+    private Map<String, List<Carta>> cartas_usuario;    // Diccionario con los usuarios y sus cartas a usar en la partida
 
 
     /*
@@ -129,5 +129,21 @@ public class BlackJack implements JuegoConApuesta, Estado {
     */
     public String crearEstado(Estado estado) {
         
+    }
+
+    /*
+     * Se reparten las dos cartas iniciales a cada jugador
+     * @param usuarios
+    */
+    public void repartirCartas(List<Usuario> usuarios) {
+        Collections.shuffle(mazo);
+        List<Carta> cartas = new ArrayList<>();
+        for (int i = 0; i < usuarios.size(); i++) {
+            for (int j = 0; j < 2; j++) {
+                cartas.add(mazo.get(0));
+                mazo.remove(0);
+            }
+            cartas_usuario.put(usuarios.get(i).getId(), cartas);
+        }
     }
 }
