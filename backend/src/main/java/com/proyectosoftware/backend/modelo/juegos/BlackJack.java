@@ -180,20 +180,21 @@ public class BlackJack implements JuegoConApuesta, Estado {
     /**
      * Aumenta el numero de fichas de un usuario
      * @param usaurio   - Usuario que va a aumentar sus fichas
-     * @param apuesta   - Cantidad de fichas
+     * @param fichas   - Cantidad de fichas
     */
-    public void sumarFichas(Usuario usuario) {
-        
+    public void sumarFichas(Usuario usuario, int fichas) {
+        int fichas_nuevas = fichas_usuario.get(usuario.getId()) + fichas;
+        fichas_usuario.put(usuario.getId(), fichas_nuevas)
     }
 
 
-    /*
+    /**
      * Resta el numero de fichas de un usuario
      * @param usaurio   - Usuario que va a perder fichas
      * @param apuesta   - Cantidad de fichas
     */
-    public void restarFichas(Usuario usuario) {
-        
+    public void restarFichas(Usuario usuario, int fichas) {
+        sumarFichas(usuario, -fichas);
     }
     
 
