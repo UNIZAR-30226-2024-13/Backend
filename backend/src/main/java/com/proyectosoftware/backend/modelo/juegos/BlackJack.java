@@ -102,13 +102,15 @@ public class BlackJack implements JuegoConApuesta, Estado {
     public Estado recuperarEstado(String estadoString) {
 
     }
-    
+
     /*
      * Suma una carta aleatoria a las cartas de un usuario
      * @param usuario - Usuario que va a sumar una carta
     */
     public void pedirCarta(Usuario usuario) {
-        
+        Carta carta_sacada = mazo.get(0);
+        mazo.remove(0);                                         // Se saca una carta y se saca del mazo
+        cartas_usuario.get(usuario.getId()).add(carta_sacada);  // Se añade la carta a las cartas del usuario
     }
     
     /*
@@ -156,7 +158,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
         for (int i = 0; i < usuarios.size(); i++) {     // Itera sobre cada usuario
             cartas = new ArrayList<>();
             for (int j = 0; j < 2; j++) {               // A cada usuario se le reparten dos cartas
-                cartas.add(mazo.get(0));                // Se saca una carta y se agnade al array
+                cartas.add(mazo.get(0));                // Se saca una carta y se añade al array
                 mazo.remove(0);
             }
             cartas_usuario.put(usuarios.get(i).getId(), cartas.clone());
