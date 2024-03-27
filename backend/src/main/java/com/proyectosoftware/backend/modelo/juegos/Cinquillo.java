@@ -1,8 +1,10 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
@@ -16,7 +18,10 @@ import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
  */
 public class Cinquillo implements JuegoSinApuesta{
     private Baraja baraja;
-    private List <Carta> mazo;
+    private List<Carta> mazo;
+    private Map<Integer, Usuario> usuarios; 
+    private Map<Integer, List<Carta>> manoUsuarios;
+    private Map<Integer, List<Carta>> escaleras;
 
     /**
      * Constructor por defecto
@@ -24,6 +29,49 @@ public class Cinquillo implements JuegoSinApuesta{
     public Cinquillo() {
         baraja = BarajaEspaniola.devolverInstancia();
         mazo = baraja.devolverCartas();
+        usuarios = new HashMap<>(4);
+        manoUsuarios = new HashMap<>(4);
+        escaleras = new HashMap<>(4);
+    }
+
+    /**
+     * Reparto de cartas entre los usuarios y busqueda del 5 de Oros para iniciar la partida
+     * 
+     */
+    public void iniciarPartida(){
+        int jugador = 0; 
+        int index = 0;
+        int primerJugador = 0;
+        List<Carta> mano = new ArrayList<>();
+        
+        Collections.shuffle(mazo);
+        do {
+            do{
+                Carta carta = new Carta(mazo.get(index).getNumero(), mazo.get(index).getColor());
+                index++;
+
+                if (carta.getNumero() == 5 && carta.getColor() == BarajaEspaniola.OROS) {
+                    primerJugador = jugador;
+                }
+                mano.add(carta);
+            }while(mano.size() < 10);
+            
+            manoUsuarios.put(jugador++, new ArrayList<>(mano));
+            mano.clear();
+        } while (jugador < 4);
+        
+        /**
+         * TODO
+         * Elimina el 5 de Oros de la mano del primer jugador
+         * lo añade a la escalera correspondiente
+         * inicializa le resto de escaleras 
+         */
+        manoUsuarios.remove(0,5);
+
+        escaleras.put(BarajaEspaniola.OROS, );
+        escaleras.put(BarajaEspaniola.COPAS, );
+        escaleras.put(BarajaEspaniola.ESPADAS, );
+        escaleras.put(BarajaEspaniola.BASTOS, );
     }
 
     /**
@@ -63,21 +111,5 @@ public class Cinquillo implements JuegoSinApuesta{
     public void siguenteTurno() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
-    }
-
-    /**
-     * Juego completo del Cinquillo para 4 jugadores
-     */
-    public void jugar(){
-        Collections.shuffle(mazo);
-
-        /**
-         * TODO:  repartir  a los 4 usuarios
-         */
-
-         boolean finJuego = false;
-         do{
-
-         }while(!finJuego);
     }
 }
