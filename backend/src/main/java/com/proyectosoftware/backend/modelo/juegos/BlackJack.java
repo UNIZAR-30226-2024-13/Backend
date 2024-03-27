@@ -20,6 +20,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     private int apuesta_mesa;
     private Map<String, Integer> fichas_usuario;        // Diccionario con los usuarios y sus fichas a usar en la partida
     private Map<String, List<Carta>> cartas_usuario;    // Diccionario con los usuarios y sus cartas a usar en la partida
+    private Map<String, Boolean> plantado;              // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
 
 
     /*
@@ -31,7 +32,9 @@ public class BlackJack implements JuegoConApuesta, Estado {
         apuesta_mesa = 0;
         fichas_usuario = new HashMap<>();
         cartas_usuario = new HashMap<>();
+        plantado = new HashMap<>();
     }
+
 
     /*
      * Cargar un juego de blackjack dado un estado
@@ -41,11 +44,13 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
     }
 
+
     @Override
     public Estado guardar() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'guardar'");
     }
+
 
     @Override
     public void cargar(Estado estado) {
@@ -53,11 +58,13 @@ public class BlackJack implements JuegoConApuesta, Estado {
         throw new UnsupportedOperationException("Unimplemented method 'cargar'");
     }
 
+
     @Override
     public Estado recuperarEstado(String estadoString) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
     }
+
 
     @Override
     public String crearEstado(Estado estado) {
@@ -71,6 +78,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
     }
+
 
     /**
      * Apuesta que un usuario realiza
@@ -94,6 +102,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
         }
     }
 
+
     /*
      * Genera un estado a partir de un string
      * @param estadoString - String a parsear
@@ -103,7 +112,8 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
     }
 
-    /*
+
+    /**
      * Suma una carta aleatoria a las cartas de un usuario
      * @param usuario - Usuario que va a sumar una carta
     */
@@ -113,15 +123,17 @@ public class BlackJack implements JuegoConApuesta, Estado {
         cartas_usuario.get(usuario.getId()).add(carta_sacada);  // Se añade la carta a las cartas del usuario
     }
     
-    /*
+
+    /**
      * Planta al usuario con las cartas que tiene
      * @param usuario - Usuario que se planta
     */
     public void plantarse(Usuario usuario) {
-        
+        plantados.put(usuario.getId(), true)
     }
     
-    /*
+
+    /**
      * Aumenta el numero de fichas de un usuario
      * @param usaurio   - Usuario que va a aumentar sus fichas
      * @param apuesta   - Cantidad de fichas
@@ -129,6 +141,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     public void sumarFichas(Usuario usuario) {
         
     }
+
 
     /*
      * Resta el numero de fichas de un usuario
@@ -139,6 +152,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
         
     }
     
+
     /*
      * 
      * @param estado
@@ -147,6 +161,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     public String crearEstado(Estado estado) {
         
     }
+
 
     /**
      * Se reparten las dos cartas iniciales a cada jugador
