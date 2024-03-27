@@ -90,4 +90,12 @@ public class Usuario implements UniqueIDGenerator{
     public void ganaApuesta(double cantidad){
         dinero += cantidad;
     }
+
+    /**
+     * Devuelve el id del usuario
+     * @return id del usuario
+     */
+    public String getId() {
+        return id;
+    }
 }

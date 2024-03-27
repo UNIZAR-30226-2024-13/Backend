@@ -1,5 +1,6 @@
 package com.proyectosoftware.backend.modelo.barajas;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,11 @@ public class BarajaFrancesa implements Baraja{
     private static final String DIAMANTES = "diamantes";
     private static final String TREBOLES = "treboles";
     private static final String CORAZONES = "corazones";
+    private static final int SOTA = 11;
+    private static final int CABALLO = 12;
+    private static final int REY = 13;
+    private static final int AS = 14;
+    
 
     private int numeroCartas;
     private List<Carta> cartas;
@@ -27,14 +33,9 @@ public class BarajaFrancesa implements Baraja{
     private static volatile BarajaFrancesa instancia = null; //Singleton
 
     /**
-     * Constuctor Baraja
-     * @param numeroCartas  - cantidad de cartas de la baraja
-     * @param cartasBaraja  - String representando las diferentes cartas de la baraja
+     * Constuctor Baraja francesa
      */
-    private BarajaFrancesa(int numeroCartas, String cartasBaraja) {
-        this.numeroCartas = numeroCartas;
-        this.cartas = Collections.unmodifiableList(parsearCartas(cartasBaraja));
-        
+    private BarajaFrancesa() {
         this.coloresBaraja = new HashMap<>();
         coloresBaraja.put(0, PICAS);
         coloresBaraja.put(1, DIAMANTES);
@@ -42,32 +43,38 @@ public class BarajaFrancesa implements Baraja{
         coloresBaraja.put(3, CORAZONES);
         
         this.numerosBaraja = new HashMap<>();
-        numerosBaraja.put(1, "As");
-        numerosBaraja.put(2, "1");
-        numerosBaraja.put(3, "2");
-        numerosBaraja.put(4, "3");
-        numerosBaraja.put(5, "4");
-        numerosBaraja.put(6, "5");
-        numerosBaraja.put(7, "6");
-        numerosBaraja.put(8, "7");
-        numerosBaraja.put(9, "8");
-        numerosBaraja.put(10, "9");        
-        numerosBaraja.put(11, "10");
-        numerosBaraja.put(12, "Sota");
-        numerosBaraja.put(13, "Caballo");        
-        numerosBaraja.put(14, "Rey");      
+        numerosBaraja.put(1, "1");
+        numerosBaraja.put(2, "2");
+        numerosBaraja.put(3, "3");
+        numerosBaraja.put(4, "4");
+        numerosBaraja.put(5, "5");
+        numerosBaraja.put(6, "6");
+        numerosBaraja.put(7, "7");
+        numerosBaraja.put(8, "8");
+        numerosBaraja.put(9, "9");        
+        numerosBaraja.put(10, "10");
+        numerosBaraja.put(SOTA, "Sota");
+        numerosBaraja.put(CABALLO, "Caballo");        
+        numerosBaraja.put(REY, "Rey");
+        numerosBaraja.put(AS, "As");
+
+        
+        this.cartas = crearBaraja();
     }
 
     /**
-     * Devuelve la instancia de la baraja
-     * @return - instancia
-     * @see BarajaFrancesa
+     * Crea una baraja en base
+     * @return - Devuelve una baraja francesa
      */
-    public static synchronized BarajaFrancesa devolverInstancia(int numeroCartas, String cartasBaraja){
-        if(instancia == null){
-            instancia = new BarajaFrancesa(numeroCartas, cartasBaraja);
+    private List<Carta> crearBaraja() {
+        List<Carta> baraja = new ArrayList<>();
+        for (int palo : coloresBaraja.keySet()) {
+            for (int numero : numerosBaraja.keySet()) {
+                Carta carta = new Carta(numero, palo);
+                baraja.add(carta);
+            }
         }
-        return instancia;
+        return baraja;
     }
 
     /**
@@ -77,9 +84,7 @@ public class BarajaFrancesa implements Baraja{
      */
     public static synchronized BarajaFrancesa devolverInstancia(){
         if(instancia == null){
-            /**
-             * TODO: lanzar error
-             */
+            instancia = new BarajaFrancesa();
         }
         return instancia;
     }
@@ -104,20 +109,20 @@ public class BarajaFrancesa implements Baraja{
 
     @Override
     public String colorReal(int color) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'colorReal'");
+        return coloresBaraja.get(color);
     }
 
     @Override
     public String numeroReal(int numero) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'numeroReal'");
+        return numerosBaraja.get(numero);
     }
 
     @Override
     public List<Carta> devolverCartas() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'devolverCartas'");
+        if (cartas != null) {
+            return new ArrayList<>(cartas);
+        }
+        return null;
     }
     
 }
