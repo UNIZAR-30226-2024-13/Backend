@@ -72,11 +72,26 @@ public class BlackJack implements JuegoConApuesta, Estado {
         throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
     }
 
-
+    /**
+     * Apuesta que un usuario realiza
+     * @param usaurio   - Usuario que realiza la apuesta
+     * @param apuesta   - Valor de la apuesta
+     */
     @Override
-    public void apostar(Usuario usaurio, double apuesta) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'apostar'");
+    public void apostar(Usuario usaurio, int apuesta) {
+        int fichas_disponibles = fichas_usuario.get(usuario.getId());
+        if (apuesta > fichas_disponibles) {
+            //Mandar error al control y esperar a nueva apuesta
+        }
+        else if (apuesta < ultima_apuesta) {
+            //Mandar error al control y esperar a nueva apuesta
+        }
+        else {
+            fichas_disponibles -= apuesta;
+            fichas_usuario.put(usuario.getId(),fichas_disponibles);
+            apuesta_mesa += apuesta;
+            //Mandar al control las fichas disponibles
+        }
     }
 
     /*
@@ -131,7 +146,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
         
     }
 
-    /*
+    /**
      * Se reparten las dos cartas iniciales a cada jugador
      * @param usuarios
     */
