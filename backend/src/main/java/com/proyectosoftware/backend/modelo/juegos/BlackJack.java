@@ -17,12 +17,20 @@ public class BlackJack implements JuegoConApuesta, Estado {
     private List<Carta> cartas_banca;
     private List<Carta> mazo;
     private Baraja baraja;
+    private int apuesta_mesa;
+    private Map<String, Integer> fichas_usuario; //Diccionario con los usuarios y sus fichas a usar en la partida
+    private Map<String, List<Carta>> cartas_usuario; // Diccionario con los usuarios y sus cartas a usar en la partida
+
 
     /*
      * Constructor por defecto
     */
     public BlackJack() {
         baraja = BarajaFrancesa.devolverInstancia();
+        mazo = baraja.devolverCartas();
+        apuesta_mesa = 0;
+        fichas_usuario = new HashMap<>();
+        cartas_usuario = new HashMap<>();
     }
 
     /*
