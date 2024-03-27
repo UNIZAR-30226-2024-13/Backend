@@ -24,7 +24,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     private Map<String, Boolean> plantado;              // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
     private List<Carta> cartas_croupier;                // Lista de cartas del croupier (Carta de índice 0 está boca arriba y la otra boca abajo)
 
-    /*
+    /**
      * Constructor por defecto
     */
     public BlackJack() {
@@ -38,7 +38,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     }
 
 
-    /*
+    /**
      * Cargar un juego de blackjack dado un estado
      * @param estado
     */
@@ -105,7 +105,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     }
 
 
-    /*
+    /**
      * Genera un estado a partir de un string
      * @param estadoString - String a parsear
      * @return - Estado
@@ -131,7 +131,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
      * @param usuario - Usuario que se planta
     */
     public void plantarse(Usuario usuario) {
-        plantados.put(usuario.getId(), true);
+        plantados.put(usuario.getId(), true);   // Pone a true su booleano de plantado
     }
     
 
@@ -168,9 +168,9 @@ public class BlackJack implements JuegoConApuesta, Estado {
     public void turnoCroupier() {
         // Se revela la segunda carta del croupier (vista)
         int suma_croupier = valorMano(cartas_croupier);
-        while (suma_croupier <= 16) {
+        while (suma_croupier <= 16) {                   // El croupier pide cartas hasta pasarse de 16
             Carta carta_sacada = mazo.get(0);
-            mazo.remove(0);                                         // Se saca una carta y se quita del mazo
+            mazo.remove(0);                             // Se saca una carta y se quita del mazo
             cartas_croupier.add(carta_sacada);
             suma_croupier = valorMano(cartas_croupier);
         }
@@ -179,8 +179,8 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
     /**
      * Aumenta el numero de fichas de un usuario
-     * @param usaurio   - Usuario que va a aumentar sus fichas
-     * @param fichas   - Cantidad de fichas
+     * @param usaurio  - Usuario que va a aumentar sus fichas
+     * @param fichas   - Cantidad de fichas a sumar
     */
     public void sumarFichas(Usuario usuario, int fichas) {
         int fichas_nuevas = fichas_usuario.get(usuario.getId()) + fichas;
@@ -191,15 +191,14 @@ public class BlackJack implements JuegoConApuesta, Estado {
     /**
      * Resta el numero de fichas de un usuario
      * @param usaurio   - Usuario que va a perder fichas
-     * @param apuesta   - Cantidad de fichas
+     * @param apuesta   - Cantidad de fichas a restar
     */
     public void restarFichas(Usuario usuario, int fichas) {
         sumarFichas(usuario, -fichas);
     }
     
 
-    /*
-     * 
+    /**
      * @param estado
      * @return
     */
