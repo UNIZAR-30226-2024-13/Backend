@@ -26,6 +26,11 @@ public class Poker implements JuegoConApuesta{
     private static final int REY = 13;
     private static final int AS = 14;
 
+    private static final int PICAS = 0;
+    private static final int DIAMANTES = 1;
+    private static final int TREBOLES = 2;
+    private static final int CORAZONES = 3;
+
     private static final String CARTA_ALTA = "carta_alta";
     private static final String PAR = "pareja";
     private static final String DOBLE_PAR = "doble_pareja";
@@ -205,13 +210,20 @@ public class Poker implements JuegoConApuesta{
         Carta carta;
         Carta carta_siguiente = cartas_mano.get(0);
         int num_iguales = 1;
+        int num_esc = 1;
+        int esc_color = 1;
+        int esc_real = 0;
+        Map<Integer, Integer> num_color = new HashMap<>();
         Mano mano = new Mano();
         Mano mejor_mano = new Mano();
         for (int i = 0; i < cartas_mano.size(); i++) {
             carta = cartas_mano.get(i);
+            int valor_color = num_color.get(carta.getColor());
+            num_color.put(carta.getColor(), valor_color + 1);
             if (i < cartas_mano.size() - 1) {
                 carta_siguiente = cartas_mano.get(i+1);
             }
+            // FALTA TODO LO RELACIONADO CON EL COLOR
             if (carta.getNumero() == carta_siguiente.getNumero()) {
                 num_iguales++;
                 // Caso poker
@@ -246,10 +258,63 @@ public class Poker implements JuegoConApuesta{
                     mano.setValor(carta.getNumero());
                 }
             }
-            if (mano.getPrioridad() > mejor_mano.getPrioridad()) {
+            else if (carta.getNumero() == (carta_siguiente.getNumero() - 1)){
+                // FALTA ESC REAL
+                if (carta.getColor() == carta_siguiente.getColor()) {
+                    esc_color++;
+                }
+                else {
+                    esc_color = 1;
+                }
+                if (carta.getNumero() == AS || carta.getNumero() == REY || carta.getNumero() == CABALLO ||
+                    carta.getNumero() == SOTA || carta.getNumero() == 10) {
+                    esc_real++;
+                }
+                num_iguales = 0;
+                num_esc++;
+                if (num_esc == 5 && esc_color == 5 && esc_real == 5) {
+                    mano.setMano(ESC_REAL);    
+                    mano.setPrioridad(PRIO_ESC_REAL);
+                    mano.setValor(carta.getNumero());
+                }
+                else if (num_esc == 5 && esc_color == 5) {
+                    mano.setMano(ESC_COLOR);    
+                    mano.setPrioridad(PRIO_ESC_COLOR);
+                    mano.setValor(carta.getNumero());
+                }
+                else if (num_esc == 5) {
+                    mano.setMano(ESC);
+                    mano.setPrioridad(PRIO_ESC);
+                    mano.setValor(carta.getNumero());
+                }
+            }
+            else {
+                // Verificar si puede ser color
+                num_esc = 1;
+                num_iguales = 1;
+                esc_color = 1;
+                boolean es_color = false;
+                for (int j = 0; j < 4; j++) {
+                    if (num_color.get(j) == 5) {
+                        mano.setMano(COLOR);
+                        mano.setPrioridad(PRIO_COLOR);
+                        mano.setValor(carta.getNumero());
+                        es_color = true;
+                        break;
+                    }
+                }
+                if (!es_color) {
+                    mano.setMano(CARTA_ALTA);
+                    mano.setPrioridad(PRIO_CARTA_ALTA);
+                    mano.setValor(carta.getNumero());
+                }
+            }
+            if (mano.getPrioridad() > mejor_mano.getPrioridad() ||
+                mano.getPrioridad() == mejor_mano.getPrioridad() && mano.getValor() > mejor_mano.getValor()) {
                 mejor_mano = mano;
             }
         }
+        return mejor_mano;
     }
 
 
