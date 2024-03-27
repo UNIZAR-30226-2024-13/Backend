@@ -137,13 +137,14 @@ public class BlackJack implements JuegoConApuesta, Estado {
     */
     public void repartirCartas(List<Usuario> usuarios) {
         Collections.shuffle(mazo);
-        List<Carta> cartas = new ArrayList<>();
-        for (int i = 0; i < usuarios.size(); i++) {
-            for (int j = 0; j < 2; j++) {
-                cartas.add(mazo.get(0));
+        List<Carta> cartas;
+        for (int i = 0; i < usuarios.size(); i++) {     // Itera sobre cada usuario
+            cartas = new ArrayList<>();
+            for (int j = 0; j < 2; j++) {               // A cada usuario se le reparten dos cartas
+                cartas.add(mazo.get(0));                // Se saca una carta y se agnade al array
                 mazo.remove(0);
             }
-            cartas_usuario.put(usuarios.get(i).getId(), cartas);
+            cartas_usuario.put(usuarios.get(i).getId(), cartas.clone());
         }
     }
 }
