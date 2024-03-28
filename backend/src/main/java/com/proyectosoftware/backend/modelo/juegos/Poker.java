@@ -147,6 +147,7 @@ public class Poker implements JuegoConApuesta{
                 mazo.remove(0);
             }
             cartas_usuario.put(usuarios.get(i).getId(), cartas);
+            cartas.clear();
         }
         for (int i = 0; i < 3; i++) {
             cartas_mesa.add(mazo.get(0));
@@ -332,6 +333,8 @@ public class Poker implements JuegoConApuesta{
     public Usuario ganadorPartida(List<Usuario> usuarios){
         String id_usuario;
         Mano mano;
+        Mano mejor_mano;
+        int ganador;
         List<Carta> cartas_mano = new ArrayList<>();
         for (int i = 0; i < usuarios.size(); i++) {
             id_usuario = usuarios.get(i).getId();
@@ -342,5 +345,16 @@ public class Poker implements JuegoConApuesta{
             mano = verificarMano(cartas_mano);
             mano_usuario.put(id_usuario, mano);
         }
+        mejor_mano = mano_usuario.get(usuarios.get(0).getId());
+        ganador = 0;
+        for (int i = 1; i < usuarios.size(); i++) {
+            mano = mano_usuario.get(usuarios.get(i).getId());
+            if (mano.getPrioridad() > mejor_mano.getPrioridad() || (mano.getPrioridad() == mejor_mano.getPrioridad() &&
+                mano.getValor() > mejor_mano.getValor())) {
+                mejor_mano = mano;
+                ganador = i;
+            }
+        }
+        return usuarios.get(ganador);
     }
 }
