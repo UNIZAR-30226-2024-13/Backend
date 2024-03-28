@@ -1,8 +1,6 @@
 package com.proyectosoftware.backend.modelo.barajas;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +12,10 @@ import com.proyectosoftware.backend.modelo.interfaces.Baraja;
  * Implemenatsion singleton de la baraja española
  */
 public class BarajaEspaniola implements Baraja{
-    private static final String OROS = "oros";
-    private static final String COPAS = "copas";
-    private static final String ESPADAS = "espadas";
-    private static final String BASTOS = "bastos";
+    public static final String OROS = "oros";
+    public static final String COPAS = "copas";
+    public static final String ESPADAS = "espadas";
+    public static final String BASTOS = "bastos";
 
     private int numeroCartas;
     private List<Carta> cartas;
@@ -44,16 +42,15 @@ public class BarajaEspaniola implements Baraja{
         
         this.numerosBaraja = new HashMap<>();
         numerosBaraja.put(1, "As");
-        numerosBaraja.put(2, "1");
-        numerosBaraja.put(3, "2");
-        numerosBaraja.put(4, "3");
-        numerosBaraja.put(5, "4");
-        numerosBaraja.put(6, "5");
-        numerosBaraja.put(7, "6");
-        numerosBaraja.put(8, "7");
-        numerosBaraja.put(9, "Sota");
-        numerosBaraja.put(10, "Caballo");        
-        numerosBaraja.put(11, "Rey");  
+        numerosBaraja.put(2, "2");
+        numerosBaraja.put(3, "3");
+        numerosBaraja.put(4, "4");
+        numerosBaraja.put(5, "5");
+        numerosBaraja.put(6, "6");
+        numerosBaraja.put(7, "7");
+        numerosBaraja.put(8, "Sota");
+        numerosBaraja.put(9, "Caballo");        
+        numerosBaraja.put(10, "Rey");  
         
         this.cartas = crearBaraja();
     }

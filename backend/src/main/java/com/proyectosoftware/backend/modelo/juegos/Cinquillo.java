@@ -3,6 +3,7 @@ package com.proyectosoftware.backend.modelo.juegos;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public class Cinquillo implements JuegoSinApuesta{
     private List<Carta> mazo;
     private Map<Integer, Usuario> usuarios; 
     private Map<Integer, List<Carta>> manoUsuarios;
-    private Map<Integer, List<Carta>> escaleras;
+    private Map<String, List<Carta>> escaleras;
 
     /**
      * Constructor por defecto
@@ -32,6 +33,11 @@ public class Cinquillo implements JuegoSinApuesta{
         usuarios = new HashMap<>(4);
         manoUsuarios = new HashMap<>(4);
         escaleras = new HashMap<>(4);
+
+        escaleras.put(BarajaEspaniola.OROS, new ArrayList<>());
+        escaleras.put(BarajaEspaniola.COPAS, new ArrayList<>());
+        escaleras.put(BarajaEspaniola.ESPADAS, new ArrayList<>());
+        escaleras.put(BarajaEspaniola.BASTOS, new ArrayList<>());
     }
 
     /**
@@ -43,14 +49,16 @@ public class Cinquillo implements JuegoSinApuesta{
         int index = 0;
         int primerJugador = 0;
         List<Carta> mano = new ArrayList<>();
+        Carta carta;
         
+        //  Repartir las cartas y buscar el 5 de oros
         Collections.shuffle(mazo);
         do {
             do{
-                Carta carta = new Carta(mazo.get(index).getNumero(), mazo.get(index).getColor());
+                carta = new Carta(mazo.get(index).getNumero(), mazo.get(index).getColor());
                 index++;
 
-                if (carta.getNumero() == 5 && carta.getColor() == BarajaEspaniola.OROS) {
+                if (carta.getNumero() == 5 && BarajaEspaniola.OROS.equals(baraja.colorReal(carta.getColor()))) {
                     primerJugador = jugador;
                 }
                 mano.add(carta);
@@ -60,18 +68,20 @@ public class Cinquillo implements JuegoSinApuesta{
             mano.clear();
         } while (jugador < 4);
         
-        /**
-         * TODO
-         * Elimina el 5 de Oros de la mano del primer jugador
-         * lo añade a la escalera correspondiente
-         * inicializa le resto de escaleras 
-         */
-        manoUsuarios.remove(0,5);
 
-        escaleras.put(BarajaEspaniola.OROS, );
-        escaleras.put(BarajaEspaniola.COPAS, );
-        escaleras.put(BarajaEspaniola.ESPADAS, );
-        escaleras.put(BarajaEspaniola.BASTOS, );
+        //  Modificar la mano del usuario con el 5 de oros y la escalera correspondiente
+        List<Carta> manoPrimerJugador = manoUsuarios.get(primerJugador);
+        Iterator<Carta> iter = manoPrimerJugador.iterator();
+        while (iter.hasNext()) {
+            carta = iter.next();
+
+            if (carta.getNumero() == 5 && BarajaEspaniola.OROS.equals(baraja.colorReal(carta.getColor()))) {
+                iter.remove();
+                List<Carta> escaleraOros = escaleras.get(BarajaEspaniola.OROS);
+                escaleraOros.add(carta);
+                break;
+            }
+        }
     }
 
     /**
