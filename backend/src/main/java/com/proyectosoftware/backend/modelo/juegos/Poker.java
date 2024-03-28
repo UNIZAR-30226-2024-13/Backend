@@ -53,8 +53,10 @@ public class Poker implements JuegoConApuesta{
     private static final int PRIO_ESC_COLOR = 8;
     private static final int PRIO_ESC_REAL = 9;
 
+    private static final int MAX_JUGADORES = 4;
 
     private int bote;
+    private int turno;
     private int ultima_apuesta;
     private List<Carta> cartas_mesa;
     private Baraja baraja;
@@ -69,11 +71,12 @@ public class Poker implements JuegoConApuesta{
         baraja = BarajaFrancesa.devolverInstancia();
         mazo = baraja.devolverCartas();
         bote = 0;
+        turno = 0;
         ultima_apuesta = 0;
         cartas_mesa = new ArrayList<>();
-        fichas_usuario = new HashMap<>();
-        cartas_usuario = new HashMap<>();
-        mano_usuario = new HashMap<>();
+        fichas_usuario = new HashMap<>(MAX_JUGADORES);
+        cartas_usuario = new HashMap<>(MAX_JUGADORES);
+        mano_usuario = new HashMap<>(MAX_JUGADORES);
     }
 
     /**
@@ -130,8 +133,10 @@ public class Poker implements JuegoConApuesta{
 
     @Override
     public void siguenteTurno() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
+        turno++;
+        if (turno == MAX_JUGADORES) {
+            turno = 0;
+        }
     }
 
     /**
@@ -140,14 +145,15 @@ public class Poker implements JuegoConApuesta{
      */
     public void repartirCartas(List<Usuario> usuarios) {
         Collections.shuffle(mazo);
-        List<Carta> cartas = new ArrayList<>();
+        List<Carta> cartas;
         for (int i = 0; i < usuarios.size(); i++) {
+            cartas = new ArrayList<>();
             for (int j = 0; j < 2; j++) {
                 cartas.add(mazo.get(0));
                 mazo.remove(0);
             }
-            cartas_usuario.put(usuarios.get(i).getId(), cartas);
-            cartas.clear();
+            cartas_usuario.put(usuarios.get(i).getId(), cartas.clone());
+            System.out.println(cartas_usuario.get(usuarios.get(0).getId()));
         }
         for (int i = 0; i < 3; i++) {
             cartas_mesa.add(mazo.get(0));
@@ -214,7 +220,10 @@ public class Poker implements JuegoConApuesta{
         int num_esc = 1;
         int esc_color = 1;
         int esc_real = 0;
-        Map<Integer, Integer> num_color = new HashMap<>();
+        Map<Integer, Integer> num_color = new HashMap<>(4);
+        for (int i = 0; i < 4; i++) {
+            num_color.put(i, 0);
+        }
         Mano mano = new Mano();
         Mano mejor_mano = new Mano();
         for (int i = 0; i < cartas_mano.size(); i++) {
@@ -233,8 +242,8 @@ public class Poker implements JuegoConApuesta{
                     mano.setValor(carta.getNumero());
                 }
                 // Caso full
-                else if ((num_iguales == 3 && (mejor_mano.getPrioridad() == PRIO_PAR || mejor_mano.getPrioridad() == PRIO_TRIO))
-                        || (num_iguales == 2 && mejor_mano.getPrioridad() == PRIO_TRIO)) {
+                else if ((num_iguales == 3 && (mejor_mano.getPrioridad() == PRIO_PAR || mejor_mano.getPrioridad() == PRIO_TRIO)) || 
+                        (num_iguales == 2 && mejor_mano.getPrioridad() == PRIO_TRIO)) {
                     mano.setMano(FULL);
                     mano.setPrioridad(PRIO_FULL);
                     mano.setValor(carta.getNumero());
@@ -281,7 +290,7 @@ public class Poker implements JuegoConApuesta{
                 }
                 if (i != 6) {
                     // Caso escalera color
-                    else if (num_esc == 5 && esc_color == 5) {
+                    if (num_esc == 5 && esc_color == 5) {
                         mano.setMano(ESC_COLOR);    
                         mano.setPrioridad(PRIO_ESC_COLOR);
                         mano.setValor(carta.getNumero());
@@ -338,12 +347,23 @@ public class Poker implements JuegoConApuesta{
         List<Carta> cartas_mano = new ArrayList<>();
         for (int i = 0; i < usuarios.size(); i++) {
             id_usuario = usuarios.get(i).getId();
-            cartas_mano = cartas_usuario.get(id_usuario);
+            System.out.println(cartas_usuario.get(id_usuario));
+            List<Carta> carta_usuario = cartas_usuario.get(id_usuario);
+            for (int j = 0; j < 2; j++) {
+                cartas_mano.add(carta_usuario.get(j));
+            }
             for (int j = 0; j < cartas_mesa.size(); j++) {
                 cartas_mano.add(cartas_mesa.get(j));
             }
+            /* 
+            for (int j = 0; j < cartas_mano.size(); j++) {
+                System.out.println("Cartas de usuario " + i + ": " + cartas_mano.get(j).getNumero() + " y palo " + cartas_mano.get(j).getColor());
+            }
+            */
             mano = verificarMano(cartas_mano);
             mano_usuario.put(id_usuario, mano);
+            System.out.println("El usuario " + id_usuario + " tiene " + mano.getMano());
+            cartas_mano.clear();
         }
         mejor_mano = mano_usuario.get(usuarios.get(0).getId());
         ganador = 0;
