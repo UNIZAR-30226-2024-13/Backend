@@ -174,7 +174,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     */
     public void sumarFichas(Usuario usuario, int fichas) {
         int fichas_nuevas = fichas_usuario.get(usuario.getId()) + fichas;
-        fichas_usuario.put(usuario.getId(), fichas_nuevas)
+        fichas_usuario.put(usuario.getId(), fichas_nuevas);
     }
     
 
