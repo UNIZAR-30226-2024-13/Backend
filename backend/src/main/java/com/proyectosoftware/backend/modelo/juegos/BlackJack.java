@@ -106,16 +106,6 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
 
     /**
-     * Genera un estado a partir de un string
-     * @param estadoString - String a parsear
-     * @return - Estado
-    */
-    public Estado recuperarEstado(String estadoString) {
-
-    }
-
-
-    /**
      * Suma una carta aleatoria a las cartas de un usuario
      * @param usuario - Usuario que va a sumar una carta
     */
@@ -186,26 +176,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
         int fichas_nuevas = fichas_usuario.get(usuario.getId()) + fichas;
         fichas_usuario.put(usuario.getId(), fichas_nuevas)
     }
-
-
-    /**
-     * Resta el numero de fichas de un usuario
-     * @param usaurio   - Usuario que va a perder fichas
-     * @param apuesta   - Cantidad de fichas a restar
-    */
-    public void restarFichas(Usuario usuario, int fichas) {
-        sumarFichas(usuario, -fichas);
-    }
     
-
-    /**
-     * @param estado
-     * @return
-    */
-    public String crearEstado(Estado estado) {
-        
-    }
-
 
     /**
      * Se reparten las dos cartas iniciales a cada jugador
