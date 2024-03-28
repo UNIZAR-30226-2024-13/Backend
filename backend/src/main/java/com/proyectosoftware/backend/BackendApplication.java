@@ -34,9 +34,9 @@ public class BackendApplication {
 			usuarios.add(usuario);
 		}
 		poker.repartirCartas(usuarios);
-		poker.agnadirCartaCentro();
-		poker.agnadirCartaCentro();
-		poker.ganadorPartida(usuarios);
+		//poker.agnadirCartaCentro();
+		//poker.agnadirCartaCentro();
+		//poker.ganadorPartida(usuarios);
 	}
 
 }
