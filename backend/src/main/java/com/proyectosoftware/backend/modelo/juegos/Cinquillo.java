@@ -18,11 +18,15 @@ import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
  * Juego del chinquillo
  */
 public class Cinquillo implements JuegoSinApuesta{
+    public static final int MAX_USUARIOS = 4;
+
     private Baraja baraja;
     private List<Carta> mazo;
     private Map<Integer, Usuario> usuarios; 
     private Map<Integer, List<Carta>> manoUsuarios;
     private Map<String, List<Carta>> escaleras;
+
+    private int turno = 0;
 
     /**
      * Constructor por defecto
@@ -30,8 +34,8 @@ public class Cinquillo implements JuegoSinApuesta{
     public Cinquillo() {
         baraja = BarajaEspaniola.devolverInstancia();
         mazo = baraja.devolverCartas();
-        usuarios = new HashMap<>(4);
-        manoUsuarios = new HashMap<>(4);
+        usuarios = new HashMap<>(MAX_USUARIOS);
+        manoUsuarios = new HashMap<>(MAX_USUARIOS);
         escaleras = new HashMap<>(4);
 
         escaleras.put(BarajaEspaniola.OROS, new ArrayList<>());
@@ -66,7 +70,8 @@ public class Cinquillo implements JuegoSinApuesta{
             
             manoUsuarios.put(jugador++, new ArrayList<>(mano));
             mano.clear();
-        } while (jugador < 4);
+        } while (jugador < MAX_USUARIOS);
+        System.out.println(manoUsuarios);
         
 
         //  Modificar la mano del usuario con el 5 de oros y la escalera correspondiente
@@ -82,6 +87,7 @@ public class Cinquillo implements JuegoSinApuesta{
                 break;
             }
         }
+        siguenteTurno();
     }
 
     /**
@@ -119,7 +125,9 @@ public class Cinquillo implements JuegoSinApuesta{
 
     @Override
     public void siguenteTurno() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
+        turno++;
+        if(turno == MAX_USUARIOS){
+            turno = 0;
+        }
     }
 }
