@@ -91,6 +91,17 @@ public class Cinquillo implements JuegoSinApuesta{
     }
 
     /**
+     * Jugada normal del Cinquillo, 
+     * el usuario tiene que jugar un 5 si lo tiene para empezar una nueva escalera, 
+     * sino continuar las que ya estan en la mesa, 
+     * sino slatar turno
+     * 
+     */
+    public void jugada(){
+
+    }
+
+    /**
      * Cargar un juego de cinquillo dado un estado
      * @param estado
      */
