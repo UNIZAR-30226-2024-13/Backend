@@ -13,6 +13,7 @@ import com.proyectosoftware.backend.modelo.barajas.BarajaEspaniola;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
 import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
+import com.proyectosoftware.backend.modelo.ComparadorCarta;
 
 /**
  * Juego del chinquillo
@@ -27,6 +28,7 @@ public class Cinquillo implements JuegoSinApuesta{
     private Map<String, List<Carta>> escaleras;
 
     private int turno = 0;
+    private ComparadorCarta comparador = new ComparadorCarta();
 
     /**
      * Constructor por defecto
@@ -71,7 +73,6 @@ public class Cinquillo implements JuegoSinApuesta{
             manoUsuarios.put(jugador++, new ArrayList<>(mano));
             mano.clear();
         } while (jugador < MAX_USUARIOS);
-        System.out.println(manoUsuarios);
         
 
         //  Modificar la mano del usuario con el 5 de oros y la escalera correspondiente
@@ -98,7 +99,60 @@ public class Cinquillo implements JuegoSinApuesta{
      * 
      */
     public void jugada(){
+        List<Carta> manoJugador = manoUsuarios.get(turno);
+        Iterator<Carta> iterator = manoJugador.iterator();
+    
+        //  En caso de que el jugador tenga un 5 lo juega de manera obligatoria
+        while(iterator.hasNext()) {
+            Carta carta = iterator.next();
+            if(carta.getNumero() == 5){
+                switch (baraja.colorReal(carta.getColor())) {
+                    case BarajaEspaniola.COPAS:
+                        iterator.remove();
+                        escaleras.get(BarajaEspaniola.COPAS).add(carta);
+                        break;
+                
+                    case BarajaEspaniola.ESPADAS:
+                        iterator.remove();
+                        escaleras.get(BarajaEspaniola.ESPADAS).add(carta);
+                        break;
 
+                    case BarajaEspaniola.BASTOS:
+                        iterator.remove();
+                        escaleras.get(BarajaEspaniola.BASTOS).add(carta);
+                        break;
+                }
+            }
+        }
+
+        //  Si no tiene un 5 y puede continuar una escalera decide cual continuar
+        int color = 0;
+        do{
+            int ultimoIndice = escaleras.get(baraja.colorReal(color)).size();
+            if(ultimoIndice != 0){
+                Carta primeraCarta = escaleras.get(baraja.colorReal(color)).get(0);
+                Carta ultimaCarta = escaleras.get(baraja.colorReal(color)).get(ultimoIndice - 1);
+                iterator = manoJugador.iterator();
+
+                while(iterator.hasNext()) {
+                    Carta carta = iterator.next();
+
+                    if(carta.getColor() == primeraCarta.getColor() && carta.getNumero() == primeraCarta.getNumero() - 1){
+                        iterator.remove();
+                        escaleras.get(baraja.colorReal(color)).add(carta);
+                    }else if(carta.getColor() == ultimaCarta.getColor() && carta.getNumero() == ultimaCarta.getNumero() + 1){
+                        iterator.remove();
+                        escaleras.get(baraja.colorReal(color)).add(carta);
+                    }
+                }
+            }
+
+            Collections.sort(escaleras.get(baraja.colorReal(color)), comparador);
+            color++;
+        }while(color < 4);
+
+        //  Si no puede hacer nada termina su turno y pasa al siguiente
+        siguenteTurno();
     }
 
     /**
