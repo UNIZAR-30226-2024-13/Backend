@@ -1,10 +1,12 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
 
-
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
@@ -14,16 +16,51 @@ import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
 
 public class UNO implements JuegoSinApuesta{
+    public static final int MAX_USUARIOS = 4;
     private Baraja baraja;
     private List <Carta> mazo;
     private List <Carta> ultimaCarta;
+    private Map<Integer, Usuario> usuarios; 
+    private Map<Integer, List<Carta>> manoUsuarios;
     private int sentido;
-  
+    private int turno = 0;
     
     public UNO(){
        baraja = BarajaEspaniola.devolverInstancia();
        mazo = baraja.devolverCartas();
+       manoUsuarios = new HashMap<>(MAX_USUARIOS);
     }
+    
+        /**
+     * Reparto de cartas entre los usuarios
+     * 
+     */
+    public void iniciarPartida(){
+        int jugador = 0; 
+        int index = 0;
+        List<Carta> mano = new ArrayList<>();
+        Carta carta;
+        
+        //  Repartir las cartas
+        Collections.shuffle(mazo);
+        do {
+            do{
+                carta = new Carta(mazo.get(index).getNumero(), mazo.get(index).getColor());
+                index++;
+                mano.add(carta);
+            }while(mano.size() < 7);
+            
+            manoUsuarios.put(jugador++, new ArrayList<>(mano));
+            mano.clear();
+        } while (jugador < MAX_USUARIOS);
+        System.out.println(manoUsuarios);
+        
+        carta = new Carta(mazo.get(index).getNumero(), mazo.get(index).getColor());
+        ultimaCarta.add(carta);
+        HacerJugada();
+    }
+    
+    
     
     /**
      * Cargar un juego de uno dado un estado
@@ -61,8 +98,10 @@ public class UNO implements JuegoSinApuesta{
 
     @Override
     public void siguenteTurno() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
+        turno++;
+        if(turno == MAX_USUARIOS){
+            turno = 0;
+        }
     }
     
     // Comprueba si una carta es valida en función de la última carta jugada
