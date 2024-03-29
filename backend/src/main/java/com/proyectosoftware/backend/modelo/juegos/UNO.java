@@ -22,22 +22,22 @@ public class UNO implements JuegoSinApuesta{
     private List <Carta> ultimaCarta;
     private Map<Integer, Usuario> usuarios; 
     private Map<Integer, List<Carta>> manoUsuarios;
-    private int sentido;
+    private int sentido = 0;
     private int turno = 0;
     
     public UNO(){
-       baraja = BarajaEspaniola.devolverInstancia();
+       baraja = BarajaUNO.devolverInstancia();
        mazo = baraja.devolverCartas();
+       usuarios = new HashMap<>(MAX_USUARIOS);
        manoUsuarios = new HashMap<>(MAX_USUARIOS);
     }
     
-        /**
+     /**
      * Reparto de cartas entre los usuarios
      * 
      */
     public void iniciarPartida(){
         int jugador = 0; 
-        int index = 0;
         List<Carta> mano = new ArrayList<>();
         Carta carta;
         
@@ -45,8 +45,8 @@ public class UNO implements JuegoSinApuesta{
         Collections.shuffle(mazo);
         do {
             do{
-                carta = new Carta(mazo.get(index).getNumero(), mazo.get(index).getColor());
-                index++;
+                carta = new Carta(mazo.get(0).getNumero(), mazo.get(0).getColor());
+                mazo.remove(0);
                 mano.add(carta);
             }while(mano.size() < 7);
             
@@ -55,7 +55,8 @@ public class UNO implements JuegoSinApuesta{
         } while (jugador < MAX_USUARIOS);
         System.out.println(manoUsuarios);
         
-        carta = new Carta(mazo.get(index).getNumero(), mazo.get(index).getColor());
+        carta = new Carta(mazo.get(0).getNumero(), mazo.get(0).getColor());
+        mazo.remove(0);
         ultimaCarta.add(carta);
         HacerJugada();
     }
