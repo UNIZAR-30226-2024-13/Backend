@@ -95,29 +95,52 @@ public class Cinquillo implements JuegoSinApuesta{
      * Jugada normal del Cinquillo, 
      * el usuario tiene que jugar un 5 si lo tiene para empezar una nueva escalera, 
      * sino continuar las que ya estan en la mesa, 
-     * sino slatar turno
+     * sino saltar turno
      * 
      */
     public void jugada(){
         List<Carta> manoJugador = manoUsuarios.get(turno);
         Iterator<Carta> iterator = manoJugador.iterator();
+        List<Carta> posiblesJugadas = new ArrayList<>();
     
         //  En caso de que el jugador tenga un 5 lo juega de manera obligatoria
+        posiblesJugadas = jugarCinco(posiblesJugadas, iterator);
+
+        //  Si no tiene un 5 y puede continuar una escalera decide cual continuar
+        posiblesJugadas = jugarCarta(posiblesJugadas, manoJugador.iterator());
+
+        //  Si no puede hacer nada termina su turno y pasa al siguiente
+        siguenteTurno();
+    }
+
+    /**
+     * Busca los 5 en la mano del usuario y devuelve una lista que contiene los 5 de la mano del usuario
+     * @param posiblesJugadas - Lista con las posibles cartas a jugar
+     * @param iterator - Cartas en la mano del usuario  
+     * @return - Lista con las posibles cartas a jugar
+     */
+    private List<Carta> jugarCinco(List<Carta> posiblesJugadas, Iterator<Carta> iterator){
         while(iterator.hasNext()) {
             Carta carta = iterator.next();
             if(carta.getNumero() == 5){
                 switch (baraja.colorReal(carta.getColor())) {
                     case BarajaEspaniola.COPAS:
+                        posiblesJugadas.add(carta);
+
                         iterator.remove();
                         escaleras.get(BarajaEspaniola.COPAS).add(carta);
                         break;
                 
                     case BarajaEspaniola.ESPADAS:
+                        posiblesJugadas.add(carta);
+
                         iterator.remove();
                         escaleras.get(BarajaEspaniola.ESPADAS).add(carta);
                         break;
 
                     case BarajaEspaniola.BASTOS:
+                        posiblesJugadas.add(carta);
+
                         iterator.remove();
                         escaleras.get(BarajaEspaniola.BASTOS).add(carta);
                         break;
@@ -125,22 +148,35 @@ public class Cinquillo implements JuegoSinApuesta{
             }
         }
 
-        //  Si no tiene un 5 y puede continuar una escalera decide cual continuar
+        return posiblesJugadas;
+    }
+
+    /**
+     * Busca las cartas que pueden ser jugadas en base a las escaleras ya colocadas en la mesa
+     * @param posiblesJugadas - Lista con las posibles cartas a jugar
+     * @param iterator - Cartas en la mano del usuario 
+     * @return - Lista con las posibles cartas a jugar
+     */
+    private List<Carta> jugarCarta(List<Carta> posiblesJugadas, Iterator<Carta> iterator){
         int color = 0;
+
         do{
             int ultimoIndice = escaleras.get(baraja.colorReal(color)).size();
             if(ultimoIndice != 0){
                 Carta primeraCarta = escaleras.get(baraja.colorReal(color)).get(0);
                 Carta ultimaCarta = escaleras.get(baraja.colorReal(color)).get(ultimoIndice - 1);
-                iterator = manoJugador.iterator();
 
                 while(iterator.hasNext()) {
                     Carta carta = iterator.next();
 
                     if(carta.getColor() == primeraCarta.getColor() && carta.getNumero() == primeraCarta.getNumero() - 1){
+                        posiblesJugadas.add(carta);
+                        
                         iterator.remove();
                         escaleras.get(baraja.colorReal(color)).add(carta);
                     }else if(carta.getColor() == ultimaCarta.getColor() && carta.getNumero() == ultimaCarta.getNumero() + 1){
+                        posiblesJugadas.add(carta);
+
                         iterator.remove();
                         escaleras.get(baraja.colorReal(color)).add(carta);
                     }
@@ -150,9 +186,7 @@ public class Cinquillo implements JuegoSinApuesta{
             Collections.sort(escaleras.get(baraja.colorReal(color)), comparador);
             color++;
         }while(color < 4);
-
-        //  Si no puede hacer nada termina su turno y pasa al siguiente
-        siguenteTurno();
+        return posiblesJugadas;
     }
 
     /**
