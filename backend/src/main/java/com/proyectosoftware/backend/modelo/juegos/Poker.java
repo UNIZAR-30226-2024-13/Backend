@@ -21,11 +21,6 @@ import com.proyectosoftware.backend.modelo.interfaces.JuegoConApuesta;
  */
 public class Poker implements JuegoConApuesta{
 
-    private static final int SOTA = 11;
-    private static final int CABALLO = 12;
-    private static final int REY = 13;
-    private static final int AS = 14;
-
     private static final String CARTA_ALTA = "carta_alta";
     private static final String PAR = "pareja";
     private static final String DOBLE_PAR = "doble_pareja";
@@ -217,16 +212,16 @@ public class Poker implements JuegoConApuesta{
         int esc_real = 1;
         boolean hay_pareja = false;
         boolean hay_trio = false;
-        Map<Integer, Integer> num_color = new HashMap<>(4);
+        Map<String, Integer> num_color = new HashMap<>(4);
         for (int i = 0; i < 4; i++) {
-            num_color.put(i, 0);
+            num_color.put(baraja.colorReal(i), 0);
         }
         Mano mano = new Mano();
         Mano mejor_mano = new Mano();
         for (int i = 0; i < cartas_mano.size(); i++) {
             carta = cartas_mano.get(i);
-            int valor_color = num_color.get(carta.getColor());
-            num_color.put(carta.getColor(), valor_color + 1);
+            int valor_color = num_color.get(baraja.colorReal(carta.getColor()));
+            num_color.put(baraja.colorReal(carta.getColor()), valor_color + 1);
             if (i < cartas_mano.size() - 1) {
                 carta_siguiente = cartas_mano.get(i+1);
             }
@@ -276,14 +271,14 @@ public class Poker implements JuegoConApuesta{
                 }
             }
             else if (carta.getNumero() == (carta_siguiente.getNumero() - 1)){
-                if (carta.getNumero() == AS || carta.getNumero() == REY || carta.getNumero() == CABALLO ||
-                    carta.getNumero() == SOTA || carta.getNumero() == 10) {
+                if (carta.getNumero() == BarajaFrancesa.AS || carta.getNumero() == BarajaFrancesa.REY ||
+                    carta.getNumero() == BarajaFrancesa.CABALLO ||carta.getNumero() == BarajaFrancesa.SOTA || carta.getNumero() == 10) {
                     esc_real++;
                 }
                 if (i != 6) {
                     num_iguales = 1;
                     num_esc++;
-                    if (carta.getColor() == carta_siguiente.getColor()) {
+                    if (baraja.colorReal(carta.getColor()) == baraja.colorReal(carta_siguiente.getColor())) {
                         esc_color++;
                     }
                     else {
@@ -323,7 +318,7 @@ public class Poker implements JuegoConApuesta{
                 boolean es_color = false;
                 // Caso color
                 for (int j = 0; j < 4; j++) {
-                    if (num_color.get(j) == 5) {
+                    if (num_color.get(baraja.colorReal(j)) == 5) {
                         mano.setMano(COLOR);
                         mano.setPrioridad(PRIO_COLOR);
                         mano.setValor(carta.getNumero());

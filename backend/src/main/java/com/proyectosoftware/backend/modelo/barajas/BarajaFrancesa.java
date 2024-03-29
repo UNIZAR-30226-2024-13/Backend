@@ -13,14 +13,14 @@ import com.proyectosoftware.backend.modelo.interfaces.Baraja;
  * Implementacion baraja francesa
  */
 public class BarajaFrancesa implements Baraja{
-    private static final String PICAS = "picas";
-    private static final String DIAMANTES = "diamantes";
-    private static final String TREBOLES = "treboles";
-    private static final String CORAZONES = "corazones";
-    private static final int SOTA = 11;
-    private static final int CABALLO = 12;
-    private static final int REY = 13;
-    private static final int AS = 14;
+    public static final String PICAS = "picas";
+    public static final String DIAMANTES = "diamantes";
+    public static final String TREBOLES = "treboles";
+    public static final String CORAZONES = "corazones";
+    public static final int SOTA = 11;
+    public static final int CABALLO = 12;
+    public static final int REY = 13;
+    public static final int AS = 14;
     
 
     private int numeroCartas;
