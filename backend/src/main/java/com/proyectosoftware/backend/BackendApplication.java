@@ -28,15 +28,35 @@ public class BackendApplication {
 		SpringApplication.run(BackendApplication.class, args);
 		Poker poker = new Poker();
 		List<Usuario> usuarios = new ArrayList<>();
-		Usuario usuario;
+		List<Carta> mano = new ArrayList<>();
+		Usuario usuario, ganador;
 		for (int i = 0; i < 4; i++) {
 			usuario = new Usuario ("Nombre", "email", 12.0, "España");
 			usuarios.add(usuario);
 		}
+		/*
+		Carta carta1 = new Carta (2, 3);
+		mano.add(carta1);
+		Carta carta2 = new Carta (2, 2);
+		mano.add(carta2);
+		Carta carta3 = new Carta (6, 2);
+		mano.add(carta3);
+		Carta carta4 = new Carta (8,0);
+		mano.add(carta4);
+		Carta carta5 = new Carta (9, 2);
+		mano.add(carta5);
+		Carta carta6 = new Carta (9, 1);
+		mano.add(carta6);
+		Carta carta7 = new Carta (10, 3);
+		mano.add(carta7);
+		System.out.println(poker.verificarMano(mano).getMano());
+		*/
 		poker.repartirCartas(usuarios);
-		//poker.agnadirCartaCentro();
-		//poker.agnadirCartaCentro();
-		//poker.ganadorPartida(usuarios);
+		poker.agnadirCartaCentro();
+		poker.agnadirCartaCentro();
+		ganador = poker.ganadorPartida(usuarios);
+		System.out.println(ganador.getId());
+		
 	}
 
 }

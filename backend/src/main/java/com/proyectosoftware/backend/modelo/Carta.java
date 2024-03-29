@@ -32,6 +32,10 @@ public class Carta {
     public int getColor(){
         return color;
     }
+
+    public String toString() {
+        return color + "," + numero;
+    }
     
     /**
      * 

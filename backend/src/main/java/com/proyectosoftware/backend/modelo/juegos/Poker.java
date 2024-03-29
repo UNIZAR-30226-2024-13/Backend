@@ -26,11 +26,6 @@ public class Poker implements JuegoConApuesta{
     private static final int REY = 13;
     private static final int AS = 14;
 
-    private static final int PICAS = 0;
-    private static final int DIAMANTES = 1;
-    private static final int TREBOLES = 2;
-    private static final int CORAZONES = 3;
-
     private static final String CARTA_ALTA = "carta_alta";
     private static final String PAR = "pareja";
     private static final String DOBLE_PAR = "doble_pareja";
@@ -153,7 +148,6 @@ public class Poker implements JuegoConApuesta{
                 mazo.remove(0);
             }
             cartas_usuario.put(usuarios.get(i).getId(), new ArrayList<>(cartas));
-            System.out.println(cartas_usuario);
         }
         for (int i = 0; i < 3; i++) {
             cartas_mesa.add(mazo.get(0));
@@ -214,12 +208,15 @@ public class Poker implements JuegoConApuesta{
                 return Integer.compare(carta1.getNumero(), carta2.getNumero());
             }
         });
+        System.out.println(cartas_mano);
         Carta carta;
         Carta carta_siguiente = cartas_mano.get(0);
         int num_iguales = 1;
         int num_esc = 1;
         int esc_color = 1;
-        int esc_real = 0;
+        int esc_real = 1;
+        boolean hay_pareja = false;
+        boolean hay_trio = false;
         Map<Integer, Integer> num_color = new HashMap<>(4);
         for (int i = 0; i < 4; i++) {
             num_color.put(i, 0);
@@ -241,30 +238,41 @@ public class Poker implements JuegoConApuesta{
                     mano.setPrioridad(PRIO_POKER);
                     mano.setValor(carta.getNumero());
                 }
-                // Caso full
-                else if ((num_iguales == 3 && (mejor_mano.getPrioridad() == PRIO_PAR || mejor_mano.getPrioridad() == PRIO_TRIO)) || 
-                        (num_iguales == 2 && mejor_mano.getPrioridad() == PRIO_TRIO)) {
-                    mano.setMano(FULL);
-                    mano.setPrioridad(PRIO_FULL);
-                    mano.setValor(carta.getNumero());
-                }
                 // Caso trio
                 else if (num_iguales == 3) {
-                    mano.setMano(TRIO);
-                    mano.setPrioridad(PRIO_TRIO);
-                    mano.setValor(carta.getNumero());
+                    hay_trio = true;
+                    // Caso full
+                    if (hay_pareja) {
+                        mano.setMano(FULL);
+                        mano.setPrioridad(PRIO_FULL);
+                        mano.setValor(carta.getNumero());
+                    }
+                    else {
+                        mano.setMano(TRIO);
+                        mano.setPrioridad(PRIO_TRIO);
+                        mano.setValor(carta.getNumero());
+                    }
                 }
                 // Caso doble pareja
                 else if (num_iguales == 2 && mejor_mano.getPrioridad() == PRIO_PAR) {
+                    hay_pareja = true;
                     mano.setMano(DOBLE_PAR);
                     mano.setPrioridad(PRIO_DOBLE_PAR);
                     mano.setValor(carta.getNumero());
                 }
                 // Caso pareja
                 else {
-                    mano.setMano(PAR);
-                    mano.setPrioridad(PRIO_PAR);
-                    mano.setValor(carta.getNumero());
+                    // Caso full
+                    if (hay_trio) {
+                        mano.setMano(FULL);
+                        mano.setPrioridad(PRIO_FULL);
+                        mano.setValor(carta.getNumero());
+                    }
+                    else {
+                        mano.setMano(PAR);
+                        mano.setPrioridad(PRIO_PAR);
+                        mano.setValor(carta.getNumero());
+                    }
                 }
             }
             else if (carta.getNumero() == (carta_siguiente.getNumero() - 1)){
@@ -273,7 +281,7 @@ public class Poker implements JuegoConApuesta{
                     esc_real++;
                 }
                 if (i != 6) {
-                    num_iguales = 0;
+                    num_iguales = 1;
                     num_esc++;
                     if (carta.getColor() == carta_siguiente.getColor()) {
                         esc_color++;
@@ -283,22 +291,27 @@ public class Poker implements JuegoConApuesta{
                     }
                 }
                 // Caso escalera real
-                if (num_esc == 5 && esc_color == 5 && esc_real == 5) {
+                if (num_esc >= 5 && esc_color >= 5 && esc_real == 5) {
                     mano.setMano(ESC_REAL);    
                     mano.setPrioridad(PRIO_ESC_REAL);
                     mano.setValor(carta.getNumero());
                 }
-                if (i != 6) {
+                else if (i != 6) {
                     // Caso escalera color
-                    if (num_esc == 5 && esc_color == 5) {
+                    if (num_esc >= 5 && esc_color >= 5) {
                         mano.setMano(ESC_COLOR);    
                         mano.setPrioridad(PRIO_ESC_COLOR);
                         mano.setValor(carta.getNumero());
                     }
                     // Caso escalera
-                    else if (num_esc == 5) {
+                    else if (num_esc >= 5) {
                         mano.setMano(ESC);
                         mano.setPrioridad(PRIO_ESC);
+                        mano.setValor(carta.getNumero());
+                    }
+                    else {
+                        mano.setMano(CARTA_ALTA);
+                        mano.setPrioridad(PRIO_CARTA_ALTA);
                         mano.setValor(carta.getNumero());
                     }
                 }
@@ -327,7 +340,9 @@ public class Poker implements JuegoConApuesta{
             }
             if (mano.getPrioridad() > mejor_mano.getPrioridad() ||
                 mano.getPrioridad() == mejor_mano.getPrioridad() && mano.getValor() > mejor_mano.getValor()) {
-                mejor_mano = mano;
+                mejor_mano.setMano(mano.getMano());
+                mejor_mano.setPrioridad(mano.getPrioridad());
+                mejor_mano.setValor(mano.getValor());
             }
         }
         return mejor_mano;
@@ -341,13 +356,12 @@ public class Poker implements JuegoConApuesta{
      */
     public Usuario ganadorPartida(List<Usuario> usuarios){
         String id_usuario;
-        Mano mano;
-        Mano mejor_mano;
-        int ganador;
+        Mano mano = new Mano();
+        Mano mejor_mano = new Mano();
+        int ganador = 0;
         List<Carta> cartas_mano = new ArrayList<>();
         for (int i = 0; i < usuarios.size(); i++) {
             id_usuario = usuarios.get(i).getId();
-            System.out.println(cartas_usuario.get(id_usuario));
             List<Carta> carta_usuario = cartas_usuario.get(id_usuario);
             for (int j = 0; j < 2; j++) {
                 cartas_mano.add(carta_usuario.get(j));
@@ -355,23 +369,20 @@ public class Poker implements JuegoConApuesta{
             for (int j = 0; j < cartas_mesa.size(); j++) {
                 cartas_mano.add(cartas_mesa.get(j));
             }
-            /* 
-            for (int j = 0; j < cartas_mano.size(); j++) {
-                System.out.println("Cartas de usuario " + i + ": " + cartas_mano.get(j).getNumero() + " y palo " + cartas_mano.get(j).getColor());
-            }
-            */
+            
             mano = verificarMano(cartas_mano);
-            mano_usuario.put(id_usuario, mano);
             System.out.println("El usuario " + id_usuario + " tiene " + mano.getMano());
+            mano_usuario.put(id_usuario, mano);
             cartas_mano.clear();
         }
         mejor_mano = mano_usuario.get(usuarios.get(0).getId());
-        ganador = 0;
         for (int i = 1; i < usuarios.size(); i++) {
             mano = mano_usuario.get(usuarios.get(i).getId());
             if (mano.getPrioridad() > mejor_mano.getPrioridad() || (mano.getPrioridad() == mejor_mano.getPrioridad() &&
                 mano.getValor() > mejor_mano.getValor())) {
-                mejor_mano = mano;
+                mejor_mano.setMano(mano.getMano());
+                mejor_mano.setPrioridad(mano.getPrioridad());
+                mejor_mano.setValor(mano.getValor());
                 ganador = i;
             }
         }
