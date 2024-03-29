@@ -24,6 +24,8 @@ public class UNO implements JuegoSinApuesta{
     private Map<Integer, List<Carta>> manoUsuarios;
     private int sentido = 0;
     private int turno = 0;
+    private int masdos = 0;
+    private int mascuatro = 0;
     
     public UNO(){
        baraja = BarajaUNO.devolverInstancia();
@@ -58,7 +60,7 @@ public class UNO implements JuegoSinApuesta{
         carta = new Carta(mazo.get(0).getNumero(), mazo.get(0).getColor());
         mazo.remove(0);
         ultimaCarta.add(carta);
-        HacerJugada();
+        jugada();
     }
     
     
@@ -99,26 +101,79 @@ public class UNO implements JuegoSinApuesta{
 
     @Override
     public void siguenteTurno() {
-        turno++;
-        if(turno == MAX_USUARIOS){
-            turno = 0;
+        if(sentido==0){
+           turno++;
+            if(turno == MAX_USUARIOS){
+                turno = 0;
+            }
         }
+        else if(sentido==1){
+            turno--;
+            if(turno == -1){
+                turno = 3;
+            }
+        }
+
+    }
+     /*
+     * Jugada del UNO, esta separado según los casos necesarios:
+     * tener que robar una carta, pasar el turno o realizar una
+     * jugada. 
+     */
+    public void jugada(){
+        List<Carta> manoJugador = manoUsuarios.get(turno);
+        Iterator<Carta> iterator = manoJugador.iterator();
+        List<Carta> posiblesJugadas = new ArrayList<>();
+        //  Caso de robar dos cartas
+        if(masdos == 1){
+            RobaCarta(manoJugador,2);
+        }
+        //  Caso de robar cuatro cartas
+        else if(mascuatro == 1){
+            RobaCarta(manoJugador,4);
+        }
+        else{
+            //Posibles juagadas a elegir
+            posiblesJugadas = jugarCarta(posiblesJugadas, manoJugador.iterator());
+            if(posiblesJugadas.isEmpty()){
+                RobaCarta(manoJugador,1);
+                siguenteTurno();
+            }
+        }
+    }
+    
+     /**
+     * Devuelve todas las posibles jugadas que tiene el usuario en posiblesJugadas 
+     */
+    private List<Carta> jugarCarta(List<Carta> posiblesJugadas, Iterator<Carta> iterator){
+        while(iterator.hasNext()) {
+            Carta carta = iterator.next();
+            if(CartaValida(carta)){
+                posiblesJugadas.add(carta);
+            }
+        }  
+        return posiblesJugadas;
     }
     
     // Comprueba si una carta es valida en función de la última carta jugada
     public boolean CartaValida(Carta carta){
         boolean valido=false;
-        if(carta.numero == 13 || carta.numero == 14){
+        Carta ultCarta = ultimaCarta.get(ultimaCarta.size() - 1);
+        // Obtenemos la última carta
+        int color = ultCarta.getColor();
+        int numero = ultCarta.getNumero();
+        if(carta.getNumero() == 13 || carta.getNumero() == 14){
             valido = true;
         }
-        else if (carta.numero < 13){
-            if (carta.color == ultimaCarta.getColor() || carta.numero == ultimaCarta.getNumero()){
+        else if (carta.getNumero() < 13){
+            if (carta.getColor() == color || carta.getNumero() == numero){
                 valido = true;
             }
         }
         return valido;
     }
     
+    // Cambia el sentido de la partida
     public void CambioSentido(){
         if (sentido == 0){
             sentido = 1;
@@ -128,47 +183,79 @@ public class UNO implements JuegoSinApuesta{
         }
     }
     
+     // Cambia el estado de masdos
     public void SumaDos(){
-    
+        masdos=1;
     }
     
+    // Añade n cartas a la mano del usuario y pasa el turno
+    public void RobaCarta(List<Carta> mano,int n){
+        Carta carta;
+        for(int i=0;i<n;i++){
+            carta = new Carta(mazo.get(0).getNumero(), mazo.get(0).getColor());
+            mazo.remove(0);
+            mano.add(carta);
+        }
+        if(n>1){
+            masdos=0;
+            mascuatro=0;
+        }
+        this.siguenteTurno();
+    }
+    
+    // Pasa el turno
     public void SaltoTurno(){
         this.siguenteTurno();
-        this.siguenteTurno();
     }
     
+    // Cambia el estado de mascuatro
     public void SumaCuatro(){
-    
+        mascuatro=1;
     }
+    
    
-    public void HacerJugada(){
-        Carta carta = new Carta();
-        //carta = ;
-        if (/*boton roba cartas*/){
-                //roba carta
-                //salta turno
+     /*
+     * En el caso de que eljugador no haya sufrido ninguna sanción 
+     * y tenga alguna posible jugada a realizar. Puede elegir pasar
+     * su turno en caso que lo desee.
+     */
+    public void HacerJugada(Carta carta,int color){
+        List<Carta> manoJugador = manoUsuarios.get(turno);
+        Carta c;
+        if (carta == null){
+            //roba carta
+            RobaCarta(manoJugador,1);
         }
-        else if (/*boton carta*/){
-            if(carta.numero() == 10){
-                CambioSentido();
-                //cambia el sentido del juego
-            }
-            else if (carta.numero() == 11){
-                SumaDos();
-                //+2 para el siguiente
-            }
-            else if(carta.numero() == 12){
-                SaltoTurno();
-                //salta el turno del siguiente
-            }
-            else if(carta.numero() == 14){
-                SumaCuatro();
-                //+4 para el siguiente
-            }
-            else{
-                this.siguenteTurno();
+        else {
+            int n = carta.getNumero();
+            switch (n) {
+                case 10:
+                    CambioSentido();
+                    //cambia el sentido del juego
+                    break;
+                case 11:
+                    SumaDos();
+                    //+2 para el siguiente
+                    break;
+                case 12:
+                    SaltoTurno();
+                    //salta el turno del siguiente
+                    break;
+                case 13:
+                    c = new Carta(n,color);
+                    carta = c;
+                    //cambia el color al elegido por el usuario
+                    break;
+                case 14:
+                    SumaCuatro();
+                    //+4 para el siguiente
+                    break;
+                default:
+                    //carta normal
+                    break;
             }
             ultimaCarta.add(carta);
+            this.siguenteTurno();
         }
     }
 }

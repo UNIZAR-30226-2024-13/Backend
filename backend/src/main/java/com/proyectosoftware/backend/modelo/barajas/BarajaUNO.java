@@ -69,7 +69,7 @@ public class BarajaUNO implements Baraja{
                     baraja.add(carta);
                 }
                 else{
-                    Carta carta = new Carta(numero, color);
+                    Carta carta = new Carta(numero, 5);
                     baraja.add(carta);
                 }
             }
