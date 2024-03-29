@@ -203,7 +203,6 @@ public class Poker implements JuegoConApuesta{
                 return Integer.compare(carta1.getNumero(), carta2.getNumero());
             }
         });
-        System.out.println(cartas_mano);
         Carta carta;
         Carta carta_siguiente = cartas_mano.get(0);
         int num_iguales = 1;
@@ -366,7 +365,6 @@ public class Poker implements JuegoConApuesta{
             }
             
             mano = verificarMano(cartas_mano);
-            System.out.println("El usuario " + id_usuario + " tiene " + mano.getMano());
             mano_usuario.put(id_usuario, mano);
             cartas_mano.clear();
         }
