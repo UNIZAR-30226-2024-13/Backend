@@ -101,16 +101,16 @@ public class UNO implements JuegoSinApuesta{
 
     @Override
     public void siguenteTurno() {
-        if(sentido==0){
+        if(sentido == 0){
            turno++;
             if(turno == MAX_USUARIOS){
                 turno = 0;
             }
         }
-        else if(sentido==1){
+        else if(sentido == 1){
             turno--;
             if(turno == -1){
-                turno = 3;
+                turno = MAX_USUARIOS - 1;
             }
         }
 
@@ -127,13 +127,15 @@ public class UNO implements JuegoSinApuesta{
         //  Caso de robar dos cartas
         if(masdos == 1){
             RobaCarta(manoJugador,2);
+            siguenteTurno();
         }
         //  Caso de robar cuatro cartas
         else if(mascuatro == 1){
             RobaCarta(manoJugador,4);
+            siguenteTurno();
         }
         else{
-            //Posibles juagadas a elegir
+            //Posibles jugadas a elegir
             posiblesJugadas = jugarCarta(posiblesJugadas, manoJugador.iterator());
             if(posiblesJugadas.isEmpty()){
                 RobaCarta(manoJugador,1);
@@ -157,16 +159,21 @@ public class UNO implements JuegoSinApuesta{
     
     // Comprueba si una carta es valida en función de la última carta jugada
     public boolean CartaValida(Carta carta){
-        boolean valido=false;
+        boolean valido = false;
         Carta ultCarta = ultimaCarta.get(ultimaCarta.size() - 1);
         // Obtenemos la última carta
         int color = ultCarta.getColor();
         int numero = ultCarta.getNumero();
-        if(carta.getNumero() == 13 || carta.getNumero() == 14){
+        if(carta.getNumero() == 14 || carta.getNumero() == 15){
             valido = true;
         }
-        else if (carta.getNumero() < 13){
+        else if (carta.getNumero() < 11){
             if (carta.getColor() == color || carta.getNumero() == numero){
+                valido = true;
+            }
+        }
+        else {
+            if (carta.getColor() == color){
                 valido = true;
             }
         }
@@ -189,18 +196,17 @@ public class UNO implements JuegoSinApuesta{
     }
     
     // Añade n cartas a la mano del usuario y pasa el turno
-    public void RobaCarta(List<Carta> mano,int n){
+    public void RobaCarta(List<Carta> mano, int n){
         Carta carta;
-        for(int i=0;i<n;i++){
+        for(int i = 0; i < n; i++){
             carta = new Carta(mazo.get(0).getNumero(), mazo.get(0).getColor());
             mazo.remove(0);
             mano.add(carta);
         }
-        if(n>1){
+        if(n > 1){
             masdos=0;
             mascuatro=0;
         }
-        this.siguenteTurno();
     }
     
     // Pasa el turno
@@ -215,7 +221,7 @@ public class UNO implements JuegoSinApuesta{
     
    
      /*
-     * En el caso de que eljugador no haya sufrido ninguna sanción 
+     * En el caso de que el jugador no haya sufrido ninguna sanción 
      * y tenga alguna posible jugada a realizar. Puede elegir pasar
      * su turno en caso que lo desee.
      */
@@ -224,30 +230,32 @@ public class UNO implements JuegoSinApuesta{
         Carta c;
         if (carta == null){
             //roba carta
-            RobaCarta(manoJugador,1);
+            RobaCarta(manoJugador, 1);
         }
         else {
             int n = carta.getNumero();
             switch (n) {
-                case 10:
+                case 11:
                     CambioSentido();
                     //cambia el sentido del juego
                     break;
-                case 11:
+                case 12:
                     SumaDos();
                     //+2 para el siguiente
                     break;
-                case 12:
+                case 13:
                     SaltoTurno();
                     //salta el turno del siguiente
                     break;
-                case 13:
+                case 14:
                     c = new Carta(n,color);
                     carta = c;
                     //cambia el color al elegido por el usuario
                     break;
-                case 14:
+                case 15:
                     SumaCuatro();
+                    c = new Carta(n,color);
+                    carta = c;
                     //+4 para el siguiente
                     break;
                 default:
