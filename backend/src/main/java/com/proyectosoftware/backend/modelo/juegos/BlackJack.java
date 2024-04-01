@@ -231,11 +231,11 @@ public class BlackJack implements JuegoConApuesta, Estado {
                 // usuario pierde
             }
             else if (cuenta_croupier > 21) {
-                fichas_usuario.put(usuario.getId(), fichas_del_usuario + apuesta_realizada_usuario);
+                fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario));
                 // usuario gana
             }
             else if (cuenta <= 21 && cuenta > cuenta_croupier) {
-                fichas_usuario.put(usuario.getId(), fichas_del_usuario + apuesta_realizada_usuario);
+                fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario));
                 // usuario gana
             }
             else if (cuenta <= 21 && cuenta < cuenta_croupier) {
