@@ -19,6 +19,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     private List<Carta> mazo;
     private Baraja baraja;
     private int apuesta_mesa;
+    private int turno;
     private Map<String, Integer> fichas_usuario;        // Diccionario con los usuarios y sus fichas a usar en la partida
     private Map<String, List<Carta>> cartas_usuario;    // Diccionario con los usuarios y sus cartas a usar en la partida
     private Map<String, Boolean> plantado;              // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
@@ -29,6 +30,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
      * Constructor por defecto
     */
     public BlackJack() {
+        turno = 0;
         baraja = BarajaFrancesa.devolverInstancia();
         mazo = baraja.devolverCartas();
         apuesta_mesa = 0;
@@ -79,8 +81,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
     @Override
     public void siguenteTurno() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
+        turno = (turno + 1) % MAX_JUGADORES;
     }
 
 
