@@ -52,10 +52,12 @@ public class BackendApplication {
 		System.out.println(poker.verificarMano(mano).getMano());
 		*/
 		poker.repartirCartas(usuarios);
+		/*
 		poker.agnadirCartaCentro();
 		poker.agnadirCartaCentro();
 		ganador = poker.ganadorPartida(usuarios);
 		System.out.println(ganador.getId());
+		*/
 		
 	}
 

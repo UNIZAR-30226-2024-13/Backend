@@ -70,7 +70,8 @@ public class BarajaFrancesa implements Baraja{
         List<Carta> baraja = new ArrayList<>();
         for (int palo : coloresBaraja.keySet()) {
             for (int numero : numerosBaraja.keySet()) {
-                Carta carta = new Carta(numero, palo);
+                String ruta = numerosBaraja.get(numero) + "_" + coloresBaraja.get(palo) + ".jpg";
+                Carta carta = new Carta(numero, palo, ruta);
                 baraja.add(carta);
             }
         }

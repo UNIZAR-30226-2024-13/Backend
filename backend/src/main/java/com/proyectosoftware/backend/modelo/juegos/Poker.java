@@ -140,6 +140,7 @@ public class Poker implements JuegoConApuesta{
             cartas = new ArrayList<>();
             for (int j = 0; j < 2; j++) {
                 cartas.add(mazo.get(0));
+                System.out.println(mazo.get(0));
                 mazo.remove(0);
             }
             cartas_usuario.put(usuarios.get(i).getId(), new ArrayList<>(cartas));
