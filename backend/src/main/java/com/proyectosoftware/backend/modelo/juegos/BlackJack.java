@@ -151,6 +151,16 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
 
     /**
+     * Devuelve true si "usuario" se ha plantado
+     * @param usuario - Usuario a evaluar
+     * @return boolean - True sí y sólo sí "usuario" se ha plantado
+    */
+    public boolean jugadorPlantado(Usuario usuario) {
+        return plantados.get(usuario.getId());
+    }
+
+
+    /**
      * El croupier juega su turno después de que
      * los jugadores hayan jugado sus turnos.
      * La funcion acaba con la situación final de las cartas del croupier
@@ -197,5 +207,12 @@ public class BlackJack implements JuegoConApuesta, Estado {
             cartas_croupier.add(mazo.get(0));
             mazo.remove(0);
         }
+    }
+
+    /**
+     * Se comprueba qué jugadores han ganado o han perdido
+    */
+    public void comprobarGanadores() {
+
     }
 }
