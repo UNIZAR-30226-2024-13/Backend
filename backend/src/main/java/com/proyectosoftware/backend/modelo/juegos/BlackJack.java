@@ -23,6 +23,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     private Map<String, List<Carta>> cartas_usuario;    // Diccionario con los usuarios y sus cartas a usar en la partida
     private Map<String, Boolean> plantado;              // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
     private List<Carta> cartas_croupier;                // Lista de cartas del croupier (Carta de índice 0 está boca arriba y la otra boca abajo)
+    private Map<String, Integer> apuesta_usuario;       // Diccionario con los usuarios y su apuesta en la partida
 
     /**
      * Constructor por defecto
@@ -35,6 +36,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
         cartas_usuario = new HashMap<>();
         plantado = new HashMap<>();
         cartas_croupier = new ArrayList<>();
+        apuesta_usuario = new HashMap<>();
     }
 
 
@@ -98,8 +100,9 @@ public class BlackJack implements JuegoConApuesta, Estado {
         }
         else {
             fichas_disponibles -= apuesta;
-            fichas_usuario.put(usuario.getId(),fichas_disponibles);
+            fichas_usuario.put(usuario.getId(), fichas_disponibles);
             apuesta_mesa += apuesta;
+            apuesta_usuario.put(usuario.getId(), apuesta);
             //Mandar al control las fichas disponibles
         }
     }
@@ -209,21 +212,30 @@ public class BlackJack implements JuegoConApuesta, Estado {
         }
     }
 
+
     /**
-     * Se comprueba qué jugadores han ganado o han perdido
+     * Se comprueba qué jugadores han ganado o han perdido contra la banca
+     * y se retocan sus fichas
     */
     public void comprobarGanadores() {
         int cuenta_croupier = valorMano(cartas_croupier);
         for (String usuario : cartas_usuario.keySet()) {
             List<Carta> cartas = cartas_usuario.get(usuario);
+
             int cuenta = valorMano(cartas);
-            if (cuenta > 21) {
-                // usuario ha perdido, restar fichas de la apuesta inicial
+            int apuesta_realizada_usuario = apuesta_usuario.get(usuario.getId());
+            int fichas_del_usuario = fichas_usuario.get(usuario.getId());
+
+            int nuevas_fichas;
+            if (cuenta > 21) {      // Si un jugador se pasa de 21, independientemente de las cartas del croupier, pierde
+                // usuario pierde
             }
             else if (cuenta_croupier > 21) {
-                // usuario gana, sumar fichas de la apuesta inicial
+                fichas_usuario.put(usuario.getId(), fichas_del_usuario + apuesta_realizada_usuario);
+                // usuario gana
             }
             else if (cuenta <= 21 && cuenta > cuenta_croupier) {
+                fichas_usuario.put(usuario.getId(), fichas_del_usuario + apuesta_realizada_usuario);
                 // usuario gana
             }
             else if (cuenta <= 21 && cuenta < cuenta_croupier) {
