@@ -105,9 +105,17 @@ public class Cinquillo implements JuegoSinApuesta{
     
         //  En caso de que el jugador tenga un 5 lo juega de manera obligatoria
         posiblesJugadas = jugarCinco(posiblesJugadas, iterator);
+        if(posiblesJugadas.size() > 0){
+            //  Notificar a control y hacer jugada en la interfaz
+            siguenteTurno();
+        }
 
         //  Si no tiene un 5 y puede continuar una escalera decide cual continuar
         posiblesJugadas = jugarCarta(posiblesJugadas, manoJugador.iterator());
+        if(posiblesJugadas.size() > 0){
+            //  Notificar a control y hacer jugada en la interfaz
+            siguenteTurno();
+        }
 
         //  Si no puede hacer nada termina su turno y pasa al siguiente
         siguenteTurno();
