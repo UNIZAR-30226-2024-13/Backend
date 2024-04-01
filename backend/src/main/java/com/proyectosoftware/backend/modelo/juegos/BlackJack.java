@@ -213,6 +213,22 @@ public class BlackJack implements JuegoConApuesta, Estado {
      * Se comprueba qué jugadores han ganado o han perdido
     */
     public void comprobarGanadores() {
-
+        int cuenta_croupier = valorMano(cartas_croupier);
+        for (String usuario : cartas_usuario.keySet()) {
+            List<Carta> cartas = cartas_usuario.get(usuario);
+            int cuenta = valorMano(cartas);
+            if (cuenta > 21) {
+                // usuario ha perdido, restar fichas de la apuesta inicial
+            }
+            else if (cuenta_croupier > 21) {
+                // usuario gana, sumar fichas de la apuesta inicial
+            }
+            else if (cuenta <= 21 && cuenta > cuenta_croupier) {
+                // usuario gana
+            }
+            else if (cuenta <= 21 && cuenta < cuenta_croupier) {
+                // usuario pierde
+            }
+        }
     }
 }
