@@ -132,7 +132,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     */
     public int valorCarta(Carta carta) {
         int numero = carta.getNumero();
-        return (numero == 1) ? 11 : carta;      // Si la carta es un as (valor 1), devuelve 11, sino su valor normal
+        return (numero == 1) ? 11 : numero;      // Si la carta es un as (valor 1), devuelve 11, sino su valor normal
     }
 
 
