@@ -73,8 +73,9 @@ public class BlackJack implements JuegoConApuesta, Estado {
         if (accion == PEDIR_CARTA) {
             if (!jugadorPlantado(usuario)) {
                 pedirCarta(usuario);
-                if (valorMano() >= 21) { // Si el usuario se pasa de 21, se retira
+                if (valorMano(cartas_usuario.get(usuario.getId())) >= 21) { // Si el usuario llega o se pasa de 21, se retira de la partida
                     plantarse(usuario);
+                    siguienteTurno();
                 }
             }
             else {
@@ -82,9 +83,17 @@ public class BlackJack implements JuegoConApuesta, Estado {
             }
         }
         else { // accion == PLANTARSE
-            plantarse(usuario);
+            if (!jugadorPlantado(usuario)) {
+                plantarse(usuario);
+                siguienteTurno();
+            }
+            else {
+                // Lanzar error, jugador plantado y se está plantando otra vez
+            }
         }
-        siguienteTurno();
+        if (turno == MAX_JUGADORES) {
+            jugadaFinal();
+        }
     }
 
 
@@ -144,7 +153,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
     @Override
     public void siguienteTurno() {
-        turno = (turno + 1) % MAX_JUGADORES;
+        turno++;
     }
 
 
