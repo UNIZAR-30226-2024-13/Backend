@@ -246,6 +246,7 @@ public class Poker implements JuegoConApuesta{
             if (i < cartas_mano.size() - 1) {
                 carta_siguiente = cartas_mano.get(i+1);
             }
+            // Si la carta actual y la siguiente coinciden en número se pueden dar estos casos
             if (carta.getNumero() == carta_siguiente.getNumero() && i != 6) {
                 num_iguales++;
                 // Caso poker
@@ -291,6 +292,8 @@ public class Poker implements JuegoConApuesta{
                     }
                 }
             }
+            // Si el número de la carta actual es una unidad menor que el número de la
+            // siguiente carta se pueden dar estos casos
             else if (carta.getNumero() == (carta_siguiente.getNumero() - 1)){
                 if (carta.getNumero() == BarajaFrancesa.AS || carta.getNumero() == BarajaFrancesa.REY ||
                     carta.getNumero() == BarajaFrancesa.CABALLO ||carta.getNumero() == BarajaFrancesa.SOTA || carta.getNumero() == 10) {
@@ -325,6 +328,7 @@ public class Poker implements JuegoConApuesta{
                         mano.setPrioridad(PRIO_ESC);
                         mano.setValor(carta.getNumero());
                     }
+                    // Caso carta alta
                     else {
                         mano.setMano(CARTA_ALTA);
                         mano.setPrioridad(PRIO_CARTA_ALTA);
@@ -332,6 +336,7 @@ public class Poker implements JuegoConApuesta{
                     }
                 }
             }
+            // Si no se da ningún caso de los anteriores solo puede ser o color o carta alta
             else {
                 num_esc = 1;
                 num_iguales = 1;
@@ -354,6 +359,7 @@ public class Poker implements JuegoConApuesta{
                     mano.setValor(carta.getNumero());
                 }
             }
+            // Si la mano actual es mejor que la mejor que había hasta ahora, se actualiza
             if (mano.getPrioridad() > mejor_mano.getPrioridad() ||
                 mano.getPrioridad() == mejor_mano.getPrioridad() && mano.getValor() > mejor_mano.getValor()) {
                 mejor_mano.setMano(mano.getMano());
