@@ -96,8 +96,6 @@ public class Cinquillo implements JuegoSinApuesta{
                 break;
             }
         }
-        System.out.println(escaleras);
-        System.out.println(manosUsuarios);
         siguenteTurno();
     }
 
