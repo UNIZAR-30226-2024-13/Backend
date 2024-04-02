@@ -11,20 +11,6 @@ public class BarajaUNO implements Baraja{
 
     }
 
-        /**
-     * Crea una baraja en base
-     * @return - Devuelve una baraja francesa
-     */
-    private List<Carta> crearBaraja() {
-        List<Carta> baraja = new ArrayList<>();
-        for (int palo : coloresBaraja.keySet()) {
-            for (int numero : numerosBaraja.keySet()) {
-                String ruta = numerosBaraja.get(numero) + "_" + coloresBaraja.get(palo) + ".jpg";
-                Carta carta = new Carta(numero, palo, ruta);
-                baraja.add(carta);
-            }
-        }
-        return baraja;
 
     /**
      * {@inheritDoc}

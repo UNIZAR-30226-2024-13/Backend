@@ -6,7 +6,6 @@ package com.proyectosoftware.backend.modelo;
 public class Carta {
     private int numero;
     private int color;
-    private String ruta;
 
     /**
      * Constructor de la carta
@@ -14,10 +13,9 @@ public class Carta {
      * @param color     - color de la carta
      * @param ruta      - ruta de la imagen de la carta
      */
-    public Carta(int numero, int color, String ruta){
+    public Carta(int numero, int color){
         this.numero = numero;
         this.color = color;
-        this.ruta = ruta;
     }
 
     /**
@@ -36,16 +34,9 @@ public class Carta {
         return color;
     }
 
-    /**
-     * Devuelve la ruta de la imagen de la carta
-     * @return ruta de la imagen dela carta
-     */
-    public String getRuta(){
-        return ruta;
-    }
 
     public String toString() {
-        return color + "," + numero + "," + ruta;
+        return color + "," + numero;
     }
     
     /**
