@@ -15,30 +15,40 @@ import com.proyectosoftware.backend.modelo.interfaces.JuegoConApuesta;
  * Juego del blackjack
 */
 public class BlackJack implements JuegoConApuesta, Estado {
+
+    private enum Accion {
+        PEDIR_CARTA,
+        PLANTARSE
+    }
+
+    private static final int MAX_JUGADORES = 4;
+
     private List<Carta> cartas_banca;
     private List<Carta> mazo;
     private Baraja baraja;
     private int apuesta_mesa;
     private int turno;
+
     private Map<String, Integer> fichas_usuario;        // Diccionario con los usuarios y sus fichas a usar en la partida
     private Map<String, List<Carta>> cartas_usuario;    // Diccionario con los usuarios y sus cartas a usar en la partida
     private Map<String, Boolean> plantado;              // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
     private List<Carta> cartas_croupier;                // Lista de cartas del croupier (Carta de índice 0 está boca arriba y la otra boca abajo)
     private Map<String, Integer> apuesta_usuario;       // Diccionario con los usuarios y su apuesta en la partida
+    private List<Usuario> usuarios;
+
 
     /**
      * Constructor por defecto
     */
     public BlackJack() {
-        turno = 0;
         baraja = BarajaFrancesa.devolverInstancia();
         mazo = baraja.devolverCartas();
-        apuesta_mesa = 0;
         fichas_usuario = new HashMap<>();
         cartas_usuario = new HashMap<>();
         plantado = new HashMap<>();
         cartas_croupier = new ArrayList<>();
         apuesta_usuario = new HashMap<>();
+        usuarios = new ArrayList<>();
     }
 
 
@@ -48,6 +58,43 @@ public class BlackJack implements JuegoConApuesta, Estado {
     */
     public BlackJack(Estado estado) {
 
+    }
+
+
+    public void iniciarPartida() {
+        turno = 0;
+        apuesta_mesa = 0;
+        Collections.shuffle(mazo);
+        repartirCartas();
+    }
+
+
+    public void jugada(Usuario usuario, Accion accion) {
+        if (accion == PEDIR_CARTA) {
+            if (!jugadorPlantado(usuario)) {
+                pedirCarta(usuario);
+                if (valorMano() >= 21) { // Si el usuario se pasa de 21, se retira
+                    plantarse(usuario);
+                }
+            }
+            else {
+                // Lanzar error, jugador plantado y está pidiendo carta
+            }
+        }
+        else { // accion == PLANTARSE
+            plantarse(usuario);
+        }
+        siguienteTurno();
+    }
+
+
+    public void jugadaInicial(Usuario usuario, int apuestaInicial) {
+        apuesta_usuario.put(usuario.getId(), apuestaInicial);   // Apuestas iniciales
+    }
+
+    public void jugadaFinal() {
+        turnoCroupier();
+        comprobarGanadores();
     }
 
 
@@ -80,7 +127,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
 
     @Override
-    public void siguenteTurno() {
+    public void siguienteTurno() {
         turno = (turno + 1) % MAX_JUGADORES;
     }
 
@@ -194,10 +241,8 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
     /**
      * Se reparten las dos cartas iniciales a cada jugador
-     * @param usuarios
     */
-    public void repartirCartas(List<Usuario> usuarios) {
-        Collections.shuffle(mazo);
+    public void repartirCartas() {
         List<Carta> cartas;
         for (int i = 0; i < usuarios.size(); i++) {     // Itera sobre cada usuario
             cartas = new ArrayList<>();
