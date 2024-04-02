@@ -2,6 +2,7 @@ package com.proyectosoftware.backend.modelo.juegos;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +14,6 @@ import com.proyectosoftware.backend.modelo.barajas.BarajaEspaniola;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
 import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
-import com.proyectosoftware.backend.modelo.ComparadorCarta;
 
 /**
  * Juego del chinquillo
@@ -24,11 +24,10 @@ public class Cinquillo implements JuegoSinApuesta{
     private Baraja baraja;
     private List<Carta> mazo;
     private Map<Integer, Usuario> usuarios; 
-    private Map<Integer, List<Carta>> manoUsuarios;
+    private Map<Integer, List<Carta>> manosUsuarios;
     private Map<String, List<Carta>> escaleras;
 
     private int turno = 0;
-    private ComparadorCarta comparador = new ComparadorCarta();
 
     /**
      * Constructor por defecto
@@ -37,7 +36,7 @@ public class Cinquillo implements JuegoSinApuesta{
         baraja = BarajaEspaniola.devolverInstancia();
         mazo = baraja.devolverCartas();
         usuarios = new HashMap<>(MAX_USUARIOS);
-        manoUsuarios = new HashMap<>(MAX_USUARIOS);
+        manosUsuarios = new HashMap<>(MAX_USUARIOS);
         escaleras = new HashMap<>(4);
 
         escaleras.put(BarajaEspaniola.OROS, new ArrayList<>());
@@ -70,13 +69,13 @@ public class Cinquillo implements JuegoSinApuesta{
                 mano.add(carta);
             }while(mano.size() < 10);
             
-            manoUsuarios.put(jugador++, new ArrayList<>(mano));
+            manosUsuarios.put(jugador++, new ArrayList<>(mano));
             mano.clear();
         } while (jugador < MAX_USUARIOS);
         
 
         //  Modificar la mano del usuario con el 5 de oros y la escalera correspondiente
-        List<Carta> manoPrimerJugador = manoUsuarios.get(primerJugador);
+        List<Carta> manoPrimerJugador = manosUsuarios.get(primerJugador);
         Iterator<Carta> iter = manoPrimerJugador.iterator();
         while (iter.hasNext()) {
             carta = iter.next();
@@ -99,20 +98,26 @@ public class Cinquillo implements JuegoSinApuesta{
      * 
      */
     public void jugada(Usuario usuario, Carta carta){
-        List<Carta> manoJugador = manoUsuarios.get(turno);
+        int clave = -1;
+        for (int i : usuarios.keySet()) {
+            if(usuarios.get(i).getID().equals(usuario.getID())){
+                clave = i;
+            }
+        }
+        List<Carta> manoJugador = manosUsuarios.get(clave);
         Iterator<Carta> iterator = manoJugador.iterator();
         List<Carta> posiblesJugadas = new ArrayList<>();
     
         //  En caso de que el jugador tenga un 5 lo juega de manera obligatoria
         posiblesJugadas = jugarCinco(posiblesJugadas, iterator);
-        if(posiblesJugadas.size() > 0){
+        if(posiblesJugadas.contains(carta)){
             //  Notificar a control y hacer jugada en la interfaz
             siguenteTurno();
         }
 
         //  Si no tiene un 5 y puede continuar una escalera decide cual continuar
         posiblesJugadas = jugarCarta(posiblesJugadas, manoJugador.iterator());
-        if(posiblesJugadas.size() > 0){
+        if(posiblesJugadas.contains(carta)){
             //  Notificar a control y hacer jugada en la interfaz
             siguenteTurno();
         }
@@ -191,7 +196,13 @@ public class Cinquillo implements JuegoSinApuesta{
                 }
             }
 
-            Collections.sort(escaleras.get(baraja.colorReal(color)), comparador);
+            //  Se organizan las escaleras en funcion de los numeros para que solo sea necesario comprobar el primer y último elemento
+            Collections.sort(escaleras.get(baraja.colorReal(color)), new Comparator<Carta>() {
+                @Override
+                public int compare(Carta carta1, Carta carta2) {
+                    return Integer.compare(carta1.getNumero(), carta2.getNumero());
+                }
+            });
             color++;
         }while(color < 4);
         return posiblesJugadas;
