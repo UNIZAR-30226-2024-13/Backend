@@ -28,6 +28,7 @@ public class Cinquillo implements JuegoSinApuesta{
     private Map<String, List<Carta>> escaleras;
 
     private int turno = 0;
+    private int primerJugador = -1;
 
     /**
      * Constructor por defecto
@@ -46,13 +47,24 @@ public class Cinquillo implements JuegoSinApuesta{
     }
 
     /**
+     * Añade un jugador a la partida si esta no esta completa
+     * @param usuario - Jugador a añadir en la partida
+     */
+    public void nuevoUsuario(Usuario usuario){
+        int numeroUsuarios = usuarios.size(); 
+
+        if (numeroUsuarios < MAX_USUARIOS){
+            usuarios.put(numeroUsuarios, usuario);
+        }
+    }
+
+    /**
      * Reparto de cartas entre los usuarios y busqueda del 5 de Oros para iniciar la partida
      * 
      */
     public void iniciarPartida(){
         int jugador = 0; 
         int index = 0;
-        int primerJugador = 0;
         List<Carta> mano = new ArrayList<>();
         Carta carta;
         
@@ -65,6 +77,7 @@ public class Cinquillo implements JuegoSinApuesta{
 
                 if (carta.getNumero() == 5 && baraja.colorReal(carta.getColor()).equals(BarajaEspaniola.OROS)) {
                     primerJugador = jugador;
+                    turno = primerJugador;
                 }
                 mano.add(carta);
             }while(mano.size() < 10);
@@ -245,7 +258,7 @@ public class Cinquillo implements JuegoSinApuesta{
     public void siguenteTurno() {
         turno++;
         if(turno == MAX_USUARIOS){
-            turno = 0;
+            turno = primerJugador;
         }
     }
 }
