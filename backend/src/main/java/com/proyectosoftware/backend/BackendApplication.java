@@ -13,11 +13,5 @@ public class BackendApplication {
 		
 		Cinquillo cinquillo = new Cinquillo();
 		cinquillo.iniciarPartida();
-		
-		int n=0;
-		do {
-			n++;
-			cinquillo.jugada();
-		} while (n < 36);
 	}
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -89,17 +88,16 @@ public class Cinquillo implements JuegoSinApuesta{
 
         //  Modificar la mano del usuario con el 5 de oros y la escalera correspondiente
         List<Carta> manoPrimerJugador = manosUsuarios.get(primerJugador);
-        Iterator<Carta> iter = manoPrimerJugador.iterator();
-        while (iter.hasNext()) {
-            carta = iter.next();
-
-            if (carta.getNumero() == 5 && baraja.colorReal(carta.getColor()).equals(BarajaEspaniola.OROS)) {
-                iter.remove();
+        for (Carta cartaJugada : manoPrimerJugador) {
+            if (cartaJugada.getNumero() == 5 && baraja.colorReal(cartaJugada.getColor()).equals(BarajaEspaniola.OROS)) {
+                manoPrimerJugador.remove(cartaJugada);
                 List<Carta> escaleraOros = escaleras.get(BarajaEspaniola.OROS);
-                escaleraOros.add(carta);
+                escaleraOros.add(cartaJugada);
                 break;
             }
         }
+        System.out.println(escaleras);
+        System.out.println(manosUsuarios);
         siguenteTurno();
     }
 
@@ -119,10 +117,9 @@ public class Cinquillo implements JuegoSinApuesta{
         }
         if(carta != null){
             List<Carta> manoJugador = manosUsuarios.get(clave);
-            Iterator<Carta> iterator = manoJugador.iterator();
         
             //  En caso de que el jugador tenga un 5 lo juega de manera obligatoria
-            if(carta.getNumero() != 5 && buscarCinco(iterator)){
+            if(carta.getNumero() != 5 && buscarCinco(manoJugador)){
                 /**
                 * Error el usuario tiene que jugar el cinco que tiene en la mano
                 */
@@ -151,12 +148,11 @@ public class Cinquillo implements JuegoSinApuesta{
 
     /**
      * Busca los 5 en la mano del usuario y devuelve verdadero en caso de encontrar uno
-     * @param iterator - Cartas en la mano del usuario  
+     * @param manoJugador - Cartas en la mano del usuario  
      * @return - True si la mano contiene un 5, Fale si no contiene un 5
      */
-    private boolean buscarCinco(Iterator<Carta> iterator){
-        while(iterator.hasNext()) {
-            Carta carta = iterator.next();
+    private boolean buscarCinco(List<Carta> manoJugador){
+        for (Carta carta : manoJugador) {
             if(carta.getNumero() == 5){
                 return true;
             }
