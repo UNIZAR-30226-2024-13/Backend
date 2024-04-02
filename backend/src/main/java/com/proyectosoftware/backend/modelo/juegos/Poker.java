@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Partida;
@@ -48,10 +50,12 @@ public class Poker implements JuegoConApuesta{
     private int bote;
     private int turno;
     private int ultima_apuesta;
+    private int ronda;
     private List<Carta> cartas_mesa;
     private Baraja baraja;
     private List<Carta> mazo;
     private List<Usuario> usuarios;
+    private Set<String> usuarios_con_apuesta;
     private Map<String, Integer> fichas_usuario; //Diccionario con los usuarios y sus fichas a usar en la partida
     private Map<String, List<Carta>> cartas_usuario; // Diccionario con los usuarios y sus cartas a usar en la partida
     private Map<String, Mano> mano_usuario; //Diccionario con los usuarios y su mano en una partida
@@ -63,9 +67,11 @@ public class Poker implements JuegoConApuesta{
         mazo = baraja.devolverCartas();
         bote = 0;
         turno = 0;
+        ronda = 0;
         ultima_apuesta = 0;
         cartas_mesa = new ArrayList<>();
         usuarios = new ArrayList<>(MAX_JUGADORES);
+        usuarios_con_apuesta = new HashSet<>(MAX_JUGADORES);
         fichas_usuario = new HashMap<>(MAX_JUGADORES);
         cartas_usuario = new HashMap<>(MAX_JUGADORES);
         mano_usuario = new HashMap<>(MAX_JUGADORES);
@@ -177,16 +183,13 @@ public class Poker implements JuegoConApuesta{
 
     /**
      * Apuesta que un usuario realiza
-     * @param usaurio   - Usuario que realiza la apuesta
+     * @param usaurio   - Id del usuario que realiza la apuesta
      * @param apuesta   - Valor de la apuesta
      */
     @Override
     public void apostar(String usuario, int apuesta){
         int fichas_disponibles = fichas_usuario.get(usuario);
         if (apuesta > fichas_disponibles) {
-            //Mandar error al control y esperar a nueva apuesta
-        }
-        else if (apuesta < ultima_apuesta) {
             //Mandar error al control y esperar a nueva apuesta
         }
         else {
@@ -199,13 +202,13 @@ public class Poker implements JuegoConApuesta{
 
     /**
      * Aumenta el numero de fichas de un usuario
-     * @param usaurio   - Usuario que va a aumentar sus fichas
+     * @param usaurio   - Id del suario que va a aumentar sus fichas
      */
     @Override
-    public void sumarFichas(Usuario usuario) {
-        int fichas_disponibles = fichas_usuario.get(usuario.getId());
+    public void sumarFichas(String usuario) {
+        int fichas_disponibles = fichas_usuario.get(usuario);
         fichas_disponibles += bote;
-        fichas_usuario.put(usuario.getId(),fichas_disponibles);
+        fichas_usuario.put(usuario, fichas_disponibles);
         //Almacenar fichas totales en la BD
     }
     
@@ -380,17 +383,17 @@ public class Poker implements JuegoConApuesta{
 
     /**
      * Determina el ganador de una partida de poker
-     * @param usuarios - Lista de usuarios de la partida
-     * @return - Devuelve el usuario ganador
+     * @return - Devuelve el id del usuario ganador
      */
-    public Usuario ganadorPartida(){
+    public String ganadorPartida(){
         String id_usuario;
         Mano mano = new Mano();
         Mano mejor_mano = new Mano();
         int ganador = 0;
         List<Carta> cartas_mano = new ArrayList<>();
-        for (int i = 0; i < usuarios.size(); i++) {
-            id_usuario = usuarios.get(i).getId();
+        List<String> usuariosApuesta = new ArrayList<>(usuarios_con_apuesta);
+        for (int i = 0; i < usuariosApuesta.size(); i++) {
+            id_usuario = usuariosApuesta.get(i);
             List<Carta> carta_usuario = cartas_usuario.get(id_usuario);
             for (int j = 0; j < 2; j++) {
                 cartas_mano.add(carta_usuario.get(j));
@@ -403,9 +406,9 @@ public class Poker implements JuegoConApuesta{
             mano_usuario.put(id_usuario, mano);
             cartas_mano.clear();
         }
-        mejor_mano = mano_usuario.get(usuarios.get(0).getId());
-        for (int i = 1; i < usuarios.size(); i++) {
-            mano = mano_usuario.get(usuarios.get(i).getId());
+        mejor_mano = mano_usuario.get(usuariosApuesta.get(0));
+        for (int i = 1; i < usuariosApuesta.size(); i++) {
+            mano = mano_usuario.get(usuariosApuesta.get(i));
             if (mano.getPrioridad() > mejor_mano.getPrioridad() || (mano.getPrioridad() == mejor_mano.getPrioridad() &&
                 mano.getValor() > mejor_mano.getValor())) {
                 mejor_mano.setNombre(mano.getNombre());
@@ -414,28 +417,56 @@ public class Poker implements JuegoConApuesta{
                 ganador = i;
             }
         }
-        return usuarios.get(ganador);
+        return usuariosApuesta.get(ganador);
     }
+
+
+    /**
+     * Comprueba si los usuarios han apostado lo mismo en una ronda
+     * @param apuestas  - Lista de las apuestas e la ronda
+     * @return          - Devuelve true si los usuarios han apostado lo mismo en una ronda, en caso contrario, false
+     */
+    public boolean mismaApuesta(List<Integer> apuestas) {
+        int apuesta = apuestas.get(0);
+        boolean iguales = true;
+        for (int i = 1; i < apuestas.size(); i++) {
+            if (apuesta != apuestas.get(i)) {
+                iguales = false;
+            }
+        }
+        return iguales;
+    }
+
 
     /**
      * Jugada de poker donde se realizan las apuestas de cada jugador y se añade otra
      * carta a la mesa o se verifica el ganador de la partida y se le añaden las fichas
-     * @param apuesta_usuario   - Apuestas de los jugadores para esta jugada
+     * @param Usuario   - Usuario que ha realizado la apuesta
+     * @param apuesta   - Cantidad de fichas que ha apostado el usuario (vale 0 si se ha retirado)
      */
-    public void jugada (Map<String, Integer> apuesta_usuario) {
-        // Apuestas de cada usuario
-        for (String usuario : apuesta_usuario.keySet()) {
-            apostar(usuario, apuesta_usuario.get(usuario));
+    public void jugada (Usuario usuario, int apuesta) {
+        List<Integer> apuestas = new ArrayList<>(MAX_JUGADORES);
+        apostar(usuario.getId(), apuesta);
+        apuestas.add(apuesta);
+        if (apuesta != 0) {
+            usuarios_con_apuesta.add(usuario.getId());
         }
-        // Turno final, comprobar ganador
-        if (turno == 2) {
-            Usuario ganador = ganadorPartida();
-            sumarFichas(ganador);
+        if (turno == 3 && mismaApuesta(apuestas)) {
+            // Turno final, comprobar ganador
+            if (ronda == 2) {
+                String ganador = ganadorPartida();
+                sumarFichas(ganador);
+            }
+            // Turnos intermedios
+            else {
+                agnadirCartaCentro();
+                apuestas.clear();
+            }
+            ronda++;
         }
-        // Turnos intermedios
-        else {
-            agnadirCartaCentro();
-            siguenteTurno();
+        else if (turno == 3 && !mismaApuesta(apuestas)) {
+            apuestas.clear();
         }
+        siguenteTurno();
     }
 }
