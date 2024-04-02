@@ -64,7 +64,7 @@ public class Cinquillo implements JuegoSinApuesta{
                 carta = new Carta(mazo.get(index).getNumero(), mazo.get(index).getColor());
                 index++;
 
-                if (carta.getNumero() == 5 && BarajaEspaniola.OROS.equals(baraja.colorReal(carta.getColor()))) {
+                if (carta.getNumero() == 5 && baraja.colorReal(carta.getColor()).equals(BarajaEspaniola.OROS)) {
                     primerJugador = jugador;
                 }
                 mano.add(carta);
@@ -81,7 +81,7 @@ public class Cinquillo implements JuegoSinApuesta{
         while (iter.hasNext()) {
             carta = iter.next();
 
-            if (carta.getNumero() == 5 && BarajaEspaniola.OROS.equals(baraja.colorReal(carta.getColor()))) {
+            if (carta.getNumero() == 5 && baraja.colorReal(carta.getColor()).equals(BarajaEspaniola.OROS)) {
                 iter.remove();
                 List<Carta> escaleraOros = escaleras.get(BarajaEspaniola.OROS);
                 escaleraOros.add(carta);
@@ -98,7 +98,7 @@ public class Cinquillo implements JuegoSinApuesta{
      * sino saltar turno
      * 
      */
-    public void jugada(){
+    public void jugada(Usuario usuario, Carta carta){
         List<Carta> manoJugador = manoUsuarios.get(turno);
         Iterator<Carta> iterator = manoJugador.iterator();
         List<Carta> posiblesJugadas = new ArrayList<>();
