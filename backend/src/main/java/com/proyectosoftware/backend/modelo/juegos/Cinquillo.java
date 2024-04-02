@@ -117,22 +117,32 @@ public class Cinquillo implements JuegoSinApuesta{
                 clave = i;
             }
         }
-        List<Carta> manoJugador = manosUsuarios.get(clave);
-        Iterator<Carta> iterator = manoJugador.iterator();
-        List<Carta> posiblesJugadas = new ArrayList<>();
-    
-        //  En caso de que el jugador tenga un 5 lo juega de manera obligatoria
-        posiblesJugadas = jugarCinco(posiblesJugadas, iterator);
-        if(posiblesJugadas.contains(carta)){
-            //  Notificar a control y hacer jugada en la interfaz
-            siguenteTurno();
-        }
+        if(carta != null){
+            List<Carta> manoJugador = manosUsuarios.get(clave);
+            Iterator<Carta> iterator = manoJugador.iterator();
+        
+            //  En caso de que el jugador tenga un 5 lo juega de manera obligatoria
+            if(carta.getNumero() != 5 && buscarCinco(iterator)){
+                /**
+                * Error el usuario tiene que jugar el cinco que tiene en la mano
+                */
+            }else{
+                int color = 0;
+                //  Notificar a control y hacer jugada en la interfaz
+                manoJugador.remove(carta);
+                escaleras.get(baraja.colorReal(carta.getColor())).add(carta);
 
-        //  Si no tiene un 5 y puede continuar una escalera decide cual continuar
-        posiblesJugadas = jugarCarta(posiblesJugadas, manoJugador.iterator());
-        if(posiblesJugadas.contains(carta)){
-            //  Notificar a control y hacer jugada en la interfaz
-            siguenteTurno();
+                do{
+                    //  Se organizan las escaleras en funcion de los numeros de las cartas
+                    Collections.sort(escaleras.get(baraja.colorReal(color)), new Comparator<Carta>() {
+                        @Override
+                        public int compare(Carta carta1, Carta carta2) {
+                            return Integer.compare(carta1.getNumero(), carta2.getNumero());
+                        }
+                    });
+                }while(color++ < 4);
+                siguenteTurno();
+            }
         }
 
         //  Si no puede hacer nada termina su turno y pasa al siguiente
@@ -140,85 +150,18 @@ public class Cinquillo implements JuegoSinApuesta{
     }
 
     /**
-     * Busca los 5 en la mano del usuario y devuelve una lista que contiene los 5 de la mano del usuario
-     * @param posiblesJugadas - Lista con las posibles cartas a jugar
+     * Busca los 5 en la mano del usuario y devuelve verdadero en caso de encontrar uno
      * @param iterator - Cartas en la mano del usuario  
-     * @return - Lista con las posibles cartas a jugar
+     * @return - True si la mano contiene un 5, Fale si no contiene un 5
      */
-    private List<Carta> jugarCinco(List<Carta> posiblesJugadas, Iterator<Carta> iterator){
+    private boolean buscarCinco(Iterator<Carta> iterator){
         while(iterator.hasNext()) {
             Carta carta = iterator.next();
             if(carta.getNumero() == 5){
-                switch (baraja.colorReal(carta.getColor())) {
-                    case BarajaEspaniola.COPAS:
-                        posiblesJugadas.add(carta);
-
-                        iterator.remove();
-                        escaleras.get(BarajaEspaniola.COPAS).add(carta);
-                        break;
-                
-                    case BarajaEspaniola.ESPADAS:
-                        posiblesJugadas.add(carta);
-
-                        iterator.remove();
-                        escaleras.get(BarajaEspaniola.ESPADAS).add(carta);
-                        break;
-
-                    case BarajaEspaniola.BASTOS:
-                        posiblesJugadas.add(carta);
-
-                        iterator.remove();
-                        escaleras.get(BarajaEspaniola.BASTOS).add(carta);
-                        break;
-                }
+                return true;
             }
         }
-
-        return posiblesJugadas;
-    }
-
-    /**
-     * Busca las cartas que pueden ser jugadas en base a las escaleras ya colocadas en la mesa
-     * @param posiblesJugadas - Lista con las posibles cartas a jugar
-     * @param iterator - Cartas en la mano del usuario 
-     * @return - Lista con las posibles cartas a jugar
-     */
-    private List<Carta> jugarCarta(List<Carta> posiblesJugadas, Iterator<Carta> iterator){
-        int color = 0;
-
-        do{
-            int ultimoIndice = escaleras.get(baraja.colorReal(color)).size();
-            if(ultimoIndice != 0){
-                Carta primeraCarta = escaleras.get(baraja.colorReal(color)).get(0);
-                Carta ultimaCarta = escaleras.get(baraja.colorReal(color)).get(ultimoIndice - 1);
-
-                while(iterator.hasNext()) {
-                    Carta carta = iterator.next();
-
-                    if(carta.getColor() == primeraCarta.getColor() && carta.getNumero() == primeraCarta.getNumero() - 1){
-                        posiblesJugadas.add(carta);
-                        
-                        iterator.remove();
-                        escaleras.get(baraja.colorReal(color)).add(carta);
-                    }else if(carta.getColor() == ultimaCarta.getColor() && carta.getNumero() == ultimaCarta.getNumero() + 1){
-                        posiblesJugadas.add(carta);
-
-                        iterator.remove();
-                        escaleras.get(baraja.colorReal(color)).add(carta);
-                    }
-                }
-            }
-
-            //  Se organizan las escaleras en funcion de los numeros para que solo sea necesario comprobar el primer y último elemento
-            Collections.sort(escaleras.get(baraja.colorReal(color)), new Comparator<Carta>() {
-                @Override
-                public int compare(Carta carta1, Carta carta2) {
-                    return Integer.compare(carta1.getNumero(), carta2.getNumero());
-                }
-            });
-            color++;
-        }while(color < 4);
-        return posiblesJugadas;
+        return false;
     }
 
     /**
