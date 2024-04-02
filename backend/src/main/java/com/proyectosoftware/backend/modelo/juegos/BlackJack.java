@@ -29,12 +29,12 @@ public class BlackJack implements JuegoConApuesta, Estado {
     private int apuesta_mesa;
     private int turno;
 
-    private Map<String, Integer> fichas_usuario;        // Diccionario con los usuarios y sus fichas a usar en la partida
+    private Map<String, Integer> fichas_usuario;       // Diccionario con los usuarios y sus fichas a usar en la partida
     private Map<String, List<Carta>> cartas_usuario;    // Diccionario con los usuarios y sus cartas a usar en la partida
-    private Map<String, Boolean> plantado;              // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
+    private Map<String, Boolean> plantado;             // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
     private List<Carta> cartas_croupier;                // Lista de cartas del croupier (Carta de índice 0 está boca arriba y la otra boca abajo)
-    private Map<String, Integer> apuesta_usuario;       // Diccionario con los usuarios y su apuesta en la partida
-    private List<Usuario> usuarios;
+    private Map<String, Integer> apuesta_usuario;      // Diccionario con los usuarios y su apuesta en la partida
+    private Map<String, Usuario> usuarios;
 
 
     /**
@@ -48,7 +48,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
         plantado = new HashMap<>();
         cartas_croupier = new ArrayList<>();
         apuesta_usuario = new HashMap<>();
-        usuarios = new ArrayList<>();
+        usuarios = new HashMap<>();
     }
 
 
@@ -89,12 +89,13 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
 
     public void jugadaInicial(Usuario usuario, int apuestaInicial) {
-        apuesta_usuario.put(usuario.getId(), apuestaInicial);   // Apuestas iniciales
+        apostar(usuario, apuestaInicial);   // Cada usuario realiza su apuesta inicial
     }
 
     public void jugadaFinal() {
+        List<Usuario> usuarios_ganadores;
         turnoCroupier();
-        comprobarGanadores();
+        usuarios_ganadores = comprobarGanadores();
     }
 
 
@@ -262,9 +263,12 @@ public class BlackJack implements JuegoConApuesta, Estado {
     /**
      * Se comprueba qué jugadores han ganado o han perdido contra la banca
      * y se retocan sus fichas
+     * @return Lista de usuarios que han ganado a la banca
     */
-    public void comprobarGanadores() {
+    public List<Usuario> comprobarGanadores() {
         int cuenta_croupier = valorMano(cartas_croupier);
+        List<Usuario> usuarios_ganadores = new ArrayList<>();
+
         for (String usuario : cartas_usuario.keySet()) {
             List<Carta> cartas = cartas_usuario.get(usuario);
 
@@ -273,20 +277,23 @@ public class BlackJack implements JuegoConApuesta, Estado {
             int fichas_del_usuario = fichas_usuario.get(usuario.getId());
 
             int nuevas_fichas;
-            if (cuenta > 21) {      // Si un jugador se pasa de 21, independientemente de las cartas del croupier, pierde
+            if (cuenta > 21) {      // Si un jugador se pasa de 21, pierde independientemente de las cartas del croupier
                 // usuario pierde
             }
             else if (cuenta_croupier > 21) {
                 fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario));
+                usuarios_ganadores.add(usuarios.get(usuario));
                 // usuario gana
             }
             else if (cuenta <= 21 && cuenta > cuenta_croupier) {
                 fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario));
+                usuarios_ganadores.add(usuarios.get(usuario));
                 // usuario gana
             }
             else if (cuenta <= 21 && cuenta < cuenta_croupier) {
                 // usuario pierde
             }
         }
+        return usuarios_ganadores;
     }
 }
