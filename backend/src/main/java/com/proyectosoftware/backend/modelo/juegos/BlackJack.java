@@ -99,6 +99,21 @@ public class BlackJack implements JuegoConApuesta, Estado {
     }
 
 
+    public void nuevoUsuario(Usuario usuario) {
+        int numeroUsuarios = usuarios.size(); 
+        if (numeroUsuarios < MAX_JUGADORES) {
+            usuarios.put(usuario.getId(), usuario);
+            cartas_usuario.put(usuario.getId(), new ArrayList<Carta>());
+            if (usuarios.size() == MAX_JUGADORES) {
+                iniciarPartida();
+            }
+        }
+        else {
+            // Lanzar error, tope de jugadores alcanzado
+        }
+    }
+
+
     @Override
     public Estado guardar() {
         // TODO Auto-generated method stub
