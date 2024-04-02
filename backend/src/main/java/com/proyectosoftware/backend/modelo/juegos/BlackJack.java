@@ -26,7 +26,6 @@ public class BlackJack implements JuegoConApuesta, Estado {
     private List<Carta> cartas_banca;
     private List<Carta> mazo;
     private Baraja baraja;
-    private int apuesta_mesa;
     private int turno;
 
     private Map<String, Integer> fichas_usuario;       // Diccionario con los usuarios y sus fichas a usar en la partida
@@ -61,14 +60,22 @@ public class BlackJack implements JuegoConApuesta, Estado {
     }
 
 
+    /**
+     * Función que inicializa una partida, se baraja y se reparten
+     * las cartas a los jugadores y a la banca
+    */
     public void iniciarPartida() {
         turno = 0;
-        apuesta_mesa = 0;
         Collections.shuffle(mazo);
         repartirCartas();
     }
 
 
+    /**
+     * Jugada normal de Blackjack
+     * @param usuario   - Usuario al que le toca jugar
+     * @param accion    - Accion que realiza el usuario
+    */
     public void jugada(Usuario usuario, Accion accion) {
         if (accion == PEDIR_CARTA) {
             if (!jugadorPlantado(usuario)) {
@@ -91,16 +98,26 @@ public class BlackJack implements JuegoConApuesta, Estado {
                 // Lanzar error, jugador plantado y se está plantando otra vez
             }
         }
-        if (turno == MAX_JUGADORES) {
+        if (turno == MAX_JUGADORES - 1) {
             jugadaFinal();
         }
     }
 
 
+    /**
+     * Jugada inicial de Blackjack
+     * @param usuario           - Usuario al que le toca jugar
+     * @param apuestaInicial    - Apuesta inicial que realiza el usuario
+    */
     public void jugadaInicial(Usuario usuario, int apuestaInicial) {
         apostar(usuario, apuestaInicial);   // Cada usuario realiza su apuesta inicial
     }
 
+
+    /**
+     * Jugada final de Blackjack, el croupier destapa su otra carta
+     * y se comprueba que jugadores han ganado, perdido o empatado contra la banca
+    */
     public void jugadaFinal() {
         List<Usuario> usuarios_ganadores;
         turnoCroupier();
@@ -158,7 +175,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
 
 
     /**
-     * Apuesta que un usuario realiza
+     * Apuesta inicial que un jugador realiza
      * @param usaurio   - Usuario que realiza la apuesta
      * @param apuesta   - Valor de la apuesta
      */
@@ -174,7 +191,6 @@ public class BlackJack implements JuegoConApuesta, Estado {
         else {
             fichas_disponibles -= apuesta;
             fichas_usuario.put(usuario.getId(), fichas_disponibles);
-            apuesta_mesa += apuesta;
             apuesta_usuario.put(usuario.getId(), apuesta);
             //Mandar al control las fichas disponibles
         }
