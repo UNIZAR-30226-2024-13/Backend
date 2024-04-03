@@ -160,9 +160,8 @@ public class Poker implements JuegoConApuesta{
 
     /**
      * Reparte las cartas a los jugadores y las centrales
-     * @param usuarios
      */
-    public void repartirCartas(List<Usuario> usuarios) {
+    public void repartirCartas() {
         Collections.shuffle(mazo);
         List<Carta> cartas;
         for (int i = 0; i < usuarios.size(); i++) {
@@ -450,6 +449,9 @@ public class Poker implements JuegoConApuesta{
         apuestas.add(apuesta);
         if (apuesta != 0) {
             usuarios_con_apuesta.add(usuario.getId());
+        }
+        else {
+            usuarios_con_apuesta.remove(usuario.getId());
         }
         if (turno == 3 && mismaApuesta(apuestas)) {
             // Turno final, comprobar ganador

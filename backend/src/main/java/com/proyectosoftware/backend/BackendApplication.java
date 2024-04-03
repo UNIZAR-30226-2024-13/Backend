@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +52,9 @@ public class BackendApplication {
 		Carta carta7 = new Carta (10, 3);
 		mano.add(carta7);
 		System.out.println(poker.verificarMano(mano).getMano());
-		*/
+		
 		poker.repartirCartas(usuarios);
-		/*
+		
 		poker.agnadirCartaCentro();
 		poker.agnadirCartaCentro();
 		ganador = poker.ganadorPartida(usuarios);
