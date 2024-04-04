@@ -329,7 +329,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
                 if (!apuesta_plus.get(usuario.getId()))
                     fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario));
                 else
-                    fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2.5*(apuesta_realizada_usuario));
+                    fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario) + (apuesta_realizada_usuario/2));
                 usuarios_ganadores.add(usuarios.get(usuario));
                 // usuario gana
             }
@@ -337,7 +337,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
                 if (!apuesta_plus.get(usuario.getId()))
                     fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario));
                 else
-                    fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2.5*(apuesta_realizada_usuario));
+                    fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario) + (apuesta_realizada_usuario/2));
                 usuarios_ganadores.add(usuarios.get(usuario));
                 // usuario gana
             }
