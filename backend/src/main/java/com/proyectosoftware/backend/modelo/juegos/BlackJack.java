@@ -34,7 +34,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
     private List<Carta> cartas_croupier;                // Lista de cartas del croupier (Carta de índice 0 está boca arriba y la otra boca abajo)
     private Map<String, Integer> apuesta_usuario;      // Diccionario con los usuarios y su apuesta en la partida
     private Map<String, Usuario> usuarios;
-
+    private Map<String, Boolean> apuesta_plus;
 
     /**
      * Constructor por defecto
@@ -48,6 +48,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
         cartas_croupier = new ArrayList<>();
         apuesta_usuario = new HashMap<>();
         usuarios = new HashMap<>();
+        apuesta_plus = new HashMap<>();
     }
 
 
@@ -291,7 +292,11 @@ public class BlackJack implements JuegoConApuesta, Estado {
                 cartas.add(mazo.get(0));                // Se saca una carta y se añade al array
                 mazo.remove(0);
             }
-            cartas_usuario.put(usuarios.get(i).getId(), cartas.clone());
+            String usuario = usuarios.get(i).getId();
+            cartas_usuario.put(usuario, cartas.clone());
+            if (valorMano(cartas_usuario.get(usuario)) == 21) {
+                apuesta_plus.put(usuario, true);
+            }
         }
         for (int i = 0; i < 2; i++) {                   // Reparto de cartas al croupier
             cartas_croupier.add(mazo.get(0));
@@ -321,12 +326,18 @@ public class BlackJack implements JuegoConApuesta, Estado {
                 // usuario pierde
             }
             else if (cuenta_croupier > 21) {
-                fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario));
+                if (!apuesta_plus.get(usuario.getId()))
+                    fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario));
+                else
+                    fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2.5*(apuesta_realizada_usuario));
                 usuarios_ganadores.add(usuarios.get(usuario));
                 // usuario gana
             }
             else if (cuenta <= 21 && cuenta > cuenta_croupier) {
-                fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario));
+                if (!apuesta_plus.get(usuario.getId()))
+                    fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2*(apuesta_realizada_usuario));
+                else
+                    fichas_usuario.put(usuario.getId(), fichas_del_usuario + 2.5*(apuesta_realizada_usuario));
                 usuarios_ganadores.add(usuarios.get(usuario));
                 // usuario gana
             }
