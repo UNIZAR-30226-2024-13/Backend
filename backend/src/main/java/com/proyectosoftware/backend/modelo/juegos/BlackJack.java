@@ -273,17 +273,6 @@ public class BlackJack implements JuegoConApuesta {
             suma_croupier = valorMano(cartas_croupier);
         }
     }
-
-
-    /**
-     * Aumenta el numero de fichas de un usuario
-     * @param usaurio  - Usuario que va a aumentar sus fichas
-     * @param fichas   - Cantidad de fichas a sumar
-    */
-    public void sumarFichas(Usuario usuario, int fichas) {
-        int fichas_nuevas = fichas_usuario.get(usuario.getId()) + fichas;
-        fichas_usuario.put(usuario.getId(), fichas_nuevas);
-    }
     
 
     /**
