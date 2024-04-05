@@ -32,6 +32,7 @@ public class UNO implements JuegoSinApuesta{
        mazo = baraja.devolverCartas();
        usuarios = new HashMap<>(MAX_USUARIOS);
        manoUsuarios = new HashMap<>(MAX_USUARIOS);
+       ultimaCarta = new ArrayList<>();
     }
     
      /**
