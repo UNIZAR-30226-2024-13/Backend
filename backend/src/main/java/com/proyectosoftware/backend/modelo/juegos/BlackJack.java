@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Collections;
 
 import com.proyectosoftware.backend.modelo.Carta;
-import com.proyectosoftware.backend.modelo.Partida;
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaFrancesa;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
