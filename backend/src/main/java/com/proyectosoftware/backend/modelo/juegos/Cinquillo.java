@@ -1,7 +1,5 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.proyectosoftware.backend.modelo.Carta;
->>>>>>> origin/Cinquillo
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaEspaniola;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
@@ -29,19 +26,14 @@ public class Cinquillo implements JuegoSinApuesta{
     private Map<Integer, List<Carta>> manosUsuarios;
     private Map<String, List<Carta>> escaleras;
 
-<<<<<<< HEAD
-=======
     private int turno = 0;
     private int primerJugador = -1;
 
->>>>>>> origin/Cinquillo
     /**
      * Constructor por defecto
      */
     public Cinquillo() {
         baraja = BarajaEspaniola.devolverInstancia();
-<<<<<<< HEAD
-=======
         mazo = baraja.devolverCartas();
         usuarios = new HashMap<>(MAX_USUARIOS);
         manosUsuarios = new HashMap<>(MAX_USUARIOS);
@@ -112,7 +104,8 @@ public class Cinquillo implements JuegoSinApuesta{
      * el usuario tiene que jugar un 5 si lo tiene para empezar una nueva escalera, 
      * sino continuar las que ya estan en la mesa, 
      * sino saltar turno
-     * 
+     * @param usuario - Representa el jugador con el turno actual 
+     * @param carta - La carta que el jugador quiere utilizar
      */
     public void jugada(Usuario usuario, Carta carta){
         int clave = -1;
@@ -164,7 +157,6 @@ public class Cinquillo implements JuegoSinApuesta{
             }
         }
         return false;
->>>>>>> origin/Cinquillo
     }
 
     /**
@@ -202,14 +194,9 @@ public class Cinquillo implements JuegoSinApuesta{
 
     @Override
     public void siguenteTurno() {
-<<<<<<< HEAD
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'siguenteTurno'");
-=======
         turno++;
         if(turno == MAX_USUARIOS){
             turno = primerJugador;
         }
->>>>>>> origin/Cinquillo
     }
 }

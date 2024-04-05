@@ -1,12 +1,7 @@
 package com.proyectosoftware.backend.modelo.interfaces;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
 
 import com.proyectosoftware.backend.modelo.Carta;
 
@@ -66,8 +61,4 @@ public interface Baraja {
      * @return - Devuelve una copia de las cartas de la baraja
      */
     public List<Carta> devolverCartas();
-<<<<<<< HEAD
-    
-=======
->>>>>>> origin/Cinquillo
 }
