@@ -1,7 +1,6 @@
 package com.proyectosoftware.backend.modelo.barajas;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +19,6 @@ public class BarajaEspaniola implements Baraja{
     
     private List<Carta> cartas;
 
-    //private Set<String> coloresBaraja;
-    //private Set<Integer> numerosBaraja;
-
     private Map<Integer, String> coloresBaraja;
     private Map<Integer, String> numerosBaraja;
 
@@ -32,8 +28,6 @@ public class BarajaEspaniola implements Baraja{
      * Constuctor Baraja
      */
     private BarajaEspaniola() {
-        this.cartas = Collections.unmodifiableList(crearBaraja());
-        
         this.coloresBaraja = new HashMap<>();
         coloresBaraja.put(0, OROS);
         coloresBaraja.put(1, COPAS);
@@ -50,7 +44,9 @@ public class BarajaEspaniola implements Baraja{
         numerosBaraja.put(7, "7");
         numerosBaraja.put(8, "Sota");
         numerosBaraja.put(9, "Caballo");        
-        numerosBaraja.put(10, "Rey");        
+        numerosBaraja.put(10, "Rey");  
+        
+        this.cartas = crearBaraja();        
     }
 
     /**
