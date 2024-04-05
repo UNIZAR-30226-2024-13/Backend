@@ -14,7 +14,7 @@ import com.proyectosoftware.backend.modelo.interfaces.JuegoConApuesta;
 /*
  * Juego del blackjack
 */
-public class BlackJack implements JuegoConApuesta, Estado {
+public class BlackJack implements JuegoConApuesta {
 
     private enum Accion {
         PEDIR_CARTA,
@@ -42,13 +42,13 @@ public class BlackJack implements JuegoConApuesta, Estado {
     public BlackJack() {
         baraja = BarajaFrancesa.devolverInstancia();
         mazo = baraja.devolverCartas();
-        fichas_usuario = new HashMap<>();
-        cartas_usuario = new HashMap<>();
-        plantado = new HashMap<>();
-        cartas_croupier = new ArrayList<>();
-        apuesta_usuario = new HashMap<>();
-        usuarios = new HashMap<>();
-        apuesta_plus = new HashMap<>();
+        fichas_usuario = new HashMap<>(MAX_JUGADORES);
+        cartas_usuario = new HashMap<>(MAX_JUGADORES);
+        plantado = new HashMap<>(MAX_JUGADORES);
+        cartas_croupier = new ArrayList<>(MAX_JUGADORES);
+        apuesta_usuario = new HashMap<>(MAX_JUGADORES);
+        usuarios = new HashMap<>(MAX_JUGADORES);
+        apuesta_plus = new HashMap<>(MAX_JUGADORES);
     }
 
 
@@ -78,7 +78,7 @@ public class BlackJack implements JuegoConApuesta, Estado {
      * @param accion    - Accion que realiza el usuario
     */
     public void jugada(Usuario usuario, Accion accion) {
-        if (accion == PEDIR_CARTA) {
+        if (accion == Accion.PEDIR_CARTA) {
             if (!jugadorPlantado(usuario)) {
                 pedirCarta(usuario);
                 if (valorMano(cartas_usuario.get(usuario.getId())) >= 21) { // Si el usuario llega o se pasa de 21, se retira de la partida
@@ -131,6 +131,8 @@ public class BlackJack implements JuegoConApuesta, Estado {
         if (numeroUsuarios < MAX_JUGADORES) {
             usuarios.put(usuario.getId(), usuario);
             cartas_usuario.put(usuario.getId(), new ArrayList<Carta>());
+            apuesta_plus.put(usuario.getId(), false);
+            plantado.put(usuario.getId(), false);
             if (usuarios.size() == MAX_JUGADORES) {
                 iniciarPartida();
             }
