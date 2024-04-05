@@ -201,7 +201,6 @@ public class Poker implements JuegoConApuesta{
      * Aumenta el numero de fichas de un usuario
      * @param usaurio   - Id del suario que va a aumentar sus fichas
      */
-    @Override
     public void sumarFichas(String usuario) {
         int fichas_disponibles = fichas_usuario.get(usuario);
         fichas_disponibles += bote;
