@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+
 /**
  * Usuario
  */
@@ -13,7 +14,7 @@ public class Usuario implements UniqueIDGenerator{
     private String id;
     private String nombre;
     private String email;
-    private double dinero;
+    private int dinero;
     private String pais;
     private Set<String> IDsAmigos;
 
@@ -24,7 +25,7 @@ public class Usuario implements UniqueIDGenerator{
      * @param dinero    - dinero del usuario
      * @param pais      - pais del usuario
      */
-    public Usuario(String nombre, String email, double dinero, String pais) {
+    public Usuario(String nombre, String email, int dinero, String pais) {
         this.nombre = nombre;
         this.email = email;
         this.dinero = dinero;
@@ -75,7 +76,7 @@ public class Usuario implements UniqueIDGenerator{
      * @param cantidad  - cantidad de la apuesta
      * @return {@code true} si el usuario tiene dinero suficiente para apostar
      */
-    public boolean apostar(double cantidad){
+    public boolean apostar(int cantidad){
         if(dinero >= cantidad){
             dinero -= cantidad;
             return true;
@@ -87,7 +88,7 @@ public class Usuario implements UniqueIDGenerator{
      * Añade a la cartera del usuario la cantidad ganada
      * @param cantidad - cantidad a añadir
      */
-    public void ganaApuesta(double cantidad){
+    public void ganaApuesta(int cantidad){
         dinero += cantidad;
     }
     

@@ -49,6 +49,8 @@ public class BarajaEspaniola implements Baraja{
         this.cartas = crearBaraja();        
     }
 
+
+
     /**
      * Crea una baraja en base 
      * @return - Devuelve una baraja española

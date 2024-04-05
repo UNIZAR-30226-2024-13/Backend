@@ -11,6 +11,7 @@ public class Carta {
      * Constructor de la carta
      * @param numero    - numero de la carta
      * @param color     - color de la carta
+     * @param ruta      - ruta de la imagen de la carta
      */
     public Carta(int numero, int color){
         this.numero = numero;
