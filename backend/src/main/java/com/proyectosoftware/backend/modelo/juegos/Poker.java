@@ -1,17 +1,15 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.HashSet;
 import java.util.Set;
 
 import com.proyectosoftware.backend.modelo.Carta;
-import com.proyectosoftware.backend.modelo.Partida;
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaFrancesa;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
@@ -148,7 +146,7 @@ public class Poker implements JuegoConApuesta{
         if (numeroUsuarios < MAX_JUGADORES){
             usuarios.add(usuario);
             if(usuarios.size() == numeroUsuarios){
-                repartirCartas(usuarios);
+                repartirCartas();
             }
         }
         else{
@@ -170,7 +168,7 @@ public class Poker implements JuegoConApuesta{
                 cartas.add(mazo.get(0));
                 mazo.remove(0);
             }
-            cartas_usuario.put(usuarios.get(i).getId(), new ArrayList<>(cartas));
+            cartas_usuario.put(usuarios.get(i).getID(), new ArrayList<>(cartas));
         }
         for (int i = 0; i < 3; i++) {
             cartas_mesa.add(mazo.get(0));
@@ -445,13 +443,13 @@ public class Poker implements JuegoConApuesta{
      */
     public void jugada (Usuario usuario, int apuesta) {
         List<Integer> apuestas = new ArrayList<>(MAX_JUGADORES);
-        apostar(usuario.getId(), apuesta);
+        apostar(usuario.getID(), apuesta);
         apuestas.add(apuesta);
         if (apuesta != 0) {
-            usuarios_con_apuesta.add(usuario.getId());
+            usuarios_con_apuesta.add(usuario.getID());
         }
         else {
-            usuarios_con_apuesta.remove(usuario.getId());
+            usuarios_con_apuesta.remove(usuario.getID());
         }
         if (turno == 3 && mismaApuesta(apuestas)) {
             // Turno final, comprobar ganador
