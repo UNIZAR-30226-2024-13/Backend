@@ -1,5 +1,6 @@
 package com.proyectosoftware.backend.modelo.barajas;
 
+<<<<<<< HEAD
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +83,17 @@ public class BarajaFrancesa implements Baraja{
              */
         }
         return instancia;
+=======
+import java.util.List;
+
+import com.proyectosoftware.backend.modelo.Carta;
+import com.proyectosoftware.backend.modelo.interfaces.Baraja;
+
+public class BarajaFrancesa implements Baraja{
+
+    public BarajaFrancesa(int numeroCartas, String cartasBaraja) {
+
+>>>>>>> origin/Cinquillo
     }
 
     /**

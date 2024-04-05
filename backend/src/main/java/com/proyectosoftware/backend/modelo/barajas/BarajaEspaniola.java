@@ -1,8 +1,11 @@
 package com.proyectosoftware.backend.modelo.barajas;
 
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.Collections;
+=======
+>>>>>>> origin/Cinquillo
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +17,17 @@ import com.proyectosoftware.backend.modelo.interfaces.Baraja;
  * Implemenatsion singleton de la baraja española
  */
 public class BarajaEspaniola implements Baraja{
+<<<<<<< HEAD
     private static final String OROS = "oros";
     private static final String COPAS = "copas";
     private static final String ESPADAS = "espadas";
     private static final String BASTOS = "bastos";
+=======
+    public static final String OROS = "oros";
+    public static final String COPAS = "copas";
+    public static final String ESPADAS = "espadas";
+    public static final String BASTOS = "bastos";
+>>>>>>> origin/Cinquillo
 
     private int numeroCartas;
     private List<Carta> cartas;
@@ -35,10 +45,14 @@ public class BarajaEspaniola implements Baraja{
      * @param numeroCartas  - cantidad de cartas de la baraja
      * @param cartasBaraja  - String representando las diferentes cartas de la baraja
      */
+<<<<<<< HEAD
     private BarajaEspaniola(int numeroCartas, String cartasBaraja) {
         this.numeroCartas = numeroCartas;
         this.cartas = Collections.unmodifiableList(parsearCartas(cartasBaraja));
         
+=======
+    private BarajaEspaniola() {
+>>>>>>> origin/Cinquillo
         this.coloresBaraja = new HashMap<>();
         coloresBaraja.put(0, OROS);
         coloresBaraja.put(1, COPAS);
@@ -47,6 +61,7 @@ public class BarajaEspaniola implements Baraja{
         
         this.numerosBaraja = new HashMap<>();
         numerosBaraja.put(1, "As");
+<<<<<<< HEAD
         numerosBaraja.put(2, "1");
         numerosBaraja.put(3, "2");
         numerosBaraja.put(4, "3");
@@ -69,6 +84,35 @@ public class BarajaEspaniola implements Baraja{
             instancia = new BarajaEspaniola(numeroCartas, cartasBaraja);
         }
         return instancia;
+=======
+        numerosBaraja.put(2, "2");
+        numerosBaraja.put(3, "3");
+        numerosBaraja.put(4, "4");
+        numerosBaraja.put(5, "5");
+        numerosBaraja.put(6, "6");
+        numerosBaraja.put(7, "7");
+        numerosBaraja.put(8, "Sota");
+        numerosBaraja.put(9, "Caballo");        
+        numerosBaraja.put(10, "Rey");  
+        
+        this.cartas = crearBaraja();
+    }
+
+    /**
+     * Crea una baraja en base 
+     * @return - Devuelve una baraja española
+     */
+    private List<Carta> crearBaraja(){
+        List <Carta> baraja = new ArrayList<>();
+
+        for (int palo : coloresBaraja.keySet()) {
+            for (int numero : numerosBaraja.keySet()) {
+                Carta carta = new Carta(numero, palo);
+                baraja.add(carta);
+            }
+        }
+        return baraja;
+>>>>>>> origin/Cinquillo
     }
 
     /**
@@ -78,9 +122,13 @@ public class BarajaEspaniola implements Baraja{
      */
     public static synchronized BarajaEspaniola devolverInstancia(){
         if(instancia == null){
+<<<<<<< HEAD
             /**
              * TODO: lanzar error
              */
+=======
+            instancia = new BarajaEspaniola();
+>>>>>>> origin/Cinquillo
         }
         return instancia;
     }
@@ -135,5 +183,21 @@ public class BarajaEspaniola implements Baraja{
         }
         return null;
     }
+<<<<<<< HEAD
     
+=======
+
+    /**
+     * 
+     */
+    @Override
+    public String toString(){
+        String res = "";
+
+        for (Carta carta : cartas) {
+            res += carta.toString() + ";";
+        }
+        return res;
+    }
+>>>>>>> origin/Cinquillo
 }
