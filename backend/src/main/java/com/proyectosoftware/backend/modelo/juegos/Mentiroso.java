@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
@@ -39,8 +40,8 @@ public class Mentiroso implements JuegoSinApuesta{
      */
     public Mentiroso(){
         this.baraja = BarajaEspaniola.devolverInstancia();
-        this.usuarios = new HashMap<>(4);
-        this.cartasUsuarios = new HashMap<>(4);
+        this.usuarios = new HashMap<>(MAX_JUGADORES);
+        this.cartasUsuarios = new HashMap<>(MAX_JUGADORES);
         this.cartas = baraja.devolverCartas();
     }
 
@@ -49,7 +50,8 @@ public class Mentiroso implements JuegoSinApuesta{
      * @param estado
      */
     public Mentiroso(Estado estado) {
-        
+        this.baraja = BarajaEspaniola.devolverInstancia();
+        this.cargar(estado);
     }
 
     /**
@@ -59,18 +61,11 @@ public class Mentiroso implements JuegoSinApuesta{
      * @param numero    - Numero que se pone en la mesa
      */
     public void jugada(Usuario usuario, List<Carta> cartas, int numero){
-        int clave = -1;
-        for (int i : usuarios.keySet()) {
-            if(usuarios.get(i).getID().equals(usuario.getID())){
-                clave = i;
-            }
-        }
+        int clave = ordenUsuario(usuario);
         List<Carta> cartasUsuario = cartasUsuarios.get(clave);
 
-        for (Carta carta : cartas) {
-            cartasUsuario.remove(carta);
-            cartasMesa.add(carta);
-        }
+        cartasUsuario.removeAll(cartas);
+        cartasMesa.addAll(cartas);
 
         numeroActual = numero;
         cartasUltimaJugada = cartas.size();
@@ -93,46 +88,105 @@ public class Mentiroso implements JuegoSinApuesta{
              * TODO: Mala jugada, lanzar error
              */
         }else{
-            int clave = -1;
-            for (int i : usuarios.keySet()) {
-                if(usuarios.get(i).getID().equals(usuario.getID())){
-                    clave = i;
-                }
-            }
+            int clave = ordenUsuario(usuario);
+            
             List<Carta> cartasUsuario = cartasUsuarios.get(clave);
 
             if(accion == Accion.MENTIR){
-                for (Carta carta : cartas) {
-                    cartasUsuario.remove(carta);
-                    cartasMesa.add(carta);
-                }
+                cartasUsuario.removeAll(cartas);
+                cartasMesa.addAll(cartas);
                 cartasUltimaJugada = cartas.size();
+                siguenteTurno();
+
             }else if(accion == Accion.LEVANTAR){
-                boolean miente = false;
-                for(Carta carta: cartasMesa.subList(cartasMesa.size() - cartasUltimaJugada - 1, cartasMesa.size() - 1)){
-                    if(carta.getNumero() != numeroActual){
-                        miente = true;
-                        break;
-                    }
+                int usuarioAnterior = -1;
+                int usuarioPerdedor = -1;
+                
+                usuarioAnterior = turno - 1;
+                if(usuarioAnterior < 0){
+                    usuarioAnterior = MAX_JUGADORES - 1;
                 }
 
-                int usuarioPerdedor=-1;
-                if (miente) {
-                    usuarioPerdedor = turno - 1;
-                    if(usuarioPerdedor > 0 ){
-                        usuarioPerdedor = MAX_JUGADORES - 1;
-                    }
+                if (miente()) {
+                    usuarioPerdedor = usuarioAnterior;
                 }else{
                     usuarioPerdedor = turno;
                     siguenteTurno();
+                    if(cartasUsuarios.get(usuarioAnterior).size() == 0){ // El usuario anterior se ha quedado sin cartas
+                        ganador(usuarioAnterior);
+                        return;
+                    }
                 }
 
-                cartasUsuarios.get(usuarioPerdedor).addAll(cartasMesa);
+                aniadirCartas(cartasMesa, usuarioPerdedor);
                 cartasMesa.clear();
                 numeroActual = -1;
                 cartasUltimaJugada = 0;
+                if(cartasUsuarios.get(usuarioPerdedor).size() == 0){ // Gana por descartes
+                    ganador(usuarioPerdedor);
+                    return;
+                }
             }
         }
+    }
+    
+    /**
+     * Aniade cartas a la manao de un usuario, eliminando los cuartetos.
+     * <p> p.e si la mano del usuario despues de aniadir las cartas contine el {@code 3} de {@code OROS},
+     * {@code COPAS}, {@code ESPADAS} y {@code BASTOS}, eliminara las 4 cartas de la baraja
+     * @param cartas        - Cartas a aniadir
+     * @param ordenUsuario  - Orden del usuario a recibir las cartas
+     */
+    private void aniadirCartas(List<Carta> cartas, int ordenUsuario){
+        List<Carta> cartasUsuario = cartasUsuarios.get(ordenUsuario);
+        cartasUsuario.addAll(cartas);
+        
+        List<Integer> numerosAQuitar = cartas.stream()
+            .filter(carta -> numeroCartasMismoNumero(cartasUsuario, carta.getNumero()) == 4)
+            .map(Carta::getNumero)
+            .distinct()
+            .collect(Collectors.toList());
+        
+        cartasUsuario.removeIf(carta -> numerosAQuitar.contains(carta.getNumero()));        
+    }
+
+    /**
+     * Cuenta el numero de cartas del con el mismo numero en una lista
+     * @param cartas    - Lista de cartas donde contar
+     * @param numero    - El numero a buscar
+     * @return El numero de cartas
+     */
+    private int numeroCartasMismoNumero(List<Carta> cartas, int numero){
+        return (int) cartas.stream()
+                           .filter(carta -> carta.getNumero() == numero)
+                           .count();
+    }
+
+    /**
+     * Busca el orden del usuairo en la partida
+     * @param usuario   - Usuario a buscar
+     * @return El orden, o {@code -1} si no se encuentra
+     */
+    private int ordenUsuario(Usuario usuario){
+        for (int i : usuarios.keySet()) {
+            if(usuarios.get(i).getID().equals(usuario.getID())){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Comprueba si el ultimo turno ha mentido
+     * @return {@code True} si se ha mentido
+     */
+    private boolean miente(){
+        for(Carta carta: cartasMesa.subList(cartasMesa.size() - cartasUltimaJugada - 1, cartasMesa.size() - 1)){
+            if(carta.getNumero() != numeroActual){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -152,6 +206,18 @@ public class Mentiroso implements JuegoSinApuesta{
             }
         }
 
+        // Descartar cuartetos
+        for (Integer clave : usuarios.keySet()) {
+            List<Carta> cartasUsuario = cartasUsuarios.get(clave);
+            List<Integer> numerosAQuitar = cartasUsuario.stream()
+                .filter(carta -> numeroCartasMismoNumero(cartasUsuario, carta.getNumero()) == 4)
+                .map(Carta::getNumero)
+                .distinct()
+                .collect(Collectors.toList());
+        
+            cartasUsuario.removeIf(carta -> numerosAQuitar.contains(carta.getNumero()));  
+        }
+
         // Turno
         turno = 0;
         numeroActual = -1;
@@ -159,6 +225,10 @@ public class Mentiroso implements JuegoSinApuesta{
         cartasMesa = new ArrayList<>();
     }
 
+    /**
+     * Aniade un usuario al juego
+     * @param usuario usuario a aniadir
+     */
     public void nuevoUsuario(Usuario usuario){
         int numeroUsuarios = usuarios.size(); 
         if (numeroUsuarios < MAX_JUGADORES){
@@ -172,6 +242,14 @@ public class Mentiroso implements JuegoSinApuesta{
              * TODO: lanzar error juego lleno
              */
         }
+    }
+
+    /**
+     * 
+     * @param ordenUsuario
+     */
+    private void ganador(int ordenUsuario){
+
     }
 
     @Override
