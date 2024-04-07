@@ -32,7 +32,7 @@ public class CinquilloController {
    }
 
    @GetMapping("getCinquillo")
-   public Optional<Cinquillo> getCinquillo(@RequestParam Long idCinquillo) {
+   public Optional<Cinquillo> getCinquillo(@RequestParam String idCinquillo) {
        return cinquilloService.getCinquillo(idCinquillo);
    }
    

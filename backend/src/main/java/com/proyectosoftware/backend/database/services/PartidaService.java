@@ -29,7 +29,7 @@ public class PartidaService {
         return partidaRepository.save(partida);
     }
 
-    public Optional<Partida> getPartida(Long idPartida){
+    public Optional<Partida> getPartida(String idPartida){
         return partidaRepository.findById(idPartida);
     }
 

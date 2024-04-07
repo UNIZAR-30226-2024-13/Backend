@@ -30,7 +30,7 @@ public class PokerController {
     }
     
     @GetMapping("getPoker")
-    public Optional<Poker> getPoker(@RequestParam Long idPoker) {
+    public Optional<Poker> getPoker(@RequestParam String idPoker) {
         return pokerService.getPoker(idPoker);
     } 
 }

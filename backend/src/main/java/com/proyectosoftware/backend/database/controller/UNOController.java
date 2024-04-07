@@ -31,7 +31,7 @@ public class UNOController {
     }
     
     @GetMapping("getUNO")
-    public Optional<UNO> getUNO(@RequestParam Long idUNO) {
+    public Optional<UNO> getUNO(@RequestParam String idUNO) {
         return unoService.getUNO(idUNO);
     } 
 }

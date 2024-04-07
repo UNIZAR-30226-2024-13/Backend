@@ -11,8 +11,6 @@ import jakarta.persistence.OneToOne;
 @Embeddable
 public class PartidaId implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @OneToOne(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private Partida partida;
@@ -40,5 +38,13 @@ public class PartidaId implements Serializable {
         } else if (!partida.equals(other.partida))
             return false;
         return true;
+    }
+
+    public Partida getPartida() {
+        return partida;
+    }
+
+    public void setPartida(Partida partida) {
+        this.partida = partida;
     }
 }

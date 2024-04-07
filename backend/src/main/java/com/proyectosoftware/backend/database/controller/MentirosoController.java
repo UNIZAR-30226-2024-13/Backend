@@ -33,7 +33,7 @@ public class MentirosoController {
     }
     
     @GetMapping("getMentiroso")
-    public Optional<Mentiroso> getMentiroso(@RequestParam Long idMentiroso) {
+    public Optional<Mentiroso> getMentiroso(@RequestParam String idMentiroso) {
         return mentirosoService.getMentiroso(idMentiroso);
     }
 }

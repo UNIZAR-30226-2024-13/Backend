@@ -31,7 +31,7 @@ public class PartidaControlller {
     }
     
     @GetMapping("getPartida")
-    public Optional<Partida> getPartida(@RequestParam Long idPartida) {
+    public Optional<Partida> getPartida(@RequestParam String idPartida) {
         return partidaService.getPartida(idPartida);
     }
     

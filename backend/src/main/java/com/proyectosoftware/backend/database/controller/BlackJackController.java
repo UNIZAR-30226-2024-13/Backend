@@ -30,7 +30,7 @@ public class BlackJackController {
     }
     
     @GetMapping("getBlackJack")
-    public Optional<BlackJack> getBlackJack(@RequestParam Long idBlackJack) {
+    public Optional<BlackJack> getBlackJack(@RequestParam String idBlackJack) {
         return blackJackService.getBlackJack(idBlackJack);
     } 
 }
