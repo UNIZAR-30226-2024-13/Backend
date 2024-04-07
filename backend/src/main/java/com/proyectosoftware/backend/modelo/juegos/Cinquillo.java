@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaEspaniola;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
-import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
 
 /**
@@ -30,11 +30,13 @@ public class Cinquillo implements JuegoSinApuesta{
 
     private int turno = 0;
     private int primerJugador = -1;
+    private String id;
 
     /**
      * Constructor por defecto
      */
     public Cinquillo() {
+        id = this.generateID();
         baraja = BarajaEspaniola.devolverInstancia();
         mazo = baraja.devolverCartas();
         usuarios = new HashMap<>(MAX_USUARIOS);
@@ -45,6 +47,15 @@ public class Cinquillo implements JuegoSinApuesta{
         escaleras.put(BarajaEspaniola.COPAS, new ArrayList<>());
         escaleras.put(BarajaEspaniola.ESPADAS, new ArrayList<>());
         escaleras.put(BarajaEspaniola.BASTOS, new ArrayList<>());
+    }
+
+    /**
+     * Cargar un juego de cinquillo dado un estado
+     * @param estado - Juego almacenado en la Base de Datos
+     */
+    public Cinquillo(JSONObject estado){
+        this.baraja = BarajaEspaniola.devolverInstancia();
+        this.cargar(estado);
     }
 
     /**
@@ -162,29 +173,113 @@ public class Cinquillo implements JuegoSinApuesta{
     }
 
     /**
-     * Cargar un juego de cinquillo dado un estado
-     * @param estado
+     * Devuelve un string representando las cartas de una lista dada
+     * @param cartas    - Lista de cartas
+     * @return La representacion en string
      */
-    public Cinquillo(JSONObject estado){
-
+    private String cartasToString(List<Carta> cartas){
+        return String.join(";", cartas.stream().map(Carta::toString).toList());
     }
-
+    
+    /**
+     * {@inheritDoc}
+     * @implSpec
+     *  Se guardara:
+     *  <ul>
+     *  <li> El ID del juego
+     *  <li> El turno
+     *  <li> El primer jugador
+     *  <li> Una lista de los usuario que contine en cada campo: 
+     *       <ul>
+     *       <li> El id del usuario
+     *       <li> El turno del usuario en el juego
+     *       <li> Las cartas (en forma de string) del usuario
+     *       </ul>
+     *  <li> Una lista de las escaleras que contine en cada campo: 
+     *       <ul>
+     *       <li> El palo de la escalera
+     *       <li> Las cartas (en forma de string) colocadas en la escalera
+     *       </ul>
+     *  </ul>
+     */
+    @SuppressWarnings("unchecked")
     @Override
     public JSONObject guardar() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'guardar'");
+        JSONObject estado = new JSONObject();
+        JSONArray usuariosArray = new JSONArray();
+        JSONArray escalerasArray = new JSONArray();
+        
+        for (Integer clave : this.usuarios.keySet()) {
+            JSONObject usuarioJSON = new JSONObject();
+            usuarioJSON.put("ID", this.usuarios.get(clave).getID());
+            usuarioJSON.put("turno_en_juego", clave);
+            usuarioJSON.put("cartas", cartasToString(this.manosUsuarios.get(clave)));
+            usuariosArray.add(usuarioJSON);
+        }
+
+        for (String clave : escaleras.keySet()) {
+            JSONObject escaleraJSON = new JSONObject();
+            escaleraJSON.put("palo", clave);
+            estado.put("cartas", cartasToString(this.escaleras.get(clave)));
+            escalerasArray.add(escaleraJSON);
+        }
+        estado.put("ID", this.id);
+        estado.put("turno", this.turno);
+        estado.put("primer_jugador", primerJugador);
+        estado.put("usuarios", usuariosArray);
+        estado.put("escaleras", escalerasArray);
+
+        return estado;
     }
 
+    /**
+     * {@inheritDoc}
+     * @implSpec
+     *  El objeto Json debe contener:
+     *  <ul>
+     *  <li> El ID del juego
+     *  <li> El turno
+     *  <li> El primer jugador
+     *  <li> Una lista de los usuario que contine en cada campo: 
+     *       <ul>
+     *       <li> El id del usuario
+     *       <li> El turno del usuario en el juego
+     *       <li> Las cartas (en forma de string) del usuario
+     *       </ul>
+     *  <li> Una lista de las escaleras que contine en cada campo: 
+     *       <ul>
+     *       <li> El palo de la escalera
+     *       <li> Las cartas (en forma de string) colocadas en la escalera
+     *       </ul>
+     *  </ul>
+     */
     @Override
     public void cargar(JSONObject estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cargar'");
-    }
+        this.id = (String) estado.get("ID");
+        this.turno = (Integer) estado.get("turno");
+        this.primerJugador = (Integer) estado.get("primer_jugador");
 
-    @Override
-    public JSONObject crearEstado(String estadoString) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
+        JSONArray usuarioArray = (JSONArray)estado.get(usuarios);
+        for (Object object : usuarioArray) {
+            JSONObject infoUsuario = (JSONObject) object;
+           
+            //TODO: con un id de un usaurio, acceder al objeto del usuario
+            String id = (String) infoUsuario.get("ID");
+            int orden = (Integer) infoUsuario.get("turno_en_juego");
+            String cartasString = (String) infoUsuario.get("cartas");
+
+            this.usuarios.put(orden, null);
+            this.manosUsuarios.put(orden, baraja.parsearCartas(cartasString));
+        }
+
+        JSONArray escaleraArray = (JSONArray)estado.get(escaleras);
+        for (Object object : escaleraArray) {
+            JSONObject infoEscalera = (JSONObject) object;
+            String palo = (String) infoEscalera.get("palo");
+            String cartasString = (String) infoEscalera.get("cartas");
+
+            this.escaleras.put(palo, cartasString);
+        }
     }
 
     @Override
