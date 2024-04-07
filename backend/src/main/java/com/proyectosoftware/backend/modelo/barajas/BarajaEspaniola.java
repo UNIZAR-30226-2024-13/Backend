@@ -84,8 +84,7 @@ public class BarajaEspaniola implements Baraja{
      */
     @Override
     public boolean esCartaDeLaBaraja(Carta carta) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'esCartaDeLaBaraja'");
+        return esCartaDeLaBaraja(carta.getColor(), carta.getNumero());
     }
 
     /**
@@ -93,8 +92,7 @@ public class BarajaEspaniola implements Baraja{
      */
     @Override
     public boolean esCartaDeLaBaraja(int color, int numero) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'esCartaDeLaBaraja'");
+        return coloresBaraja.keySet().contains(color) && numerosBaraja.keySet().contains(numero);
     }
 
     /**

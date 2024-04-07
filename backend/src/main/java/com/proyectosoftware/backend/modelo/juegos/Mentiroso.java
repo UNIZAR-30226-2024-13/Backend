@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaEspaniola;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
-import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
 
 /**
@@ -26,14 +28,16 @@ public class Mentiroso implements JuegoSinApuesta{
     private static final int MAX_JUGADORES = 4;
 
     private Baraja baraja;
-    private int turno;
+    private List<Carta> cartas;
+
     private Map<Integer, Usuario> usuarios;
     private Map<Integer, List<Carta>> cartasUsuarios;
-    private List<Carta> cartas;
     
+    private int turno;
     private int numeroActual;
     private int cartasUltimaJugada;
     private List<Carta> cartasMesa;
+    private String id;
 
     /**
      * Prepara un nuevo juego
@@ -43,13 +47,14 @@ public class Mentiroso implements JuegoSinApuesta{
         this.usuarios = new HashMap<>(MAX_JUGADORES);
         this.cartasUsuarios = new HashMap<>(MAX_JUGADORES);
         this.cartas = baraja.devolverCartas();
+        this.id = this.generateID();
     }
 
     /**
      * 
      * @param estado
      */
-    public Mentiroso(Estado estado) {
+    public Mentiroso(JSONObject estado) {
         this.baraja = BarajaEspaniola.devolverInstancia();
         this.cargar(estado);
     }
@@ -252,29 +257,77 @@ public class Mentiroso implements JuegoSinApuesta{
 
     }
 
+    private String cartasToString(List<Carta> cartas){
+        return String.join(";", cartas.stream().map(Carta::toString).toList());
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @implSpec
+     *  Se guardara:
+     *  <ul>
+     *  <li> El ID del juego
+     *  <li> El turno
+     *  <li> Una lista de los usuario que contine en cada campo: 
+     *       <ul>
+     *       <li> El id del usuario
+     *       <li> El turno del usuario en el juego
+     *       <li> Las cartas (en forma de string) del usuario
+     *       </ul>
+     *  <li> Las cartas (en forma de string) del usuario
+     *  <li> El numero de cartas que de pusieron el ultimo turno
+     *  <li> El numero actual de las cartas
+     *  </ul>
+     */
+    @SuppressWarnings("unchecked")
     @Override
-    public Estado guardar() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'guardar'");
+    public JSONObject guardar() {
+        JSONObject estado = new JSONObject();
+        JSONArray usuariosArray = new JSONArray();
+        
+        for (Integer clave : this.usuarios.keySet()) {
+            JSONObject usuarioJSON = new JSONObject();
+            usuarioJSON.put("ID", this.usuarios.get(clave).getID());
+            usuarioJSON.put("turno_en_juego", clave);
+            usuarioJSON.put("cartas", cartasToString(this.cartasUsuarios.get(clave)));
+            usuariosArray.add(usuarioJSON);
+        }
+        estado.put("ID", this.id);
+        estado.put("turno", this.turno);
+        estado.put("usuarios", usuariosArray);
+        estado.put("cartas_mesa", cartasToString(this.cartasMesa));
+        estado.put("ultimas_cartas", this.cartasUltimaJugada);
+        estado.put("numero_actual", this.numeroActual);
+
+        return estado;
     }
 
     @Override
-    public void cargar(Estado estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cargar'");
+    public void cargar(JSONObject estado) {
+        this.id = (String) estado.get("ID");
+        this.turno = (Integer) estado.get("turno");
+        this.cartasMesa = baraja.parsearCartas((String) estado.get("cartas_mesa"));
+        this.cartasUltimaJugada = (Integer) estado.get("ultimas_cartas");
+        this.numeroActual = (Integer) estado.get("numero_actual");
+        JSONArray usuarioArray = (JSONArray)estado.get(usuarios);
+        for (Object object : usuarioArray) {
+            JSONObject infoUsuario = (JSONObject) object;
+           
+            //TODO: con un id de un usaurio, acceder al objeto del usuario
+            String id = (String) infoUsuario.get("ID");
+            int orden = (Integer) infoUsuario.get("turno_en_juego");
+            String cartasString = (String) infoUsuario.get("cartas");
+
+            this.usuarios.put(orden, null);
+            this.cartasUsuarios.put(orden, baraja.parsearCartas(cartasString));
+        }
     }
 
-    @Override
-    public Estado recuperarEstado(String estadoString) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
-    }
-
-    @Override
-    public String crearEstado(Estado estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'crearEstado'");
-    }
+    // @Override
+    // public JSONObject crearEstado(String estadoString) {
+    //     // TO-DO Auto-generated method stub
+    //     throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
+    // }
 
     /**
      * {@inheritDoc}
