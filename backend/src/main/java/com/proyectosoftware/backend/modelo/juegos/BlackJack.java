@@ -1,6 +1,9 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
 import java.util.List;
+
+import org.json.simple.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
@@ -57,7 +60,7 @@ public class BlackJack implements JuegoConApuesta {
      * Cargar un juego de blackjack dado un estado
      * @param estado
     */
-    public BlackJack(Estado estado) {
+    public BlackJack(JSONObject estado) {
 
     }
 
@@ -145,32 +148,24 @@ public class BlackJack implements JuegoConApuesta {
 
 
     @Override
-    public Estado guardar() {
+    public JSONObject guardar() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'guardar'");
     }
 
 
     @Override
-    public void cargar(Estado estado) {
+    public void cargar(JSONObject estado) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cargar'");
     }
 
 
     @Override
-    public Estado recuperarEstado(String estadoString) {
+    public JSONObject crearEstado(String estadoString) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
     }
-
-
-    @Override
-    public String crearEstado(Estado estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'crearEstado'");
-    }
-
 
     /**
      * {@inheritDoc}

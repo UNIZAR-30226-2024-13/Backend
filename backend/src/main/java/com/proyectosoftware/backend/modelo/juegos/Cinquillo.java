@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaEspaniola;
@@ -163,34 +165,27 @@ public class Cinquillo implements JuegoSinApuesta{
      * Cargar un juego de cinquillo dado un estado
      * @param estado
      */
-    public Cinquillo(Estado estado){
+    public Cinquillo(JSONObject estado){
 
     }
 
     @Override
-    public Estado guardar() {
+    public JSONObject guardar() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'guardar'");
     }
 
     @Override
-    public void cargar(Estado estado) {
+    public void cargar(JSONObject estado) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cargar'");
     }
 
     @Override
-    public Estado recuperarEstado(String estadoString) {
+    public JSONObject crearEstado(String estadoString) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
     }
-
-    @Override
-    public String crearEstado(Estado estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'crearEstado'");
-    }
-
 
     @Override
     public void siguenteTurno() {

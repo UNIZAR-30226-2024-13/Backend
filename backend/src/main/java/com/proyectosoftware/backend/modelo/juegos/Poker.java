@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.simple.JSONObject;
+
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaFrancesa;
@@ -79,52 +81,44 @@ public class Poker implements JuegoConApuesta{
      * Cargar un juego de poker dado un estado
      * @param estado
      */
-    public Poker(Estado estado){
+    public Poker(JSONObject estado){
 
     }
 
 
     /**
+     * {@inheritDoc}
+     * @implSpec
      * Crea un estado con el estado actual del juego poker
-     * @return - estado
      */
     @Override
-    public Estado guardar() {
+    public JSONObject guardar() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'guardar'");
     }
 
     /**
+     * {@inheritDoc}
+     * @implSpec
      * Inicializa el juego poker con un estado dado
-     * @param estado - el estado a cargar
      */
     @Override
-    public void cargar(Estado estado) {
+    public void cargar(JSONObject estado) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cargar'");
     }
 
     /**
+     * {@inheritDoc}
+     * @implSpec
      * Genera un estado de poker a partir de un string
-     * @param estadoString - String a parsear
-     * @return - Estado
      */
     @Override
-    public Estado recuperarEstado(String estadoString) {
+    public JSONObject crearEstado(String estadoString) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
     }
 
-    /**
-     * 
-     * @param estado
-     * @return
-     */
-    @Override
-    public String crearEstado(Estado estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'crearEstado'");
-    }
 
     /**
      * {@inheritDoc}

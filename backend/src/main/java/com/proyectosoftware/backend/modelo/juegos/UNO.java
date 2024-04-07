@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaUNO;
@@ -69,35 +71,28 @@ public class UNO implements JuegoSinApuesta{
      * Cargar un juego de uno dado un estado
      * @param estado
      */
-    public UNO(Estado estado){
+    public UNO(JSONObject estado){
 
     }
     
     
     @Override
-    public Estado guardar() {
+    public JSONObject guardar() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'guardar'");
     }
 
     @Override
-    public void cargar(Estado estado) {
+    public void cargar(JSONObject estado) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cargar'");
     }
 
     @Override
-    public Estado recuperarEstado(String estadoString) {
+    public JSONObject crearEstado(String estadoString) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
     }
-
-    @Override
-    public String crearEstado(Estado estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'crearEstado'");
-    }
-
 
     @Override
     public void siguenteTurno() {
