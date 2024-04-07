@@ -250,13 +250,18 @@ public class Mentiroso implements JuegoSinApuesta{
     }
 
     /**
-     * 
-     * @param ordenUsuario
+     * Anuncia el ganador
+     * @param ordenUsuario  - orden del gandor en el juego
      */
     private void ganador(int ordenUsuario){
 
     }
 
+    /**
+     * Devuelve un string representando las cartas de una lista dada
+     * @param cartas    - Lista de cartas
+     * @return La representacion en string
+     */
     private String cartasToString(List<Carta> cartas){
         return String.join(";", cartas.stream().map(Carta::toString).toList());
     }
@@ -302,6 +307,24 @@ public class Mentiroso implements JuegoSinApuesta{
         return estado;
     }
 
+    /**
+     * {@inheritDoc}
+     * @implSpec
+     *  El objeto Json debe tener:
+     *  <ul>
+     *  <li> El ID del juego
+     *  <li> El turno
+     *  <li> Una lista de los usuario que contine en cada campo: 
+     *       <ul>
+     *       <li> El id del usuario
+     *       <li> El turno del usuario en el juego
+     *       <li> Las cartas (en forma de string) del usuario
+     *       </ul>
+     *  <li> Las cartas (en forma de string) del usuario
+     *  <li> El numero de cartas que de pusieron el ultimo turno
+     *  <li> El numero actual de las cartas
+     *  </ul>
+     */
     @Override
     public void cargar(JSONObject estado) {
         this.id = (String) estado.get("ID");
