@@ -32,12 +32,21 @@ public class Carta {
     public int getColor(){
         return color;
     }
+
+    /**
+     * Sobreescribe toString
+     */
+    @Override
+    public String toString() {
+        return Integer.toString(color) + "," + Integer.toString(numero);
+    }
     
     /**
      * 
      * @param cadenaCartas, contiene la cadena de carecteres recibida desde la Base de Datos
      * @return retVal, contiene el vector de Carta que representa la baraja de juego
-     *//*
+     */
+    /*
     public Carta[] parseStringCartas(String cadenaCartas){
         Carta[] retVal = new Carta[52];
         String[] cartas_mazo = cadenaCartas.split(";");
