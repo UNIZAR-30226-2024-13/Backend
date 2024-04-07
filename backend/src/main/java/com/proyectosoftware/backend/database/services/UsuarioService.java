@@ -45,13 +45,11 @@ public class UsuarioService {
                 usuario.setAmigos(amigos);
                 return saveUsuario(usuario);
             } else {
-                // Si el amigo no existe, manejar el error de alguna manera
-                // Aquí simplemente lanzamos una excepción, pero puedes manejarlo de otra forma
+                // Si el amigo no existe
                 throw new IllegalArgumentException("El amigo con ID " + idAmigo + " no existe.");
             }
         } else {
-            // Si el usuario no existe, manejar el error de alguna manera
-            // Aquí simplemente lanzamos una excepción, pero puedes manejarlo de otra forma
+            // Si el usuario no existe
             throw new IllegalArgumentException("El usuario con ID " + idUsuario + " no existe.");
         }
     }

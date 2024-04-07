@@ -15,11 +15,19 @@ public class Mentiroso {
     @Column(name = "cartas_mesa")
     private String cartasMesa;
 
+    @Column(name = "numero")
+    private int numero;
+
+    @Column(name = "ultimasCartas")
+    private int ultimasCartas;
+
     public Mentiroso() {}
 
-    public Mentiroso(PartidaId id, String cartasMesa) {
+    public Mentiroso(PartidaId id, String cartasMesa, int numero, int ultimasCartas) {
         this.id = id;
         this.cartasMesa = cartasMesa;
+        this.numero = numero;
+        this.ultimasCartas = ultimasCartas;
     }
 
     public PartidaId getId() {
@@ -36,5 +44,21 @@ public class Mentiroso {
 
     public void setCartasMesa(String cartasMesa) {
         this.cartasMesa = cartasMesa;
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
+
+    public int getUltimasCartas() {
+        return ultimasCartas;
+    }
+
+    public void setUltimasCartas(int ultimasCartas) {
+        this.ultimasCartas = ultimasCartas;
     }
 }

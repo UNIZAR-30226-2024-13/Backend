@@ -278,7 +278,7 @@ public class Cinquillo implements JuegoSinApuesta{
             String palo = (String) infoEscalera.get("palo");
             String cartasString = (String) infoEscalera.get("cartas");
 
-            this.escaleras.put(palo, cartasString);
+            this.escaleras.put(palo, baraja.parsearCartas(cartasString));
         }
     }
 

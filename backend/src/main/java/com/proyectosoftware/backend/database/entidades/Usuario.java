@@ -3,13 +3,15 @@ package com.proyectosoftware.backend.database.entidades;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
@@ -31,6 +33,10 @@ public class Usuario {
 
     @Column(name = "pais")
     private String pais;
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Login login;
 
     @ManyToMany
     @JoinTable(
