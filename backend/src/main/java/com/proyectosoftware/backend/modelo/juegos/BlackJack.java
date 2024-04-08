@@ -11,7 +11,6 @@ import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaFrancesa;
 import com.proyectosoftware.backend.modelo.interfaces.Baraja;
-import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoConApuesta;
 
 /*
@@ -145,20 +144,6 @@ public class BlackJack implements JuegoConApuesta {
         else {
             // Lanzar error, tope de jugadores alcanzado
         }
-    }
-
-
-    @Override
-    public Estado recuperarEstado(String estadoString) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
-    }
-
-
-    @Override
-    public String crearEstado(Estado estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'crearEstado'");
     }
 
 
