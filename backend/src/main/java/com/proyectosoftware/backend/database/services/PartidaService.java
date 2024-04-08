@@ -33,7 +33,7 @@ public class PartidaService {
         return partidaRepository.findById(idPartida);
     }
 
-    public Partida addPartidaConUsuarios(Long idPartida, Usuario usuario1, Usuario usuario2, Usuario usuario3, Usuario usuario4){
+    public Partida addPartidaConUsuarios(String idPartida, Usuario usuario1, Usuario usuario2, Usuario usuario3, Usuario usuario4){
         Optional<Partida> optionalPartida = partidaRepository.findById(idPartida);
         
         if(optionalPartida.isPresent()){

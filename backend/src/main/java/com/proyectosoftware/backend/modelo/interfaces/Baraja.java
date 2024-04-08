@@ -17,6 +17,11 @@ public interface Baraja {
      */
     public default List<Carta> parsearCartas(String cartasBaraja){
         List<Carta> cartas = new ArrayList<>();
+        
+        if (cartasBaraja.equals("")) {
+            return cartas;
+        }
+
         for (String carta : cartasBaraja.split(";")) {
             String[] datosCarta = carta.split(",");
             int color = Integer.parseInt(datosCarta[0]);

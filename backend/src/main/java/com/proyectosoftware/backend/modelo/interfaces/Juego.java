@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import org.json.simple.JSONObject;
 
+import com.proyectosoftware.backend.modelo.Usuario;
+
 public interface Juego extends Estado, UniqueIDGenerator{
     /**
      * Crea un estado con el estado actual del juego
@@ -21,6 +23,12 @@ public interface Juego extends Estado, UniqueIDGenerator{
      * Pasa al siguente turno
      */
     public void siguenteTurno();
+    
+    /**
+     * Anaide un usuario al juego
+     * @param usuario   - El usuario
+     */
+    public void nuevoUsuario(Usuario usuario);
 
     /**
      * {@inheritDoc}

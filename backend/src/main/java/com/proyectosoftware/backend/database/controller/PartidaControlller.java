@@ -36,7 +36,7 @@ public class PartidaControlller {
     }
     
     @PostMapping("addPartidaConUsuarios")
-    public Partida addPartida(@RequestBody Long idPartida, Usuario usuario1, Usuario usuario2, Usuario usuario3, Usuario usuario4) {
+    public Partida addPartida(@RequestBody String idPartida, Usuario usuario1, Usuario usuario2, Usuario usuario3, Usuario usuario4) {
         return partidaService.addPartidaConUsuarios(idPartida, usuario1, usuario2, usuario3, usuario4);
     }
     
