@@ -1,6 +1,9 @@
 package com.proyectosoftware.backend.modelo.juegos;
 
 import java.util.List;
+
+import org.json.simple.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
@@ -56,7 +59,7 @@ public class BlackJack implements JuegoConApuesta {
      * Cargar un juego de blackjack dado un estado
      * @param estado
     */
-    public BlackJack(Estado estado) {
+    public BlackJack(JSONObject estado) {
 
     }
 
@@ -140,20 +143,6 @@ public class BlackJack implements JuegoConApuesta {
         else {
             // Lanzar error, tope de jugadores alcanzado
         }
-    }
-
-
-    @Override
-    public Estado guardar() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'guardar'");
-    }
-
-
-    @Override
-    public void cargar(Estado estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cargar'");
     }
 
 
@@ -411,5 +400,4 @@ public class BlackJack implements JuegoConApuesta {
             this.cartasUsuarios.put(orden, baraja.parsearCartas(cartasString));
         }
     }
-
 }
