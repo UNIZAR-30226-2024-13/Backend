@@ -3,6 +3,7 @@ package com.proyectosoftware.backend.modelo.juegos;
 import java.util.List;
 
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ public class BlackJack implements JuegoConApuesta {
     private HashMap<String, Integer> apuesta_usuario;      // Diccionario con los usuarios y su apuesta en la partida
     private HashMap<String, Usuario> usuarios;
     private HashMap<String, Boolean> apuesta_plus;
+    private String id;
 
     /**
      * Constructor por defecto
@@ -52,6 +54,7 @@ public class BlackJack implements JuegoConApuesta {
         apuesta_usuario = new HashMap<>(MAX_JUGADORES);
         usuarios = new HashMap<>(MAX_JUGADORES);
         apuesta_plus = new HashMap<>(MAX_JUGADORES);
+        id = this.generateID();
     }
 
 
@@ -348,12 +351,13 @@ public class BlackJack implements JuegoConApuesta {
      *  <li> Una lista de los usuario que contine en cada campo: 
      *       <ul>
      *       <li> El id del usuario
-     *       <li> El turno del usuario en el juego
+     *       <li> La apuesta inicial de cada usuario
+     *       <li> Si el usuario ha obtenido 21 con las primeras cartas
+     *       <li> Si el usuario se ha plantado
      *       <li> Las cartas (en forma de string) del usuario
      *       </ul>
-     *  <li> Las cartas (en forma de string) del usuario
-     *  <li> El numero de cartas que de pusieron el ultimo turno
-     *  <li> El numero actual de las cartas
+     *  <li> Las cartas (en forma de string) del croupier
+     *  <li> Las cartas (en forma de string) del mazo
      *  </ul>
      */
     @SuppressWarnings("unchecked")
@@ -362,20 +366,21 @@ public class BlackJack implements JuegoConApuesta {
         JSONObject estado = new JSONObject();
         JSONArray usuariosArray = new JSONArray();
         
-        for (Integer clave : this.usuarios.keySet()) {
+        for (String clave : this.usuarios.keySet()) {
             JSONObject usuarioJSON = new JSONObject();
-            usuarioJSON.put("ID", this.usuarios.get(clave).getID());
-            usuarioJSON.put("turno_en_juego", clave);
-            usuarioJSON.put("cartas", cartasToString(this.cartasUsuarios.get(clave)));
+            usuarioJSON.put("ID", clave);
+            usuarioJSON.put("Apuesta", apuesta_usuario.get(clave));
+            usuarioJSON.put("Premio_extra", apuesta_plus.get(clave));
+            usuarioJSON.put("Plantado", plantado.get(clave));
+            usuarioJSON.put("Cartas", cartasToString(this.cartas_usuario.get(clave)));
             usuariosArray.add(usuarioJSON);
         }
-        estado.put("ID", this.id);
-        estado.put("turno", this.turno);
-        estado.put("usuarios", usuariosArray);
-        estado.put("cartas_mesa", cartasToString(this.cartasMesa));
-        estado.put("ultimas_cartas", this.cartasUltimaJugada);
-        estado.put("numero_actual", this.numeroActual);
 
+        estado.put("ID", this.id);
+        estado.put("Turno", this.turno);
+        estado.put("Usuarios", usuariosArray);
+        estado.put("Cartas_croupier", cartasToString(this.cartas_croupier));
+        estado.put("Cartas_mazo", cartasToString(this.mazo));
         return estado;
     }
     
