@@ -56,6 +56,9 @@ public class Mentiroso implements JuegoSinApuesta{
      */
     public Mentiroso(JSONObject estado) {
         this.baraja = BarajaEspaniola.devolverInstancia();
+        this.usuarios = new HashMap<>(MAX_JUGADORES);
+        this.cartasUsuarios = new HashMap<>(MAX_JUGADORES);
+        this.cartas = baraja.devolverCartas();
         this.cargar(estado);
     }
 
@@ -95,7 +98,7 @@ public class Mentiroso implements JuegoSinApuesta{
         }else{
             int clave = ordenUsuario(usuario);
             
-            List<Carta> cartasUsuario = cartasUsuarios.get(clave);
+            List<Carta> cartasUsuario = cartasUsuario(clave);
 
             if(accion == Accion.MENTIR){
                 cartasUsuario.removeAll(cartas);
@@ -117,7 +120,7 @@ public class Mentiroso implements JuegoSinApuesta{
                 }else{
                     usuarioPerdedor = turno;
                     siguenteTurno();
-                    if(cartasUsuarios.get(usuarioAnterior).size() == 0){ // El usuario anterior se ha quedado sin cartas
+                    if(cartasUsuario(usuarioAnterior).size() == 0){ // El usuario anterior se ha quedado sin cartas
                         ganador(usuarioAnterior);
                         return;
                     }
@@ -127,7 +130,7 @@ public class Mentiroso implements JuegoSinApuesta{
                 cartasMesa.clear();
                 numeroActual = -1;
                 cartasUltimaJugada = 0;
-                if(cartasUsuarios.get(usuarioPerdedor).size() == 0){ // Gana por descartes
+                if(cartasUsuario(usuarioPerdedor).size() == 0){ // Gana por descartes
                     ganador(usuarioPerdedor);
                     return;
                 }
@@ -143,7 +146,7 @@ public class Mentiroso implements JuegoSinApuesta{
      * @param ordenUsuario  - Orden del usuario a recibir las cartas
      */
     private void aniadirCartas(List<Carta> cartas, int ordenUsuario){
-        List<Carta> cartasUsuario = cartasUsuarios.get(ordenUsuario);
+        List<Carta> cartasUsuario = cartasUsuario(ordenUsuario);
         cartasUsuario.addAll(cartas);
         
         List<Integer> numerosAQuitar = cartas.stream()
@@ -213,7 +216,7 @@ public class Mentiroso implements JuegoSinApuesta{
 
         // Descartar cuartetos
         for (Integer clave : usuarios.keySet()) {
-            List<Carta> cartasUsuario = cartasUsuarios.get(clave);
+            List<Carta> cartasUsuario = cartasUsuario(clave);
             List<Integer> numerosAQuitar = cartasUsuario.stream()
                 .filter(carta -> numeroCartasMismoNumero(cartasUsuario, carta.getNumero()) == 4)
                 .map(Carta::getNumero)
@@ -234,12 +237,13 @@ public class Mentiroso implements JuegoSinApuesta{
      * Aniade un usuario al juego
      * @param usuario usuario a aniadir
      */
+    @Override
     public void nuevoUsuario(Usuario usuario){
         int numeroUsuarios = usuarios.size(); 
         if (numeroUsuarios < MAX_JUGADORES){
             usuarios.put(numeroUsuarios, usuario);
             cartasUsuarios.put(numeroUsuarios, new ArrayList<Carta>());
-            if(usuarios.size() == numeroUsuarios){
+            if(usuarios.size() == MAX_JUGADORES){
                 iniciarPartida();
             }
         } else{
@@ -294,7 +298,7 @@ public class Mentiroso implements JuegoSinApuesta{
             JSONObject usuarioJSON = new JSONObject();
             usuarioJSON.put("ID", this.usuarios.get(clave).getID());
             usuarioJSON.put("turno_en_juego", clave);
-            usuarioJSON.put("cartas", cartasToString(this.cartasUsuarios.get(clave)));
+            usuarioJSON.put("cartas", cartasToString(cartasUsuario(clave)));
             usuariosArray.add(usuarioJSON);
         }
         estado.put("ID", this.id);
@@ -332,7 +336,7 @@ public class Mentiroso implements JuegoSinApuesta{
         this.cartasMesa = baraja.parsearCartas((String) estado.get("cartas_mesa"));
         this.cartasUltimaJugada = (Integer) estado.get("ultimas_cartas");
         this.numeroActual = (Integer) estado.get("numero_actual");
-        JSONArray usuarioArray = (JSONArray)estado.get(usuarios);
+        JSONArray usuarioArray = (JSONArray)estado.get("usuarios");
         for (Object object : usuarioArray) {
             JSONObject infoUsuario = (JSONObject) object;
            
@@ -344,6 +348,10 @@ public class Mentiroso implements JuegoSinApuesta{
             this.usuarios.put(orden, null);
             this.cartasUsuarios.put(orden, baraja.parsearCartas(cartasString));
         }
+    }
+
+    public List<Carta> cartasUsuario(int ordenUsuario){
+        return cartasUsuarios.get(ordenUsuario);
     }
 
     // @Override
