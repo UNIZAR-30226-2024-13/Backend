@@ -29,7 +29,7 @@ public class Partida {
         joinColumns = @JoinColumn(name = "partida"),
         inverseJoinColumns = @JoinColumn(name = "usuario")
     )
-    private Set<Usuario> usuarios = new HashSet<>();
+    private Set<UsuarioEntidad> usuarios = new HashSet<>();
 
     public Partida() {}
 
@@ -37,7 +37,7 @@ public class Partida {
         this.id = id;
     }
 
-    public Partida(String id, int turno, Set<Usuario> usuarios) {
+    public Partida(String id, int turno, Set<UsuarioEntidad> usuarios) {
         this.id = id;
         this.turno = turno;
         this.usuarios = usuarios;
@@ -59,11 +59,11 @@ public class Partida {
         this.turno = turno;
     }
 
-    public Set<Usuario> getUsuarios() {
+    public Set<UsuarioEntidad> getUsuarios() {
         return usuarios;
     }
 
-    public void setUsuarios(Set<Usuario> usuarios) {
+    public void setUsuarios(Set<UsuarioEntidad> usuarios) {
         this.usuarios = usuarios;
     }
 }

@@ -7,7 +7,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyectosoftware.backend.database.entidades.Usuario;
+import com.proyectosoftware.backend.database.entidades.UsuarioEntidad;
 import com.proyectosoftware.backend.database.repository.UsuarioRepository;
 
 @Service
@@ -18,28 +18,33 @@ public class UsuarioService {
 
     public UsuarioService(){}
 
-    public List<Usuario> getAllUsuarios(){
+    public List<UsuarioEntidad> getAllUsuarios(){
         return usuarioRepository.findAll();
     }
 
-    public Usuario saveUsuario(Usuario Usuario){
+    public UsuarioEntidad saveUsuario(UsuarioEntidad Usuario){
         return usuarioRepository.save(Usuario);
     }
 
-    public Optional<Usuario> getUsuario(String idUsuario){
+    public Optional<UsuarioEntidad> getUsuario(String idUsuario){
         return usuarioRepository.findById(idUsuario);
     }
 
-    public Usuario agregarAmigo(String idUsuario, String idAmigo) {
-        Optional<Usuario> optionalUsuario = getUsuario(idUsuario);
+    public void deleteUsuario(String idUsuario) throws Exception{
+        UsuarioEntidad usuario = usuarioRepository.findById(idUsuario).orElseThrow(()-> new Exception("Usuario no existe"));
+        usuarioRepository.delete(usuario);
+    }
+
+    public UsuarioEntidad agregarAmigo(String idUsuario, String idAmigo) {
+        Optional<UsuarioEntidad> optionalUsuario = getUsuario(idUsuario);
 
         if (optionalUsuario.isPresent()) {
-            Usuario usuario = optionalUsuario.get();
+            UsuarioEntidad usuario = optionalUsuario.get();
             
-            Optional<Usuario> optionalAmigo = getUsuario(idAmigo);
+            Optional<UsuarioEntidad> optionalAmigo = getUsuario(idAmigo);
             if (optionalAmigo.isPresent()) {
-                Usuario amigo = optionalAmigo.get();
-                Set<Usuario> amigos = usuario.getAmigos();
+                UsuarioEntidad amigo = optionalAmigo.get();
+                Set<UsuarioEntidad> amigos = usuario.getAmigos();
                 
                 amigos.add(amigo);
                 usuario.setAmigos(amigos);

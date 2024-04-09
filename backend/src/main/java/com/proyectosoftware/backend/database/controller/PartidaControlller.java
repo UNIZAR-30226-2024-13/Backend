@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyectosoftware.backend.database.entidades.Partida;
-import com.proyectosoftware.backend.database.entidades.Usuario;
+import com.proyectosoftware.backend.database.entidades.UsuarioEntidad;
 import com.proyectosoftware.backend.database.services.PartidaService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +36,7 @@ public class PartidaControlller {
     }
     
     @PostMapping("addPartidaConUsuarios")
-    public Partida addPartida(@RequestBody String idPartida, Usuario usuario1, Usuario usuario2, Usuario usuario3, Usuario usuario4) {
+    public Partida addPartida(@RequestBody String idPartida, UsuarioEntidad usuario1, UsuarioEntidad usuario2, UsuarioEntidad usuario3, UsuarioEntidad usuario4) {
         return partidaService.addPartidaConUsuarios(idPartida, usuario1, usuario2, usuario3, usuario4);
     }
     

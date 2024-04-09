@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions;
 
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.interfaces.Juego;
-import com.proyectosoftware.backend.modelo.juegos.Mentiroso;
 
 public class MentirosoTest {
     private Usuario usuario1;

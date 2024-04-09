@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario {
+public class UsuarioEntidad {
     
     @Id
     @Column(name = "id")
@@ -44,15 +44,14 @@ public class Usuario {
         joinColumns = @JoinColumn(name = "usuario1"),
         inverseJoinColumns = @JoinColumn(name = "usuario2")
     )
-    private Set<Usuario> amigos;
+    private Set<UsuarioEntidad> amigos;
 
     @ManyToMany(mappedBy = "usuarios")
     private Set<Partida> partidas = new HashSet<>();
 
-    public Usuario() {}
+    public UsuarioEntidad() {}
 
-    public Usuario(String id, String nombre, String email, int fichas, String pais) {
-        this.id = id;
+    public UsuarioEntidad(String id, String nombre, String email, int fichas, String pais) {
         this.nombre = nombre;
         this.email = email;
         this.fichas = fichas;
@@ -99,11 +98,11 @@ public class Usuario {
         this.pais = pais;
     }
 
-    public Set<Usuario> getAmigos() {
+    public Set<UsuarioEntidad> getAmigos() {
         return amigos;
     }
 
-    public void setAmigos(Set<Usuario> amigos) {
+    public void setAmigos(Set<UsuarioEntidad> amigos) {
         this.amigos = amigos;
     }
 
