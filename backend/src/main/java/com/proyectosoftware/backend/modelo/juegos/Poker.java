@@ -464,13 +464,11 @@ public class Poker implements JuegoConApuesta{
      *  <li> Una lista de los usuario que contine en cada campo: 
      *       <ul>
      *       <li> El id del usuario
-     *       <li> La apuesta inicial del usuario
-     *       <li> Si el usuario ha obtenido 21 con las primeras cartas
-     *       <li> Si el usuario se ha plantado
      *       <li> Las fichas del usuario
      *       <li> Las cartas (en forma de string) del usuario
      *       </ul>
-     *  <li> Las cartas (en forma de string) del croupier
+     *  <li> Las cartas (en forma de string) de la mesa
+     *  <li> Las fichas de la mesa
      *  <li> Las cartas (en forma de string) del mazo
      *  </ul>
      */
@@ -502,6 +500,7 @@ public class Poker implements JuegoConApuesta{
     public void cargar(JSONObject estado) {
         this.id = (String) estado.get("ID");
         this.turno = (Integer) estado.get("Turno");
+        this.bote = (Integer) estado.get("Fichas_mesa");
         this.mazo = baraja.parsearCartas((String) estado.get("Cartas_mazo"));
         this.cartas_mesa = baraja.parsearCartas((String) estado.get("Cartas_mesa"));
         JSONArray usuarioArray = (JSONArray)estado.get(usuarios);
