@@ -30,7 +30,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/newUsuario")
-    public UsuarioEntidad saveUsuario(@RequestBody UsuarioEntidad usuarioNuevo) {
+    public ApiResponse saveUsuario(@RequestBody UsuarioEntidad usuarioNuevo) {
         Usuario usuario = new Usuario(
             usuarioNuevo.getNombre(),
             usuarioNuevo.getEmail(),
@@ -38,17 +38,48 @@ public class UsuarioController {
             usuarioNuevo.getPais()
         );
         usuarioNuevo.setId(usuario.getID());
-        return usuarioService.saveUsuario(usuarioNuevo);
+        return new ApiResponse(
+            "Usuario aniadido con exito",
+            true,
+            usuarioService.saveUsuario(usuarioNuevo)
+        );
     }
     
     @GetMapping("/getUsuario")
-    public Optional<UsuarioEntidad> getUsuario(@RequestParam String idUsuario) {
-        return usuarioService.getUsuario(idUsuario);
+    public ApiResponse getUsuario(@RequestParam String tipo, @RequestParam String value) {
+        Optional<UsuarioEntidad> usuario = null;
+        if(tipo.equals("byId")){
+            usuario = usuarioService.getUsuarioById(value);
+        }else if(tipo.equals("byNombre")){
+            usuario = usuarioService.getUsuarioByName(value);
+        }else{
+            return new ApiResponse("El tipo de busqueda solo puede se 'byId' o 'byNombre'", false);
+        }
+
+        if (!usuario.isPresent()) {
+            return new ApiResponse("No existe el usuario'" + value + "'", false);
+        }
+        return new ApiResponse("Usuario'" + value + "'", true, usuario.get());
     } 
 
     @PostMapping("/addAmigo")
-    public UsuarioEntidad agregarAmigo(@RequestParam String idUsuario, @RequestParam String idAmigo) {
-        return usuarioService.agregarAmigo(idUsuario, idAmigo);
+    public ApiResponse agregarAmigo(@RequestParam String idUsuario, @RequestParam String idAmigo) {
+        try {
+            UsuarioEntidad usuario = usuarioService.agregarAmigo(idUsuario, idAmigo);
+            return new ApiResponse("Amigo '" + idAmigo + "' agregado con exito en la lista de amigos de '" + idUsuario + "'", true, usuario);
+        } catch (Exception e) {
+            return new ApiResponse(e.getMessage(), false);
+        }
+    }
+
+    @DeleteMapping("/deleteAmigo")
+    public ApiResponse deleteAmigo(@RequestParam String idUsuario, @RequestParam String idAmigo) {
+        try {
+            UsuarioEntidad usuario = usuarioService.borrarAmigo(idUsuario, idAmigo);
+            return new ApiResponse("Amigo '" + idAmigo + "' borrado de la lista de amigos de '" + idUsuario + "'", true, usuario);
+        } catch (Exception e) {
+            return new ApiResponse(e.getMessage(), false);
+        }
     }
 
     @DeleteMapping("/deleteUsuario")

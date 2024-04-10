@@ -3,9 +3,13 @@ package com.proyectosoftware.backend.database.entidades;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -38,12 +42,14 @@ public class UsuarioEntidad {
     @PrimaryKeyJoinColumn
     private Login login;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(
         name = "amigos",
-        joinColumns = @JoinColumn(name = "usuario1"),
-        inverseJoinColumns = @JoinColumn(name = "usuario2")
+        joinColumns = @JoinColumn(name = "usuario1", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "usuario2", referencedColumnName = "id")
     )
+    @JsonIgnoreProperties({ "amigos","partidas" })
+    @JsonIncludeProperties({ "id", "nombre" })
     private Set<UsuarioEntidad> amigos;
 
     @ManyToMany(mappedBy = "usuarios")
@@ -98,6 +104,7 @@ public class UsuarioEntidad {
         this.pais = pais;
     }
 
+    @ManyToMany()
     public Set<UsuarioEntidad> getAmigos() {
         return amigos;
     }
