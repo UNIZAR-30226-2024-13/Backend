@@ -15,6 +15,10 @@ import com.proyectosoftware.backend.modelo.interfaces.Baraja;
 import com.proyectosoftware.backend.modelo.interfaces.Estado;
 import com.proyectosoftware.backend.modelo.interfaces.JuegoSinApuesta;
 
+
+/**
+ * Juego del uno
+ */
 public class UNO implements JuegoSinApuesta{
     public static final int MAX_USUARIOS = 4;
     private Baraja baraja;
@@ -27,6 +31,10 @@ public class UNO implements JuegoSinApuesta{
     private int masdos = 0;
     private int mascuatro = 0;
     
+
+    /**
+     * Constructor por defecto
+     */
     public UNO(){
        baraja = BarajaUNO.devolverInstancia();
        mazo = baraja.devolverCartas();
@@ -34,9 +42,15 @@ public class UNO implements JuegoSinApuesta{
        manoUsuarios = new HashMap<>(MAX_USUARIOS);
        ultimaCarta = new ArrayList<>();
     }
+
+
+    /* CARGAR JUEGO UNO*/
+
+    /*AÑADIR USUARIO A PARTIDA*/
+
     
      /**
-     * Reparto de cartas entre los .
+     * Reparto de cartas entre los usuarios y se empieza la partida.
      * 
      */
     public void iniciarPartida(){
@@ -64,26 +78,53 @@ public class UNO implements JuegoSinApuesta{
     }
     
     
-    
     /**
-     * Cargar un juego de uno dado un estado
-     * @param estado
+     * {@inheritDoc}
+     * @implSpec
+     *  Se guardara:
+     *  <ul>
+     *  <li> El ID del juego
+     *  <li> El turno
+     *  <li> El primer jugador
+     *  <li> Una lista de los usuarios que contine en cada campo: 
+     *       <ul>
+     *       <li> El id del usuario
+     *       <li> El turno del usuario en el juego
+     *       <li> Las cartas (en forma de string) del usuario
+     *       </ul>
+     *  <li> Cartas que han sido jugadas en la partida
+     *  <li> Sentido de la partida
+     *  <li> Indicador de robar 2 cartas
+     *  <li> Indicador de robar 4 cartas
+     *  </ul>
      */
-    public UNO(Estado estado){
-
-    }
-    
-    
+    @SuppressWarnings("unchecked")
     @Override
-    public Estado guardar() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'guardar'");
+    public JSONObject guardar() {
     }
 
+    /**
+     * {@inheritDoc}
+     * @implSpec
+     *  El objeto Json debe contener:
+     *  <ul>
+     *  <li> El ID del juego
+     *  <li> El turno
+     *  <li> El primer jugador
+     *  <li> Una lista de los usuarios que contine en cada campo: 
+     *       <ul>
+     *       <li> El id del usuario
+     *       <li> El turno del usuario en el juego
+     *       <li> Las cartas (en forma de string) del usuario
+     *       </ul>
+     *  <li> Cartas que han sido jugadas en la partida
+     *  <li> Sentido de la partida
+     *  <li> Indicador de robar 2 cartas
+     *  <li> Indicador de robar 4 cartas
+     *  </ul>
+     */
     @Override
     public void cargar(Estado estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cargar'");
     }
 
     @Override
@@ -115,12 +156,18 @@ public class UNO implements JuegoSinApuesta{
         }
 
     }
-     /*
-     * Jugada del UNO, esta separado según los casos necesarios:
-     * tener que robar una carta, pasar el turno o realizar una
-     * jugada. 
-     */
-    public void jugada(){
+     
+     /** 
+      * Jugada normal del UNO,
+      * el usuario puede elegir entre jugar una carta o pasar turno voluntariamente
+      * siempre y cuando no haya ningun indicador de robar carta activado.
+      * En caso de que no existe ninguna carta valida en la mano, el jugador solo tendra la opcion
+      * de pasar turno.
+      * Pasar turno incluye robar una carta del mazo.
+      * @param usuario - Representa el jugador con el turno actual 
+      * @param carta - La carta que el jugador quiere utilizar
+      */
+    public void jugada(Usuario usuario, Carta carta){
         List<Carta> manoJugador = manoUsuarios.get(turno);
         Iterator<Carta> iterator = manoJugador.iterator();
         List<Carta> posiblesJugadas = new ArrayList<>();
@@ -144,8 +191,13 @@ public class UNO implements JuegoSinApuesta{
         }
     }
     
-     /**
-     * Devuelve todas las posibles jugadas que tiene el usuario en posiblesJugadas 
+    
+    
+    /** 
+     * 
+     * @param posiblesJugadas
+     * @param iterator
+     * @return List<Carta>
      */
     private List<Carta> jugarCarta(List<Carta> posiblesJugadas, Iterator<Carta> iterator){
         while(iterator.hasNext()) {
@@ -157,9 +209,12 @@ public class UNO implements JuegoSinApuesta{
         return posiblesJugadas;
     }
     
-    /**
-     * Comprueba si una carta es valida en función de la última carta jugada
-     */ 
+    
+    
+    /** 
+     * @param carta
+     * @return boolean
+     */
     public boolean cartaValida(Carta carta){
         boolean valido = false;
         Carta ultCarta = ultimaCarta.get(ultimaCarta.size() - 1);
@@ -201,11 +256,13 @@ public class UNO implements JuegoSinApuesta{
         masdos=1;
     }
     
-    /**
-    * Añade n cartas a la mano del usuario y pasa el turno
-    * parámetros; mano: corresponde a la lista de cartas del ususario
-    * n: número de cartas a robar
-    */
+   
+    
+    /** 
+     * Añade n cartas a la mano del usuario y pasa el turno.
+     * @param mano - Representa las cartas que tiene el usuario
+     * @param n - Representa el numero de cartas que tiene que robar el usuario.
+     */
     public void robaCarta(List<Carta> mano, int n){
         Carta carta;
         for(int i = 0; i < n; i++){
@@ -234,21 +291,26 @@ public class UNO implements JuegoSinApuesta{
         mascuatro=1;
     }
     
-    /**
+    
+    
+    /** 
      * Devuelve el string del usuario ganador
-     */ 
+     * @param u - Representa el usuario que ha ganado
+     * @return String - Devuelve la cadena correspondiente al usuario ganador
+     */
     public String ganadorPartida(Usuario u){
         return u.generateID();
     }
     
    
-     /**
-     * En el caso de que el jugador no haya sufrido ninguna sanción 
-     * y tenga alguna posible jugada a realizar. Puede elegir pasar
-     * su turno en caso que lo desee.
-     * parámetros; carta: carta que ha decidido jugar
-     * color: color que elige el usuario cuando juega un cambio de color
-     * o una carta de sumar cuatro.
+     
+    
+    /** 
+     * En el caso de que el jugador no haya sufrido ninguna sanción y tenga alguna posible jugada a realizar.
+     * Puede elegir pasar su turno en caso que lo desee. parámetros; carta: carta que ha decidido jugar color:
+     * color que elige el usuario cuando juega un cambio de color o una carta de sumar cuatro.
+     * @param carta
+     * @param color
      */
     public void hacerJugada(Carta carta,int color){
         List<Carta> manoJugador = manoUsuarios.get(turno);
