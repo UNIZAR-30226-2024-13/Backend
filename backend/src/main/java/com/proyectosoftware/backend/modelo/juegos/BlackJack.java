@@ -137,7 +137,6 @@ public class BlackJack implements JuegoConApuesta {
             cartas_usuario.put(usuario.getId(), new ArrayList<Carta>());
             apuesta_plus.put(usuario.getId(), false);
             plantado.put(usuario.getId(), false);
-            fichas_usuario.put(usuario.getId(), );
             if (usuarios.size() == MAX_JUGADORES) {
                 iniciarPartida();
             }
@@ -167,15 +166,20 @@ public class BlackJack implements JuegoConApuesta {
      */
     @Override
     public void apostar(Usuario usuario, int apuesta) {
-        int fichas_disponibles = fichas_usuario.get(usuario.getId());
-        if (apuesta > fichas_disponibles) {
-            //Mandar error al control y esperar a nueva apuesta
+        if (usuarios.size() < MAX_JUGADORES) {
+            fichas_usuario.put(usuario.getId(), apuesta);
         }
         else {
-            fichas_disponibles -= apuesta;
-            fichas_usuario.put(usuario.getId(), fichas_disponibles);
-            apuesta_usuario.put(usuario.getId(), apuesta);
-            //Mandar al control las fichas disponibles
+            int fichas_disponibles = fichas_usuario.get(usuario.getId());
+            if (apuesta > fichas_disponibles) {
+                //Mandar error al control y esperar a nueva apuesta
+            }
+            else {
+                fichas_disponibles -= apuesta;
+                fichas_usuario.put(usuario.getId(), fichas_disponibles);
+                apuesta_usuario.put(usuario.getId(), apuesta);
+                //Mandar al control las fichas disponibles
+            }
         }
     }
 
