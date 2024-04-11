@@ -129,7 +129,7 @@ public class BlackJack implements JuegoConApuesta {
         usuarios_ganadores = comprobarGanadores();
     }
 
-
+    
     public void nuevoUsuario(Usuario usuario) {
         int numeroUsuarios = usuarios.size(); 
         if (numeroUsuarios < MAX_JUGADORES) {
@@ -349,6 +349,7 @@ public class BlackJack implements JuegoConApuesta {
      *       <li> Si el usuario ha obtenido 21 con las primeras cartas
      *       <li> Si el usuario se ha plantado
      *       <li> Las fichas del usuario
+     *       <li> El turno del usuario en la mesa
      *       <li> Las cartas (en forma de string) del usuario
      *       </ul>
      *  <li> Las cartas (en forma de string) del croupier
@@ -369,7 +370,7 @@ public class BlackJack implements JuegoConApuesta {
             usuarioJSON.put("Premio_extra", apuesta_plus.get(id_usuario));
             usuarioJSON.put("Plantado", plantado.get(id_usuario));
             usuarioJSON.put("Fichas", fichas_usuario.get(id_usuario));
-            usuarioJSON.put("Turno_mesa",clave);
+            usuarioJSON.put("Turno_mesa", clave);
             usuarioJSON.put("Cartas", cartasToString(this.cartas_usuario.get(id_usuario)));
             usuariosArray.add(usuarioJSON);
         }
@@ -383,6 +384,12 @@ public class BlackJack implements JuegoConApuesta {
     }
     
 
+    /**
+     * {@inheritDoc}
+     * @implSpec
+     * Se recupera el estado de una partida a partir
+     * de un objeto JSON
+     */
     @Override
     public void cargar(JSONObject estado) {
         this.id = (String) estado.get("ID");
