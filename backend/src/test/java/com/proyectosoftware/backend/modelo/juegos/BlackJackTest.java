@@ -13,7 +13,11 @@ public class BlackJackTest {
     private Usuario usuario2;
     private Usuario usuario3;
     private Usuario usuario4;
+
     private BlackJack blackjack;
+    
+    private JSONObject json;
+
 
     @BeforeEach
     public void setup(){
@@ -28,6 +32,8 @@ public class BlackJackTest {
         blackjack.nuevoUsuario(usuario3);
         blackjack.nuevoUsuario(usuario4);
         blackjack.iniciarPartida();
+
+        json = blackjack.guardar();
     }
 
     @Test
@@ -37,6 +43,21 @@ public class BlackJackTest {
 
     @Test
     void testGuardar() {
-
+        Assertions.assertThat(((String)json.get("ID"))).startsWith("juego-");
+        Assertions.assertThat(json.get("Turno")).isIn(0,1,2,3);
+        Assertions.assertThat(json.get("Cartas_mazo")).asString().matches("([0-9]+,[0-9]+(;[0-9]+,[0-9]+)*)?");
+        Assertions.assertThat(json.get("Cartas_croupier")).asString().matches("([0-9]+,[0-9]+(;[0-9]+,[0-9]+)*)?");
+        
+        JSONArray usuarios = (JSONArray)json.get("Usuarios");
+        for (Object object : usuarios) {
+            JSONObject usuario = (JSONObject) object;
+            Assertions.assertThat(usuario.get("ID")).asString().startsWith("Usuario-");
+            Assertions.assertThat(usuario.get("Apuesta")).isInstanceOf(Integer.class);
+            Assertions.assertThat(usuario.get("Premio_extra")).isInstanceOf(Boolean.class);
+            Assertions.assertThat(usuario.get("Plantado")).isInstanceOf(Boolean.class);
+            Assertions.assertThat(usuario.get("Fichas")).isInstanceOf(Integer.class);
+            Assertions.assertThat(usuario.get("Turno_mesa")).isIn(0,1,2,3);
+            Assertions.assertThat(usuario.get("Cartas")).asString().matches("([0-9]+,[0-9]+(;[0-9]+,[0-9]+)*)?");
+        }
     }
 }
