@@ -29,13 +29,13 @@ public class BlackJack implements JuegoConApuesta {
     private Baraja baraja;
     private int turno;
 
-    private HashMap<String, Integer> fichas_usuario;       // Diccionario con los usuarios y sus fichas a usar en la partida
+    private HashMap<String, Integer> fichas_usuario;        // Diccionario con los usuarios y sus fichas a usar en la partida
     private HashMap<String, List<Carta>> cartas_usuario;    // Diccionario con los usuarios y sus cartas a usar en la partida
-    private HashMap<String, Boolean> plantado;             // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
-    private List<Carta> cartas_croupier;                // Lista de cartas del croupier (Carta de índice 0 está boca arriba y la otra boca abajo)
-    private HashMap<String, Integer> apuesta_usuario;      // Diccionario con los usuarios y su apuesta en la partida
-    private HashMap<String, Usuario> usuarios;
+    private HashMap<String, Boolean> plantado;              // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
+    private List<Carta> cartas_croupier;                    // Lista de cartas del croupier (Carta de índice 0 está boca arriba y la otra boca abajo)
+    private HashMap<String, Integer> apuesta_usuario;       // Diccionario con los usuarios y su apuesta en la partida
     private HashMap<String, Boolean> apuesta_plus;
+    private HashMap<Integer, String> usuarios;
     private String id;
 
 
@@ -45,13 +45,13 @@ public class BlackJack implements JuegoConApuesta {
     public BlackJack() {
         baraja = BarajaFrancesa.devolverInstancia();
         mazo = baraja.devolverCartas();
-        fichas_usuario = new HashMap<>(MAX_JUGADORES);
-        cartas_usuario = new HashMap<>(MAX_JUGADORES);
-        plantado = new HashMap<>(MAX_JUGADORES);
+        fichas_usuario = new HashMap<>();
+        cartas_usuario = new HashMap<>();
+        plantado = new HashMap<>();
         cartas_croupier = new ArrayList<>();
-        apuesta_usuario = new HashMap<>(MAX_JUGADORES);
-        usuarios = new HashMap<>(MAX_JUGADORES);
-        apuesta_plus = new HashMap<>(MAX_JUGADORES);
+        apuesta_usuario = new HashMap<>();
+        apuesta_plus = new HashMap<>();
+        usuarios = new HashMap<>();
         id = this.generateID();
     }
 
@@ -124,7 +124,7 @@ public class BlackJack implements JuegoConApuesta {
      * y se comprueba que jugadores han ganado, perdido o empatado contra la banca
     */
     public void jugadaFinal() {
-        List<Usuario> usuarios_ganadores;
+        List<String> usuarios_ganadores;
         turnoCroupier();
         usuarios_ganadores = comprobarGanadores();
     }
@@ -133,7 +133,7 @@ public class BlackJack implements JuegoConApuesta {
     public void nuevoUsuario(Usuario usuario) {
         int numeroUsuarios = usuarios.size(); 
         if (numeroUsuarios < MAX_JUGADORES) {
-            usuarios.put(usuario.getId(), usuario);
+            usuarios.put(numeroUsuarios, usuario.getId());              // Turno del jugador en la mesa
             cartas_usuario.put(usuario.getId(), new ArrayList<Carta>());
             apuesta_plus.put(usuario.getId(), false);
             plantado.put(usuario.getId(), false);
@@ -258,12 +258,12 @@ public class BlackJack implements JuegoConApuesta {
     public void repartirCartas() {
         List<Carta> cartas;
         for (int i = 0; i < usuarios.size(); i++) {     // Itera sobre cada usuario
-            cartas = new ArrayList<>();
-            for (int j = 0; j < 2; j++) {               // A cada usuario se le reparten dos cartas
-                cartas.add(mazo.get(0));                // Se saca una carta y se añade al array
+            cartas = new ArrayList<>();                 // Array temporal en el que se meten dos cartas
+            for (int j = 0; j < 2; j++) {               // A cada usuario se le reparten DOS cartas
+                cartas.add(mazo.get(0));                // Se saca una carta y se añade al array temporal
                 mazo.remove(0);
             }
-            String usuario = usuarios.get(i).getId();
+            String usuario = usuarios.get(i);
             List<Carta> cartas_temp = new ArrayList<>();
             cartas_temp.addAll(cartas);
             cartas_usuario.put(usuario, cartas_temp);
@@ -283,9 +283,9 @@ public class BlackJack implements JuegoConApuesta {
      * y se retocan sus fichas
      * @return Lista de usuarios que han ganado a la banca
     */
-    public List<Usuario> comprobarGanadores() {
+    public List<String> comprobarGanadores() {
         int cuenta_croupier = valorMano(cartas_croupier);
-        List<Usuario> usuarios_ganadores = new ArrayList<>();
+        List<String> usuarios_ganadores = new ArrayList<>();
 
         for (String usuario : cartas_usuario.keySet()) {
             List<Carta> cartas = cartas_usuario.get(usuario);
@@ -304,7 +304,7 @@ public class BlackJack implements JuegoConApuesta {
                 else {
                     fichas_usuario.put(usuario, fichas_del_usuario + 2*(apuesta_realizada_usuario) + (apuesta_realizada_usuario/2));
                 }
-                usuarios_ganadores.add(usuarios.get(usuario));
+                usuarios_ganadores.add(usuario);
             }
             else if (cuenta <= 21 && cuenta > cuenta_croupier) {    // usuario gana
                 if (!apuesta_plus.get(usuario)) {
@@ -313,7 +313,7 @@ public class BlackJack implements JuegoConApuesta {
                 else {
                     fichas_usuario.put(usuario, fichas_del_usuario + 2*(apuesta_realizada_usuario) + (apuesta_realizada_usuario/2));
                 }
-                usuarios_ganadores.add(usuarios.get(usuario));
+                usuarios_ganadores.add(usuario);
             }
             else if (cuenta <= 21 && cuenta < cuenta_croupier) {
                 // usuario pierde, ¿mostrar algo en vista?
@@ -357,14 +357,16 @@ public class BlackJack implements JuegoConApuesta {
         JSONObject estado = new JSONObject();
         JSONArray usuariosArray = new JSONArray();
         
-        for (String clave : this.usuarios.keySet()) {
+        for (Integer clave : this.usuarios.keySet()) {
+            String id_usuario = this.usuarios.get(clave);
             JSONObject usuarioJSON = new JSONObject();
-            usuarioJSON.put("ID", clave);
-            usuarioJSON.put("Apuesta", apuesta_usuario.get(clave));
-            usuarioJSON.put("Premio_extra", apuesta_plus.get(clave));
-            usuarioJSON.put("Plantado", plantado.get(clave));
-            usuarioJSON.put("Fichas", fichas_usuario.get(clave));
-            usuarioJSON.put("Cartas", cartasToString(this.cartas_usuario.get(clave)));
+            usuarioJSON.put("ID", id_usuario);
+            usuarioJSON.put("Apuesta", apuesta_usuario.get(id_usuario));
+            usuarioJSON.put("Premio_extra", apuesta_plus.get(id_usuario));
+            usuarioJSON.put("Plantado", plantado.get(id_usuario));
+            usuarioJSON.put("Fichas", fichas_usuario.get(id_usuario));
+            usuarioJSON.put("Turno_mesa",clave);
+            usuarioJSON.put("Cartas", cartasToString(this.cartas_usuario.get(id_usuario)));
             usuariosArray.add(usuarioJSON);
         }
 
@@ -394,8 +396,9 @@ public class BlackJack implements JuegoConApuesta {
             Integer fichas = (Integer) infoUsuario.get("Fichas");
             Boolean plantado = (Boolean) infoUsuario.get("Plantado");
             Boolean premio_extra = (Boolean) infoUsuario.get("Premio_extra");
+            Integer turno_jugador = (Integer) infoUsuario.get("Turno_mesa");
 
-            this.usuarios.put(id, null);
+            this.usuarios.put(turno_jugador, id);
             this.cartas_usuario.put(id, baraja.parsearCartas(cartasString));
             this.apuesta_usuario.put(id, apuesta);
             this.apuesta_plus.put(id, premio_extra);
