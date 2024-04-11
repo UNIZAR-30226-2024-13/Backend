@@ -137,6 +137,7 @@ public class BlackJack implements JuegoConApuesta {
             cartas_usuario.put(usuario.getId(), new ArrayList<Carta>());
             apuesta_plus.put(usuario.getId(), false);
             plantado.put(usuario.getId(), false);
+            fichas_usuario.put(usuario.getId(), );
             if (usuarios.size() == MAX_JUGADORES) {
                 iniciarPartida();
             }
@@ -294,26 +295,31 @@ public class BlackJack implements JuegoConApuesta {
             int fichas_del_usuario = fichas_usuario.get(usuario);
 
             if (cuenta > 21) {      // Si un jugador se pasa de 21, pierde independientemente de las cartas del croupier
-                // usuario pierde
+                // usuario pierde, ¿mostrar algo en vista?
             }
-            else if (cuenta_croupier > 21) {
-                if (!apuesta_plus.get(usuario))
+            else if (cuenta_croupier > 21) {    // usuario gana
+                if (!apuesta_plus.get(usuario)) {
                     fichas_usuario.put(usuario, fichas_del_usuario + 2*(apuesta_realizada_usuario));
-                else
+                }
+                else {
                     fichas_usuario.put(usuario, fichas_del_usuario + 2*(apuesta_realizada_usuario) + (apuesta_realizada_usuario/2));
+                }
                 usuarios_ganadores.add(usuarios.get(usuario));
-                // usuario gana
             }
-            else if (cuenta <= 21 && cuenta > cuenta_croupier) {
-                if (!apuesta_plus.get(usuario))
+            else if (cuenta <= 21 && cuenta > cuenta_croupier) {    // usuario gana
+                if (!apuesta_plus.get(usuario)) {
                     fichas_usuario.put(usuario, fichas_del_usuario + 2*(apuesta_realizada_usuario));
-                else
+                }
+                else {
                     fichas_usuario.put(usuario, fichas_del_usuario + 2*(apuesta_realizada_usuario) + (apuesta_realizada_usuario/2));
+                }
                 usuarios_ganadores.add(usuarios.get(usuario));
-                // usuario gana
             }
             else if (cuenta <= 21 && cuenta < cuenta_croupier) {
-                // usuario pierde
+                // usuario pierde, ¿mostrar algo en vista?
+            }
+            else {  // Empate, el jugador recupera su apuesta sin ganar ni perder nada
+                fichas_usuario.put(usuario, fichas_del_usuario + apuesta_realizada_usuario);
             }
         }
         return usuarios_ganadores;
