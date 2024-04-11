@@ -115,7 +115,7 @@ public class BlackJack implements JuegoConApuesta {
      * @param apuestaInicial    - Apuesta inicial que realiza el usuario
     */
     public void jugadaInicial(Usuario usuario, int apuestaInicial) {
-        apostar(usuario.getID(), apuestaInicial);   // Cada usuario realiza su apuesta inicial
+        apostar(usuario, apuestaInicial);   // Cada usuario realiza su apuesta inicial
     }
 
 
@@ -185,15 +185,15 @@ public class BlackJack implements JuegoConApuesta {
      * @param apuesta   - Valor de la apuesta
      */
     @Override
-    public void apostar(String usuario, int apuesta) {
-        int fichas_disponibles = fichas_usuario.get(usuario);
+    public void apostar(Usuario usuario, int apuesta) {
+        int fichas_disponibles = fichas_usuario.get(usuario.getID());
         if (apuesta > fichas_disponibles) {
             //Mandar error al control y esperar a nueva apuesta
         }
         else {
             fichas_disponibles -= apuesta;
-            fichas_usuario.put(usuario, fichas_disponibles);
-            apuesta_usuario.put(usuario, apuesta);
+            fichas_usuario.put(usuario.getID(), fichas_disponibles);
+            apuesta_usuario.put(usuario.getID(), apuesta);
             //Mandar al control las fichas disponibles
         }
     }

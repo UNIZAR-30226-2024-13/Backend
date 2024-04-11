@@ -178,15 +178,15 @@ public class Poker implements JuegoConApuesta{
      * @param apuesta   - Valor de la apuesta
      */
     @Override
-    public void apostar(String usuario, int apuesta){
-        int fichas_disponibles = fichas_usuario.get(usuario);
+    public void apostar(Usuario usuario, int apuesta){
+        int fichas_disponibles = fichas_usuario.get(usuario.getID());
         if (apuesta > fichas_disponibles) {
             //Mandar error al control y esperar a nueva apuesta
         }
         else {
             fichas_disponibles -= apuesta;
             bote += apuesta;
-            fichas_usuario.put(usuario,fichas_disponibles);
+            fichas_usuario.put(usuario.getID(),fichas_disponibles);
             //Mandar al control las fichas disponibles
         }
     }
@@ -436,7 +436,7 @@ public class Poker implements JuegoConApuesta{
      */
     public void jugada (Usuario usuario, int apuesta) {
         List<Integer> apuestas = new ArrayList<>(MAX_JUGADORES);
-        apostar(usuario.getID(), apuesta);
+        apostar(usuario, apuesta);
         apuestas.add(apuesta);
         if (apuesta != 0) {
             usuarios_con_apuesta.add(usuario.getID());
