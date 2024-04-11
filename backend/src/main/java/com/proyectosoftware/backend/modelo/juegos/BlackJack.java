@@ -58,10 +58,18 @@ public class BlackJack implements JuegoConApuesta {
 
     /**
      * Cargar un juego de blackjack dado un estado
-     * @param estado
+     * @param estado - Estado de una partida empezada
     */
     public BlackJack(JSONObject estado) {
-
+        baraja = BarajaFrancesa.devolverInstancia();
+        fichas_usuario = new HashMap<>();
+        cartas_usuario = new HashMap<>();
+        plantado = new HashMap<>();
+        cartas_croupier = new ArrayList<>();
+        apuesta_usuario = new HashMap<>();
+        apuesta_plus = new HashMap<>();
+        usuarios = new HashMap<>();
+        this.cargar(estado);
     }
 
 
