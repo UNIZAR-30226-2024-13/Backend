@@ -54,7 +54,10 @@ public class Cinquillo implements JuegoSinApuesta{
      * @param estado - Juego almacenado en la Base de Datos
      */
     public Cinquillo(JSONObject estado){
-        this.baraja = BarajaEspaniola.devolverInstancia();
+        baraja = BarajaEspaniola.devolverInstancia();
+        usuarios = new HashMap<>(MAX_USUARIOS);
+        manosUsuarios = new HashMap<>(MAX_USUARIOS);
+        escaleras = new HashMap<>(4);
         this.cargar(estado);
     }
 
@@ -259,7 +262,7 @@ public class Cinquillo implements JuegoSinApuesta{
         this.turno = (Integer) estado.get("turno");
         this.primerJugador = (Integer) estado.get("primer_jugador");
 
-        JSONArray usuarioArray = (JSONArray)estado.get(usuarios);
+        JSONArray usuarioArray = (JSONArray)estado.get("usuarios");
         for (Object object : usuarioArray) {
             JSONObject infoUsuario = (JSONObject) object;
            
@@ -272,13 +275,14 @@ public class Cinquillo implements JuegoSinApuesta{
             this.manosUsuarios.put(orden, baraja.parsearCartas(cartasString));
         }
 
-        JSONArray escaleraArray = (JSONArray)estado.get(escaleras);
+        JSONArray escaleraArray = (JSONArray)estado.get("escaleras");
         for (Object object : escaleraArray) {
             JSONObject infoEscalera = (JSONObject) object;
             String palo = (String) infoEscalera.get("palo");
             String cartasString = (String) infoEscalera.get("cartas");
-
-            this.escaleras.put(palo, baraja.parsearCartas(cartasString));
+            if(cartasString != null){
+                this.escaleras.put(palo, baraja.parsearCartas(cartasString));
+            }
         }
     }
 
