@@ -223,7 +223,7 @@ public class Cinquillo implements JuegoSinApuesta{
         for (String clave : escaleras.keySet()) {
             JSONObject escaleraJSON = new JSONObject();
             escaleraJSON.put("palo", clave);
-            estado.put("cartas", cartasToString(this.escaleras.get(clave)));
+            escaleraJSON.put("cartas", cartasToString(this.escaleras.get(clave)));
             escalerasArray.add(escaleraJSON);
         }
         estado.put("ID", this.id);
