@@ -85,30 +85,15 @@ public class Poker implements JuegoConApuesta{
      * Cargar un juego de poker dado un estado
      * @param estado
      */
-    public Poker(Estado estado){
-
-    }
-
-    /**
-     * Genera un estado de poker a partir de un string
-     * @param estadoString - String a parsear
-     * @return - Estado
-     */
-    @Override
-    public Estado recuperarEstado(String estadoString) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
-    }
-
-    /**
-     * 
-     * @param estado
-     * @return
-     */
-    @Override
-    public String crearEstado(Estado estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'crearEstado'");
+    public Poker(JSONObject estado){
+        baraja = BarajaFrancesa.devolverInstancia();
+        cartas_mesa = new ArrayList<>();
+        usuarios = new ArrayList<>(MAX_JUGADORES);
+        usuarios_con_apuesta = new HashSet<>(MAX_JUGADORES);
+        fichas_usuario = new HashMap<>(MAX_JUGADORES);
+        cartas_usuario = new HashMap<>(MAX_JUGADORES);
+        mano_usuario = new HashMap<>(MAX_JUGADORES);
+        this.cargar(estado);
     }
 
     /**
