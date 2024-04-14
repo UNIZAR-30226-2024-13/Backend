@@ -1,8 +1,6 @@
 package com.proyectosoftware.backend.modelo.barajas;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,16 +12,12 @@ import com.proyectosoftware.backend.modelo.interfaces.Baraja;
  * Implemenatsion singleton de la baraja española
  */
 public class BarajaEspaniola implements Baraja{
-    private static final String OROS = "oros";
-    private static final String COPAS = "copas";
-    private static final String ESPADAS = "espadas";
-    private static final String BASTOS = "bastos";
-
-    private int numeroCartas;
+    public static final String OROS = "oros";
+    public static final String COPAS = "copas";
+    public static final String ESPADAS = "espadas";
+    public static final String BASTOS = "bastos";
+    
     private List<Carta> cartas;
-
-    //private Set<String> coloresBaraja;
-    //private Set<Integer> numerosBaraja;
 
     private Map<Integer, String> coloresBaraja;
     private Map<Integer, String> numerosBaraja;
@@ -32,13 +26,8 @@ public class BarajaEspaniola implements Baraja{
 
     /**
      * Constuctor Baraja
-     * @param numeroCartas  - cantidad de cartas de la baraja
-     * @param cartasBaraja  - String representando las diferentes cartas de la baraja
      */
-    private BarajaEspaniola(int numeroCartas, String cartasBaraja) {
-        this.numeroCartas = numeroCartas;
-        this.cartas = Collections.unmodifiableList(parsearCartas(cartasBaraja));
-        
+    private BarajaEspaniola() {
         this.coloresBaraja = new HashMap<>();
         coloresBaraja.put(0, OROS);
         coloresBaraja.put(1, COPAS);
@@ -47,28 +36,35 @@ public class BarajaEspaniola implements Baraja{
         
         this.numerosBaraja = new HashMap<>();
         numerosBaraja.put(1, "As");
-        numerosBaraja.put(2, "1");
-        numerosBaraja.put(3, "2");
-        numerosBaraja.put(4, "3");
-        numerosBaraja.put(5, "4");
-        numerosBaraja.put(6, "5");
-        numerosBaraja.put(7, "6");
-        numerosBaraja.put(8, "7");
-        numerosBaraja.put(9, "Sota");
-        numerosBaraja.put(10, "Caballo");        
-        numerosBaraja.put(11, "Rey");        
+        numerosBaraja.put(2, "2");
+        numerosBaraja.put(3, "3");
+        numerosBaraja.put(4, "4");
+        numerosBaraja.put(5, "5");
+        numerosBaraja.put(6, "6");
+        numerosBaraja.put(7, "7");
+        numerosBaraja.put(8, "Sota");
+        numerosBaraja.put(9, "Caballo");        
+        numerosBaraja.put(10, "Rey");  
+        
+        this.cartas = crearBaraja();        
     }
 
+
+
     /**
-     * Devuelve la instancia de la baraja
-     * @return - instancia
-     * @see BarajaEspaniola
+     * Crea una baraja en base 
+     * @return - Devuelve una baraja española
      */
-    public static synchronized BarajaEspaniola devolverInstancia(int numeroCartas, String cartasBaraja){
-        if(instancia == null){
-            instancia = new BarajaEspaniola(numeroCartas, cartasBaraja);
+    private List<Carta> crearBaraja(){
+        List <Carta> baraja = new ArrayList<>();
+
+        for (int palo : coloresBaraja.keySet()) {
+            for (int numero : numerosBaraja.keySet()) {
+                Carta carta = new Carta(numero, palo);
+                baraja.add(carta);
+            }
         }
-        return instancia;
+        return baraja;
     }
 
     /**
@@ -78,9 +74,7 @@ public class BarajaEspaniola implements Baraja{
      */
     public static synchronized BarajaEspaniola devolverInstancia(){
         if(instancia == null){
-            /**
-             * TODO: lanzar error
-             */
+            instancia = new BarajaEspaniola();
         }
         return instancia;
     }
@@ -90,8 +84,7 @@ public class BarajaEspaniola implements Baraja{
      */
     @Override
     public boolean esCartaDeLaBaraja(Carta carta) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'esCartaDeLaBaraja'");
+        return esCartaDeLaBaraja(carta.getColor(), carta.getNumero());
     }
 
     /**
@@ -99,8 +92,7 @@ public class BarajaEspaniola implements Baraja{
      */
     @Override
     public boolean esCartaDeLaBaraja(int color, int numero) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'esCartaDeLaBaraja'");
+        return coloresBaraja.keySet().contains(color) && numerosBaraja.keySet().contains(numero);
     }
 
     /**
@@ -135,5 +127,17 @@ public class BarajaEspaniola implements Baraja{
         }
         return null;
     }
-    
+
+    /**
+     * 
+     */
+    @Override
+    public String toString(){
+        String res = "";
+
+        for (Carta carta : cartas) {
+            res += carta.toString() + ";";
+        }
+        return res;
+    }
 }
