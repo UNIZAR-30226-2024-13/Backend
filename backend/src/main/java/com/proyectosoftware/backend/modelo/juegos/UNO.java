@@ -132,10 +132,8 @@ public class UNO implements JuegoSinApuesta{
             usuarioJSON.put("cartas", cartasToString(this.manoUsuarios.get(clave)));
             usuariosArray.add(usuarioJSON);
         }
-        estado.put("ultima_carta", ultimaCarta);
+        estado.put("ultima_carta", cartasToString(ultimaCarta));
         estado.put("sentido", sentido);
-        estado.put("mas_dos", masdos);
-        estado.put("mas_cuatro", mascuatro);
         estado.put("ID", this.id);
         estado.put("turno", this.turno);
         estado.put("primer_jugador", primerJugador);
@@ -171,8 +169,6 @@ public class UNO implements JuegoSinApuesta{
         this.primerJugador = (Integer) estado.get("primer_jugador");
         String ultCarta = (String) estado.get("ultima_carta");
         this.sentido = (Integer) estado.get("sentido");
-        this.masdos = (Integer) estado.get("mas_dos");
-        this.mascuatro = (Integer) estado.get("mas_cuatro");
         this.ultimaCarta = baraja.parsearCartas(ultCarta);
 
         JSONArray usuarioArray = (JSONArray)estado.get(usuarios);
@@ -190,7 +186,7 @@ public class UNO implements JuegoSinApuesta{
 
     }
 
-    @Override
+    /*@Override
     public Estado recuperarEstado(String estadoString) {
         throw new UnsupportedOperationException("Unimplemented method 'recuperarEstado'");
     }
@@ -198,7 +194,7 @@ public class UNO implements JuegoSinApuesta{
     @Override
     public String crearEstado(Estado estado) {
         throw new UnsupportedOperationException("Unimplemented method 'crearEstado'");
-    }
+    }*/
 
 
     @Override
