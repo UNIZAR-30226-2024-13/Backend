@@ -89,29 +89,6 @@ public class Poker implements JuegoConApuesta{
 
     }
 
-
-    /**
-     * {@inheritDoc}
-     * @implSpec
-     * Crea un estado con el estado actual del juego poker
-     */
-    @Override
-    public JSONObject guardar() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'guardar'");
-    }
-
-    /**
-     * {@inheritDoc}
-     * @implSpec
-     * Inicializa el juego poker con un estado dado
-     */
-    @Override
-    public void cargar(JSONObject estado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cargar'");
-    }
-
     /**
      * {@inheritDoc}
      * @implSpec
@@ -466,7 +443,18 @@ public class Poker implements JuegoConApuesta{
         }
         siguenteTurno();
     }
-        /**
+
+    /**
+     * Devuelve un string representando las cartas de una lista dada
+     * @param cartas    - Lista de cartas
+     * @return La representacion en string
+     */
+    private String cartasToString(List<Carta> cartas){
+        return String.join(";", cartas.stream().map(Carta::toString).toList());
+    }
+
+
+    /**
      * {@inheritDoc}
      * @implSpec
      *  Se guardara:
