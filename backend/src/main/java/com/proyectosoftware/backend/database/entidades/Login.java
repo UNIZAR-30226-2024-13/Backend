@@ -19,7 +19,7 @@ public class Login {
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
-    private Usuario usuario;
+    private UsuarioEntidad usuario;
 
     @Column(name = "hashPasswd")
     private String passwd;

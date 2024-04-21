@@ -3,11 +3,12 @@ package com.proyectosoftware.backend.database.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.proyectosoftware.backend.database.entidades.UsuarioEntidad;
 
-import com.proyectosoftware.backend.database.entidades.Usuario;
 
+public interface UsuarioRepository extends JpaRepository<UsuarioEntidad, String> {
 
-public interface UsuarioRepository extends JpaRepository<Usuario, String> {
+    Optional<UsuarioEntidad> findById(String id);
 
-    Optional<Usuario> findById(String id);
+    Optional<UsuarioEntidad> findByNombre(String nombre);
 }

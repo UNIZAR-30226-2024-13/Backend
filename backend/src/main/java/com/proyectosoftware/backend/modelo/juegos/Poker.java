@@ -412,7 +412,7 @@ public class Poker implements JuegoConApuesta{
     /**
      * Jugada de poker donde se realizan las apuestas de cada jugador y se añade otra
      * carta a la mesa o se verifica el ganador de la partida y se le añaden las fichas
-     * @param Usuario   - Usuario que ha realizado la apuesta
+     * @param UsuarioEntidad   - Usuario que ha realizado la apuesta
      * @param apuesta   - Cantidad de fichas que ha apostado el usuario (vale 0 si se ha retirado)
      */
     public void jugada (Usuario usuario, int apuesta) {

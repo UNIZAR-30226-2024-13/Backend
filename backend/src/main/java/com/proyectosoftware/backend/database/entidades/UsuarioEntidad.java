@@ -3,9 +3,13 @@ package com.proyectosoftware.backend.database.entidades;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -16,7 +20,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario {
+public class UsuarioEntidad {
     
     @Id
     @Column(name = "id")
@@ -38,21 +42,22 @@ public class Usuario {
     @PrimaryKeyJoinColumn
     private Login login;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(
         name = "amigos",
-        joinColumns = @JoinColumn(name = "usuario1"),
-        inverseJoinColumns = @JoinColumn(name = "usuario2")
+        joinColumns = @JoinColumn(name = "usuario1", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "usuario2", referencedColumnName = "id")
     )
-    private Set<Usuario> amigos;
+    @JsonIgnoreProperties({ "amigos","partidas" })
+    @JsonIncludeProperties({ "id", "nombre" })
+    private Set<UsuarioEntidad> amigos;
 
     @ManyToMany(mappedBy = "usuarios")
     private Set<Partida> partidas = new HashSet<>();
 
-    public Usuario() {}
+    public UsuarioEntidad() {}
 
-    public Usuario(String id, String nombre, String email, int fichas, String pais) {
-        this.id = id;
+    public UsuarioEntidad(String id, String nombre, String email, int fichas, String pais) {
         this.nombre = nombre;
         this.email = email;
         this.fichas = fichas;
@@ -99,11 +104,12 @@ public class Usuario {
         this.pais = pais;
     }
 
-    public Set<Usuario> getAmigos() {
+    @ManyToMany()
+    public Set<UsuarioEntidad> getAmigos() {
         return amigos;
     }
 
-    public void setAmigos(Set<Usuario> amigos) {
+    public void setAmigos(Set<UsuarioEntidad> amigos) {
         this.amigos = amigos;
     }
 
