@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 import org.json.simple.JSONObject;
 
@@ -51,6 +53,7 @@ public class Poker implements JuegoConApuesta{
     private int turno;
     private int ultima_apuesta;
     private int ronda;
+    private String id;
     private List<Carta> cartas_mesa;
     private Baraja baraja;
     private List<Carta> mazo;
@@ -75,6 +78,7 @@ public class Poker implements JuegoConApuesta{
         fichas_usuario = new HashMap<>(MAX_JUGADORES);
         cartas_usuario = new HashMap<>(MAX_JUGADORES);
         mano_usuario = new HashMap<>(MAX_JUGADORES);
+        id = this.generateID();
     }
 
     /**
@@ -461,5 +465,73 @@ public class Poker implements JuegoConApuesta{
             apuestas.clear();
         }
         siguenteTurno();
+    }
+        /**
+     * {@inheritDoc}
+     * @implSpec
+     *  Se guardara:
+     *  <ul>
+     *  <li> El ID del juego
+     *  <li> El turno
+     *  <li> Una lista de los usuario que contine en cada campo: 
+     *       <ul>
+     *       <li> El id del usuario
+     *       <li> Las fichas del usuario
+     *       <li> Las cartas (en forma de string) del usuario
+     *       </ul>
+     *  <li> Las cartas (en forma de string) de la mesa
+     *  <li> Las fichas de la mesa
+     *  <li> Las cartas (en forma de string) del mazo
+     *  </ul>
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public JSONObject guardar() {
+        JSONObject estado = new JSONObject();
+        JSONArray usuariosArray = new JSONArray();
+        
+        for (int clave = 0; clave < usuarios.size(); clave++) {
+            JSONObject usuarioJSON = new JSONObject();
+            usuarioJSON.put("ID", usuarios.get(clave).getId());
+            usuarioJSON.put("Fichas", fichas_usuario.get(clave));
+            usuarioJSON.put("Cartas", cartasToString(this.cartas_usuario.get(clave)));
+            usuariosArray.add(usuarioJSON);
+        }
+
+        estado.put("ID", this.id);
+        estado.put("Turno", this.turno);
+        estado.put("Usuarios", usuariosArray);
+        estado.put("Fichas_mesa", this.bote);
+        estado.put("Cartas_mesa", cartasToString(this.cartas_mesa));
+        estado.put("Cartas_mazo", cartasToString(this.mazo));
+        return estado;
+    }
+    
+
+    @Override
+    public void cargar(JSONObject estado) {
+        this.id = (String) estado.get("ID");
+        this.turno = (Integer) estado.get("Turno");
+        this.bote = (Integer) estado.get("Fichas_mesa");
+        this.mazo = baraja.parsearCartas((String) estado.get("Cartas_mazo"));
+        this.cartas_mesa = baraja.parsearCartas((String) estado.get("Cartas_mesa"));
+        JSONArray usuarioArray = (JSONArray)estado.get(usuarios);
+
+        for (Object object : usuarioArray) {
+            JSONObject infoUsuario = (JSONObject) object;
+           
+            String id = (String) infoUsuario.get("ID");
+            String cartasString = (String) infoUsuario.get("Cartas");
+            Integer fichas = (Integer) infoUsuario.get("Fichas");
+
+            for (int i = 0; i < usuarios.size(); i++) {
+                if (usuarios.get(i).getId() == id) {
+                    usuarios.set(i,null);
+                    break;
+                }
+            }
+            this.cartas_usuario.put(id, baraja.parsearCartas(cartasString));
+            this.fichas_usuario.put(id, fichas);
+        }
     }
 }
