@@ -8,6 +8,10 @@ import org.json.simple.JSONObject;
 
 import com.proyectosoftware.backend.modelo.Usuario;
 
+import org.json.simple.JSONObject;
+
+import com.proyectosoftware.backend.modelo.Usuario;
+
 public interface Juego extends Estado, UniqueIDGenerator{
     /**
      * Crea un estado con el estado actual del juego
