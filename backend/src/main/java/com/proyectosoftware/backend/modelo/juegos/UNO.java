@@ -32,8 +32,6 @@ public class UNO implements JuegoSinApuesta{
 
     private int sentido = 0;
     private int turno = 0;
-    private int masdos = 0;
-    private int mascuatro = 0;
     private int primerJugador = 0;
     private String id;
     
@@ -47,6 +45,7 @@ public class UNO implements JuegoSinApuesta{
        usuarios = new HashMap<>(MAX_USUARIOS);
        manoUsuarios = new HashMap<>(MAX_USUARIOS);
        ultimaCarta = new ArrayList<>();
+       id = this.generateID();
     }
 
 
@@ -56,6 +55,10 @@ public class UNO implements JuegoSinApuesta{
      */
     public UNO(JSONObject estado){
         this.baraja = BarajaUNO.devolverInstancia();
+        mazo = baraja.devolverCartas();
+        usuarios = new HashMap<>(MAX_USUARIOS);
+        manoUsuarios = new HashMap<>(MAX_USUARIOS);
+        ultimaCarta = new ArrayList<>();
         this.cargar(estado);
     }
 
@@ -115,8 +118,6 @@ public class UNO implements JuegoSinApuesta{
      *       </ul>
      *  <li> Cartas que han sido jugadas en la partida
      *  <li> Sentido de la partida
-     *  <li> Indicador de robar 2 cartas
-     *  <li> Indicador de robar 4 cartas
      *  </ul>
      */
     @SuppressWarnings("unchecked")
@@ -158,8 +159,6 @@ public class UNO implements JuegoSinApuesta{
      *       </ul>
      *  <li> Cartas que han sido jugadas en la partida
      *  <li> Sentido de la partida
-     *  <li> Indicador de robar 2 cartas
-     *  <li> Indicador de robar 4 cartas
      *  </ul>
      */
     @Override
@@ -171,16 +170,16 @@ public class UNO implements JuegoSinApuesta{
         this.sentido = (Integer) estado.get("sentido");
         this.ultimaCarta = baraja.parsearCartas(ultCarta);
 
-        JSONArray usuarioArray = (JSONArray)estado.get(usuarios);
+        JSONArray usuarioArray = (JSONArray)estado.get("usuarios");
         for (Object object : usuarioArray) {
             JSONObject infoUsuario = (JSONObject) object;
            
-            //TODO: con un id de un usaurio, acceder al objeto del usuario
+            //TODO: con un id de un usuario, acceder al objeto del usuario
             String id = (String) infoUsuario.get("ID");
             int orden = (Integer) infoUsuario.get("turno_en_juego");
             String cartasString = (String) infoUsuario.get("cartas");
-
-            this.usuarios.put(orden, null);
+            //this.usuarios.put(orden, null);
+            System.out.println(cartasString);
             this.manoUsuarios.put(orden, baraja.parsearCartas(cartasString));
         }
 
@@ -237,7 +236,9 @@ public class UNO implements JuegoSinApuesta{
             Carta c;
             int indice = 0;
             for(int i = 0; i < manoJugador.size()- 1; i++){
-                if(carta == manoJugador.get(i)){
+                //System.out.println(manoJugador.get(i).getColor());
+                //System.out.println(manoJugador.get(i).getNumero());
+                if(carta.getColor() == manoJugador.get(i).getColor() && carta.getNumero() == manoJugador.get(i).getNumero()){
                     indice = i; //guarda el indice de la carta en la mano
                 }
             }

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import com.proyectosoftware.backend.modelo.Carta;
 import com.proyectosoftware.backend.modelo.Usuario;
 import com.proyectosoftware.backend.modelo.barajas.BarajaUNO;
+import com.proyectosoftware.backend.modelo.interfaces.Juego;
 
 public class UNOTest {
     private Usuario usuario1;
@@ -28,6 +29,7 @@ public class UNOTest {
         this.usuario3 = new Usuario("3","3", 0,"3");
         this.usuario4 = new Usuario("4","4", 0,"4");
         this.uno = new UNO();
+        
         
         uno.nuevoUsuario(usuario1);
         uno.nuevoUsuario(usuario2);
@@ -58,8 +60,8 @@ public class UNOTest {
 
     @Test
     public void cargaEstadoCorrecto(){
+        uno.iniciarPartida();
         JSONObject json = uno.guardar();
-        uno = new UNO(json);
 
         Assertions.assertThat(((String)json.get("ID"))).startsWith("juego-");
         System.out.println(((String)json.get("ID")));
@@ -96,6 +98,9 @@ public class UNOTest {
         JSONArray usuariosArray = new JSONArray();
         
         JSONObject usuarioJSON = new JSONObject();
+        JSONObject usuarioJSON1 = new JSONObject();
+        JSONObject usuarioJSON2 = new JSONObject();
+        JSONObject usuarioJSON3 = new JSONObject();
         usuarioJSON.put("ID", usuario1.getID());
         usuarioJSON.put("turno_en_juego", 0);
 
@@ -112,8 +117,8 @@ public class UNOTest {
         usuarioJSON.put("cartas", cartasToString(cartas));
         usuariosArray.add(usuarioJSON);
 
-        usuarioJSON.put("ID", usuario2.getID());
-        usuarioJSON.put("turno_en_juego", 1);
+        usuarioJSON1.put("ID", usuario2.getID());
+        usuarioJSON1.put("turno_en_juego", 1);
 
         cartas = new ArrayList<>();
         cartas.add(new Carta(1,1));
@@ -124,11 +129,11 @@ public class UNOTest {
         cartas.add(new Carta(6,1));
         cartas.add(new Carta(7,1));
 
-        usuarioJSON.put("cartas", cartasToString(cartas));
-        usuariosArray.add(usuarioJSON);
+        usuarioJSON1.put("cartas", cartasToString(cartas));
+        usuariosArray.add(usuarioJSON1);
 
-        usuarioJSON.put("ID", usuario3.getID());
-        usuarioJSON.put("turno_en_juego", 2);
+        usuarioJSON2.put("ID", usuario3.getID());
+        usuarioJSON2.put("turno_en_juego", 2);
 
         cartas = new ArrayList<>();
         cartas.add(new Carta(1,2));
@@ -139,11 +144,11 @@ public class UNOTest {
         cartas.add(new Carta(6,2));
         cartas.add(new Carta(7,2));
 
-        usuarioJSON.put("cartas", cartasToString(cartas));
-        usuariosArray.add(usuarioJSON);
+        usuarioJSON2.put("cartas", cartasToString(cartas));
+        usuariosArray.add(usuarioJSON2);
 
-        usuarioJSON.put("ID", usuario4.getID());
-        usuarioJSON.put("turno_en_juego", 3);
+        usuarioJSON3.put("ID", usuario4.getID());
+        usuarioJSON3.put("turno_en_juego", 3);
 
         cartas = new ArrayList<>();
         cartas.add(new Carta(1,3));
@@ -154,30 +159,30 @@ public class UNOTest {
         cartas.add(new Carta(6,3));
         cartas.add(new Carta(7,3));
 
-        usuarioJSON.put("cartas", cartasToString(cartas));
-        usuariosArray.add(usuarioJSON);
+        usuarioJSON3.put("cartas", cartasToString(cartas));
+        usuariosArray.add(usuarioJSON3);
 
         cartas = new ArrayList<>();
-        cartas.add(new Carta(2,0));
-        cartas.add(new Carta(4,0));
-        cartas.add(new Carta(1,0));
+        cartas.add(new Carta(2,2));
+        cartas.add(new Carta(4,2));
+        cartas.add(new Carta(1,2));
 
         estado.put("ID", "juego-UNO");
-        estado.put("turno", 1);
+        estado.put("turno", 2);
         estado.put("sentido",0);
         estado.put("primer_jugador", 0);
         estado.put("usuarios", usuariosArray);
         estado.put("ultima_carta",cartasToString(cartas));
 
-
         JSONObject json = estado;
         uno = new UNO(json);
-        uno.jugada(usuario2, new Carta(3, 2),0);
-        
+        uno.jugada(usuario3, new Carta(3, 2),0);
+        json = uno.guardar();
+
         JSONArray usuarios = (JSONArray)json.get("usuarios");
         for (Object object : usuarios) {
             JSONObject usuario = (JSONObject)object;
-            if(usuario.get("ID").equals(usuario2.getID())){
+            if(usuario.get("ID").equals(usuario3.getID())){
                 Assertions.assertThat(usuario.get("cartas")).asString().doesNotContain("2,3");
             }       
         }

@@ -26,7 +26,7 @@ public interface Baraja {
             String[] datosCarta = carta.split(",");
             int color = Integer.parseInt(datosCarta[0]);
             int numero = Integer.parseInt(datosCarta[1]); 
-            if(esCartaDeLaBaraja(numero, color)){
+            if(esCartaDeLaBaraja(color, numero)){
                 cartas.add(new Carta(numero, color));
             }else {
                 /**
