@@ -2,6 +2,7 @@ package com.proyectosoftware.backend.database.entidades;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
@@ -11,28 +12,33 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "login")
 public class Login {
-
+    
+    @OneToOne
+    @JoinColumn(name = "id", referencedColumnName = "id")
+    @MapsId
+    private UsuarioEntidad usuario;
+    
     @Id
     @Column(name = "id")
     private String userID;
-    
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
-    private UsuarioEntidad usuario;
 
-    @Column(name = "hashPasswd")
-    private String passwd;
+    @Column(name = "hashPasswd", nullable = false)
+    private String hashPasswd;
 
     public Login() {
     }
 
-    public Login(String userID, String passwd) {
+    public Login(String userID, String hashPasswd) {
         this.userID = userID;
-        this.passwd = passwd;
+        this.hashPasswd = hashPasswd;
     }
 
-    public String getUserID() {
+    public Login(UsuarioEntidad usuarioEntidad) {
+		this();
+        this.usuario = usuarioEntidad;
+	}
+
+	public String getUserID() {
         return userID;
     }
 
@@ -40,11 +46,11 @@ public class Login {
         this.userID = userID;
     }
 
-    public String getPasswd() {
-        return passwd;
+    public String getHashPasswd() {
+        return hashPasswd;
     }
 
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
+    public void setHashPasswd(String hashPasswd) {
+        this.hashPasswd = hashPasswd;
     }
 }

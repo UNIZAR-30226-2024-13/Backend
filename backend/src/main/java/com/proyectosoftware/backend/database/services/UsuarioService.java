@@ -21,19 +21,19 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public UsuarioEntidad saveUsuario(UsuarioEntidad Usuario){
-        return usuarioRepository.save(Usuario);
+    public UsuarioEntidad saveUsuario(UsuarioEntidad usuario){
+        return usuarioRepository.save(usuario);
     }
 
     public Optional<UsuarioEntidad> getUsuarioByName(String nombre){
         return usuarioRepository.findByNombre(nombre);
     }
 
-    public Optional<UsuarioEntidad> getUsuarioById(String Id){
-        return usuarioRepository.findById(Id);
+    public Optional<UsuarioEntidad> getUsuarioById(String id){
+        return usuarioRepository.findById(id);
     }
 
-    public void deleteUsuario(String idUsuario) throws Exception{
+    public void deleteUsuarioById(String idUsuario) throws Exception{
         UsuarioEntidad usuario = usuarioRepository.findById(idUsuario).orElseThrow(()-> new Exception("Usuario no existe"));
         for (UsuarioEntidad amigo : usuario.getAmigos()) {
             amigo.getAmigos().remove(usuario);
@@ -42,30 +42,39 @@ public class UsuarioService {
         usuarioRepository.delete(usuario);
     }
 
-    public UsuarioEntidad agregarAmigo(String idUsuario, String idAmigo) throws Exception {
+    public void deleteUsuarioByNombre(String nombre) throws Exception{
+        UsuarioEntidad usuario = usuarioRepository.findByNombre(nombre).orElseThrow(()-> new Exception("Usuario no existe"));
+        for (UsuarioEntidad amigo : usuario.getAmigos()) {
+            amigo.getAmigos().remove(usuario);
+        }
+        usuario.getAmigos().clear();
+        usuarioRepository.delete(usuario);
+    }
+
+    public UsuarioEntidad agregarAmigo(String nombreUsuario, String nombreAmigo) throws Exception {
         UsuarioEntidad usuario = usuarioRepository
-                                .findById(idUsuario)
-                                .orElseThrow(() -> new Exception("El amigo con ID '" + idAmigo + "' no existe."));
+                                .findByNombre(nombreUsuario)
+                                .orElseThrow(() -> new Exception("El amigo con ID '" + nombreAmigo + "' no existe."));
         UsuarioEntidad amigo = usuarioRepository
-                                .findById(idAmigo)
-                                .orElseThrow(() -> new Exception("El usuario con ID '" + idUsuario + "' no existe."));
+                                .findByNombre(nombreAmigo)
+                                .orElseThrow(() -> new Exception("El usuario con ID '" + nombreUsuario + "' no existe."));
         if(usuario.getAmigos().contains(amigo)){
-            throw new Exception("El usuario con ID '" + idUsuario + "' ya es amigo del usuario con id '" + idAmigo + "'.");
+            throw new Exception("El usuario con ID '" + nombreUsuario + "' ya es amigo del usuario con id '" + nombreAmigo + "'.");
         }
         usuario.getAmigos().add(amigo);
         amigo.getAmigos().add(usuario);
         return saveUsuario(usuario);
     }
 
-    public UsuarioEntidad borrarAmigo(String idUsuario, String idAmigo) throws Exception {
+    public UsuarioEntidad borrarAmigo(String nombreUsuario, String nombreAmigo) throws Exception {
         UsuarioEntidad usuario = usuarioRepository
-                                .findById(idUsuario)
-                                .orElseThrow(() -> new Exception("El amigo con ID '" + idAmigo + "' no existe."));
+                                .findByNombre(nombreUsuario)
+                                .orElseThrow(() -> new Exception("El amigo con ID '" + nombreAmigo + "' no existe."));
         UsuarioEntidad amigo = usuarioRepository
-                                .findById(idAmigo)
-                                .orElseThrow(() -> new Exception("El usuario con ID '" + idUsuario + "' no existe."));
+                                .findByNombre(nombreAmigo)
+                                .orElseThrow(() -> new Exception("El usuario con ID '" + nombreUsuario + "' no existe."));
         if(!usuario.getAmigos().contains(amigo) || !amigo.getAmigos().contains(usuario)){
-            throw new Exception("El usuario con ID '" + idUsuario + "' y el usuario con id '" + idAmigo + "' no son amigos.");
+            throw new Exception("El usuario con ID '" + nombreUsuario + "' y el usuario con id '" + nombreAmigo + "' no son amigos.");
         }
         usuario.getAmigos().remove(amigo);
         amigo.getAmigos().remove(usuario);

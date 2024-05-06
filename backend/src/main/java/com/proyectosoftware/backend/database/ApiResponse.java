@@ -4,16 +4,15 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(value = Include.NON_NULL)
-public class ApiResponse {
+public class ApiResponse<T> {
     private String mensaje;
     private boolean status;
-    private Object datos;
-    
+    private T datos;
     
     public ApiResponse() {
     }
     
-    public ApiResponse(String mensaje, boolean status, Object datos){
+    public ApiResponse(String mensaje, boolean status, T datos){
         this.mensaje = mensaje;
         this.status = status;
         this.datos = datos;
@@ -23,11 +22,11 @@ public class ApiResponse {
         this(mensaje,status,null);
     }
 
-    public Object getDatos() {
+    public T getDatos() {
         return datos;
     }
 
-    public void setDatos(Object datos) {
+    public void setDatos(T datos) {
         this.datos = datos;
     }
     

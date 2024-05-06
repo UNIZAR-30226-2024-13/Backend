@@ -1,9 +1,13 @@
 package com.proyectosoftware.backend.database.controller;
 
+import java.security.KeyException;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,84 +15,191 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.proyectosoftware.backend.database.ApiResponse;
 import com.proyectosoftware.backend.database.entidades.UsuarioEntidad;
+import com.proyectosoftware.backend.database.services.LoginService;
 import com.proyectosoftware.backend.database.services.UsuarioService;
 import com.proyectosoftware.backend.modelo.Usuario;
 
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
+    private static final String BY_ID = "byId";    
+    private static final String BY_NOMBRE = "byNombre";
     
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private LoginService loginService;
+
     @GetMapping("/getUsuarios")
-    public List<UsuarioEntidad> getAllUsuarios() {
-        return usuarioService.getAllUsuarios();
+    @ResponseBody
+    public ApiResponse<List<UsuarioEntidad>> getAllUsuarios() {
+        return new ApiResponse<>(
+            "OK",
+            true,
+            usuarioService.getAllUsuarios()
+        );
     }
 
-    @PostMapping("/newUsuario")
-    public ApiResponse saveUsuario(@RequestBody UsuarioEntidad usuarioNuevo) {
-        Usuario usuario = new Usuario(
-            usuarioNuevo.getNombre(),
-            usuarioNuevo.getEmail(),
-            usuarioNuevo.getFichas(),
-            usuarioNuevo.getPais()
-        );
-        usuarioNuevo.setId(usuario.getID());
-        return new ApiResponse(
-            "Usuario aniadido con exito",
-            true,
-            usuarioService.saveUsuario(usuarioNuevo)
-        );
+    @SuppressWarnings("unchecked")
+	@PostMapping("/newUsuario")
+    @ResponseBody
+    public ApiResponse<UsuarioEntidad> saveUsuario(@RequestBody Map<String, Object> datos) {
+        try {
+            UsuarioEntidad usuarioEntidad = UsuarioEntidad.newInstance();
+            Usuario usuario = null;
+
+            if(!datos.keySet().containsAll(List.of("login", "usuario"))){
+                throw new KeyException();
+            }
+            
+            Map<String, Object> mapaUsuario = (Map<String, Object>)datos.get("usuario");
+            String hashPasswd = (String)((Map<String, Object>)datos.get("login")).get("hashPasswd");
+            
+            if(!mapaUsuario.keySet().containsAll(List.of("nombre","email","pais"))){
+                throw new KeyException();
+            }
+            
+            if(hashPasswd.isEmpty() || hashPasswd == null){
+                throw new KeyException();
+            }
+            
+            usuario = new Usuario(
+                (String)mapaUsuario.get("nombre"),
+                (String)mapaUsuario.get("email"),
+                (String)mapaUsuario.get("pais")
+            );
+            usuarioEntidad.setId(usuario.getID());
+        
+            usuarioEntidad.setNombre((String)mapaUsuario.get("nombre"));
+            usuarioEntidad.setEmail((String)mapaUsuario.get("email"));
+            usuarioEntidad.setPais((String)mapaUsuario.get("pais"));
+
+            usuarioEntidad.getLogin().setUserID(usuario.getID());
+            usuarioEntidad.getLogin().setHashPasswd(hashPasswd);
+            
+            //loginService.saveLogin(usuarioEntidad.getLogin());
+            return new ApiResponse<>(
+                "Usuario aniadido con exito",
+                true,
+                usuarioService.saveUsuario(usuarioEntidad)
+            );    
+        } catch (DataIntegrityViolationException e) {
+            System.err.println(e.getMessage());
+            return new ApiResponse<>(
+                "El usuario ya existe",
+                false
+            );
+        }
+        catch (KeyException e){
+            System.err.println(e.getMessage());
+            System.err.println(e.getClass().getName());
+            return new ApiResponse<>(
+                "Faltan datos para crear el usaurio",
+                false
+            );
+        } 
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            System.err.println(e.getClass().getName());
+            return new ApiResponse<>(
+                "Error en los datos",
+                false
+            );
+        }
     }
-    
+                
     @GetMapping("/getUsuario")
-    public ApiResponse getUsuario(@RequestParam String tipo, @RequestParam String value) {
+    @ResponseBody
+    public ApiResponse<UsuarioEntidad> getUsuario(@RequestParam String tipo, @RequestParam String value) {
         Optional<UsuarioEntidad> usuario = null;
-        if(tipo.equals("byId")){
+        if(tipo.equals(BY_ID)){
             usuario = usuarioService.getUsuarioById(value);
-        }else if(tipo.equals("byNombre")){
+        }else if(tipo.equals(BY_NOMBRE)){
             usuario = usuarioService.getUsuarioByName(value);
         }else{
-            return new ApiResponse("El tipo de busqueda solo puede se 'byId' o 'byNombre'", false);
+            return new ApiResponse<>(
+                "El tipo de busqueda solo puede se 'byId' o 'byNombre'",
+                false
+            );
         }
 
         if (!usuario.isPresent()) {
-            return new ApiResponse("No existe el usuario'" + value + "'", false);
+            return new ApiResponse<>(
+                "No existe el usuario'" + value + "'",
+                false
+            );
         }
-        return new ApiResponse("Usuario'" + value + "'", true, usuario.get());
+        return new ApiResponse<>(
+            "Usuario'" + value + "'",
+            true,
+            usuario.get()
+        );
     } 
 
     @PostMapping("/addAmigo")
-    public ApiResponse agregarAmigo(@RequestParam String idUsuario, @RequestParam String idAmigo) {
+    @ResponseBody
+    public ApiResponse<UsuarioEntidad> agregarAmigo(@RequestParam String nombreUsuario, @RequestParam String nombreAmigo) {
         try {
-            UsuarioEntidad usuario = usuarioService.agregarAmigo(idUsuario, idAmigo);
-            return new ApiResponse("Amigo '" + idAmigo + "' agregado con exito en la lista de amigos de '" + idUsuario + "'", true, usuario);
+            UsuarioEntidad usuario = usuarioService.agregarAmigo(nombreUsuario, nombreAmigo);
+            return new ApiResponse<>(
+                "Amigo '" + nombreAmigo + "' agregado con exito en la lista de amigos de '" + nombreUsuario + "'",
+                true,
+                usuario
+            );
         } catch (Exception e) {
-            return new ApiResponse(e.getMessage(), false);
+            return new ApiResponse<>(
+                e.getMessage(),
+                false
+            );
         }
     }
 
     @DeleteMapping("/deleteAmigo")
-    public ApiResponse deleteAmigo(@RequestParam String idUsuario, @RequestParam String idAmigo) {
+    @ResponseBody
+    public ApiResponse<UsuarioEntidad> deleteAmigo(@RequestParam String nombreUsuario, @RequestParam String nombreAmigo) {
         try {
-            UsuarioEntidad usuario = usuarioService.borrarAmigo(idUsuario, idAmigo);
-            return new ApiResponse("Amigo '" + idAmigo + "' borrado de la lista de amigos de '" + idUsuario + "'", true, usuario);
+            UsuarioEntidad usuario = usuarioService.borrarAmigo(nombreUsuario, nombreAmigo);
+            return new ApiResponse<>(
+                "Amigo '" + nombreAmigo + "' borrado de la lista de amigos de '" + nombreUsuario + "'",
+                true,
+                usuario
+            );
         } catch (Exception e) {
-            return new ApiResponse(e.getMessage(), false);
+            return new ApiResponse<>(
+                e.getMessage(),
+                false
+            );
         }
     }
 
     @DeleteMapping("/deleteUsuario")
-    public ApiResponse deleteUsuario(@RequestParam String idUsuario){
+    @ResponseBody
+    public ApiResponse<UsuarioEntidad> deleteUsuario(@RequestParam String tipo, @RequestParam String value){
         try {
-            usuarioService.deleteUsuario(idUsuario);
-            return new ApiResponse("Usuario '" + idUsuario + "' borrado correctamente", true);
+            if(tipo.equals(BY_ID)){
+                usuarioService.deleteUsuarioById(value);
+            }else if(tipo.equals(BY_NOMBRE)){
+                usuarioService.deleteUsuarioByNombre(value);
+            }else{
+                return new ApiResponse<>(
+                    "El tipo de busqueda solo puede se 'byId' o 'byNombre'",
+                    false
+                );
+            }
+            return new ApiResponse<>(
+                "Usuario '" + value + "' borrado correctamente",
+                true
+            );
         } catch (Exception e) {
-            return new ApiResponse("Usuario '" + idUsuario + "' no existe", false);
+            return new ApiResponse<>(
+                "Usuario '" + value + "' no existe",
+                false
+            );
         }
     }
 }

@@ -20,6 +20,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
+@JsonIgnoreProperties({"login"})
 public class UsuarioEntidad {
     
     @Id
@@ -32,13 +33,13 @@ public class UsuarioEntidad {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "fichas", columnDefinition = "integer default 100")
-    private int fichas;
+    @Column(name = "fichas", columnDefinition = "integer default '100'")
+    private int fichas = 100;
 
     @Column(name = "pais")
     private String pais;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     private Login login;
 
@@ -48,20 +49,21 @@ public class UsuarioEntidad {
         joinColumns = @JoinColumn(name = "usuario1", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "usuario2", referencedColumnName = "id")
     )
-    @JsonIgnoreProperties({ "amigos","partidas" })
-    @JsonIncludeProperties({ "id", "nombre" })
-    private Set<UsuarioEntidad> amigos;
+    @JsonIgnoreProperties({"amigos", "partidas"})
+    @JsonIncludeProperties({"id", "nombre"})
+    private Set<UsuarioEntidad> amigos = new HashSet<>();;
 
     @ManyToMany(mappedBy = "usuarios")
     private Set<Partida> partidas = new HashSet<>();
 
-    public UsuarioEntidad() {}
+    public static UsuarioEntidad newInstance() {
+        UsuarioEntidad usuarioEntidad = new UsuarioEntidad();
+        usuarioEntidad.setLogin(new Login(usuarioEntidad));
+        return usuarioEntidad;
+    }
 
-    public UsuarioEntidad(String id, String nombre, String email, int fichas, String pais) {
-        this.nombre = nombre;
-        this.email = email;
-        this.fichas = fichas;
-        this.pais = pais;
+    public UsuarioEntidad() {
+        super();
     }
 
     public String getId() {
@@ -120,4 +122,12 @@ public class UsuarioEntidad {
     public void setPartidas(Set<Partida> partidas) {
         this.partidas = partidas;
     }
+
+	public Login getLogin() {
+		return login;
+	}
+
+	public void setLogin(Login login) {
+		this.login = login;
+	}
 }
