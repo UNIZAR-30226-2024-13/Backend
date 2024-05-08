@@ -34,6 +34,21 @@ public class Usuario implements UniqueIDGenerator{
 
         this.IDsAmigos = new HashSet<>();
     }
+
+    /**
+     * Constructor objeto Usuario
+     * @param nombre    - nombre/nick del usuario
+     * @param email     - email del usuario
+     * @param pais      - pais del usuario
+     */
+    public Usuario(String nombre, String email, String pais) {
+        this.nombre = nombre;
+        this.email = email;
+        this.pais = pais;
+        this.id = generateID();
+
+        this.IDsAmigos = new HashSet<>();
+    }
     
     /**
      * {@inheritDoc}
@@ -43,12 +58,15 @@ public class Usuario implements UniqueIDGenerator{
      */
     @Override
     public String generateID() {
-        StringBuilder mensaje = new StringBuilder(this.getClass().getSimpleName());
-        mensaje.append("-");
-        mensaje.append(this.nombre);
-        mensaje.append("-"); 
-        mensaje.append(UUID.randomUUID().toString().split("-")[0]);
-        return mensaje.toString();
+        if(this.id == null){
+            StringBuilder mensaje = new StringBuilder(this.getClass().getSimpleName());
+            mensaje.append("-");
+            mensaje.append(this.nombre);
+            mensaje.append("-"); 
+            mensaje.append(UUID.randomUUID().toString().split("-")[0]);
+            return mensaje.toString();
+        }
+        return this.id;
     }
 
     /**
