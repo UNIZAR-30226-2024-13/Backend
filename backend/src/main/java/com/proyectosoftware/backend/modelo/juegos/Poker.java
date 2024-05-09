@@ -187,6 +187,7 @@ public class Poker implements JuegoConApuesta{
             fichas_disponibles -= apuesta;
             bote += apuesta;
             fichas_usuario.put(usuario,fichas_disponibles);
+            ultima_apuesta = apuesta;
             //Mandar al control las fichas disponibles
         }
     }
@@ -434,7 +435,7 @@ public class Poker implements JuegoConApuesta{
      * @param UsuarioEntidad   - Usuario que ha realizado la apuesta
      * @param apuesta   - Cantidad de fichas que ha apostado el usuario (vale 0 si se ha retirado)
      */
-    public void jugada (Usuario usuario, int apuesta) {
+    public void jugada (Usuario usuario, int apuesta) {        
         List<Integer> apuestas = new ArrayList<>(MAX_JUGADORES);
         apostar(usuario.getID(), apuesta);
         apuestas.add(apuesta);
