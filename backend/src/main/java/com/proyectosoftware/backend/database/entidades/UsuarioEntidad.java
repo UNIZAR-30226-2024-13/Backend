@@ -43,6 +43,10 @@ public class UsuarioEntidad {
     @PrimaryKeyJoinColumn
     private Login login;
 
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn
+    private Session session;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(
         name = "amigos",
@@ -123,11 +127,24 @@ public class UsuarioEntidad {
         this.partidas = partidas;
     }
 
-	public Login getLogin() {
+	private void setLogin(Login login) {
+		this.login = login;
+	}
+
+    public Login getLogin() {
 		return login;
 	}
 
-	public void setLogin(Login login) {
-		this.login = login;
-	}
+	public Session crearSesion(){
+        this.session = new Session(this);
+        return session;
+    }
+
+    public void deleteSession(){
+        this.session = null;
+    }
+
+    public boolean tieneSesion(){
+        return this.session != null;
+    }
 }
