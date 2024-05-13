@@ -488,6 +488,7 @@ public class Poker implements JuegoConApuesta{
 
         estado.put("ID", this.id);
         estado.put("Turno", this.turno);
+        estado.put("Ultima_apuesta", this.ultima_apuesta);
         estado.put("Usuarios", usuariosArray);
         estado.put("Fichas_mesa", this.bote);
         estado.put("Cartas_mesa", cartasToString(this.cartas_mesa));
@@ -500,6 +501,7 @@ public class Poker implements JuegoConApuesta{
     public void cargar(JSONObject estado) {
         this.id = (String) estado.get("ID");
         this.turno = (Integer) estado.get("Turno");
+        this.ultima_apuesta = (Integer) estado.get("Ultima_apuesta");
         this.bote = (Integer) estado.get("Fichas_mesa");
         this.mazo = baraja.parsearCartas((String) estado.get("Cartas_mazo"));
         this.cartas_mesa = baraja.parsearCartas((String) estado.get("Cartas_mesa"));
