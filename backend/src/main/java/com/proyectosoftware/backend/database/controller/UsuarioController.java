@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.proyectosoftware.backend.database.ApiResponse;
-import com.proyectosoftware.backend.database.entidades.Session;
 import com.proyectosoftware.backend.database.entidades.UsuarioEntidad;
 import com.proyectosoftware.backend.database.services.LoginService;
 import com.proyectosoftware.backend.database.services.SessionService;
@@ -49,6 +48,7 @@ public class UsuarioController {
     private LoginService loginService;
 
     @PostMapping("/login")
+    @ResponseBody
     public ApiResponse<Map<String, Object>> login(@RequestBody Map<String, String> datos){
         try {
             if(!datos.keySet().containsAll(List.of(USUARIO, HASH_PASSWD))){
@@ -96,6 +96,36 @@ public class UsuarioController {
             e.printStackTrace();
             return new ApiResponse<>(
                 "Error en los datos",
+                false
+            );
+        }
+    }
+
+    @DeleteMapping("/logout")
+    @ResponseBody
+    public ApiResponse<String> logout(@RequestParam String usuarioSesion, @RequestParam String sessionToken){
+        try {
+            String idUsuario = usuarioService.getUsuarioByName(usuarioSesion).orElseThrow().getId();
+            if(sessionService.getSession(idUsuario).orElseThrow().getSessionToken().equals(sessionToken)){
+                sessionService.deleteSession(idUsuario);
+                return new ApiResponse<>(
+                    "OK",
+                    true
+                );
+            } else{
+                return new ApiResponse<>(
+                    "Credenciales malos",
+                    false
+                );
+            }
+        } catch (NoSuchElementException e) {
+            return new ApiResponse<>(
+                "El usuario no ha iniciado sesion",
+                false
+            );
+        } catch (Exception e) {
+            return new ApiResponse<>(
+                "El usuario ha iniciado sesion",
                 false
             );
         }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.proyectosoftware.backend.database.entidades.Partida;
 import com.proyectosoftware.backend.database.entidades.PartidaId;
-import com.proyectosoftware.backend.database.entidades.Poker;
+import com.proyectosoftware.backend.database.entidades.PokerEntidad;
 import com.proyectosoftware.backend.database.repository.PartidaRepository;
 import com.proyectosoftware.backend.database.repository.PokerRepository;
 
@@ -23,15 +23,15 @@ public class PokerService {
 
     public PokerService(){}
 
-    public List<Poker> getAllPokers(){
+    public List<PokerEntidad> getAllPokers(){
         return pokerRepository.findAll();
     }
 
-    public Poker savePoker(Poker poker){
+    public PokerEntidad savePoker(PokerEntidad poker){
         return pokerRepository.save(poker);
     }
 
-    public Optional<Poker> getPoker(String idPoker){
+    public Optional<PokerEntidad> getPoker(String idPoker){
         PartidaId partida = new PartidaId();
         Optional<Partida> partidaOptional = partidaRepository.findById(idPoker);
         if(partidaOptional.isPresent()){

@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
@@ -22,7 +23,6 @@ import jakarta.persistence.Table;
 @Table(name = "usuario")
 @JsonIgnoreProperties({"login"})
 public class UsuarioEntidad {
-    
     @Id
     @Column(name = "id")
     private String id;
@@ -57,8 +57,9 @@ public class UsuarioEntidad {
     @JsonIncludeProperties({"id", "nombre"})
     private Set<UsuarioEntidad> amigos = new HashSet<>();;
 
-    @ManyToMany(mappedBy = "usuarios")
-    private Set<Partida> partidas = new HashSet<>();
+    @OneToMany(mappedBy = "usuario")
+    @JsonIncludeProperties({"idPartida"})
+    private Set<Guarda> partidas = new HashSet<>();
 
     public static UsuarioEntidad newInstance() {
         UsuarioEntidad usuarioEntidad = new UsuarioEntidad();
@@ -119,11 +120,11 @@ public class UsuarioEntidad {
         this.amigos = amigos;
     }
 
-    public Set<Partida> getPartidas() {
+    public Set<Guarda> getPartidas() {
         return partidas;
     }
 
-    public void setPartidas(Set<Partida> partidas) {
+    public void setPartidas(Set<Guarda> partidas) {
         this.partidas = partidas;
     }
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyectosoftware.backend.database.entidades.Poker;
+import com.proyectosoftware.backend.database.entidades.PokerEntidad;
 import com.proyectosoftware.backend.database.services.PokerService;
 
 @RestController
@@ -20,17 +20,17 @@ public class PokerController {
     private PokerService pokerService;
 
     @GetMapping("getPokers")
-    public List<Poker> getAllPokers() {
+    public List<PokerEntidad> getAllPokers() {
         return pokerService.getAllPokers();
     }
 
     @PostMapping("addPoker")
-    public Poker savePoker(@RequestBody Poker poker) {
+    public PokerEntidad savePoker(@RequestBody PokerEntidad poker) {
         return pokerService.savePoker(poker);
     }
     
     @GetMapping("getPoker")
-    public Optional<Poker> getPoker(@RequestParam String idPoker) {
+    public Optional<PokerEntidad> getPoker(@RequestParam String idPoker) {
         return pokerService.getPoker(idPoker);
     } 
 }

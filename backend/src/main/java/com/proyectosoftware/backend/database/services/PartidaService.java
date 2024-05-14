@@ -45,7 +45,7 @@ public class PartidaService {
             usuarios.add(usuario3);
             usuarios.add(usuario4);
          
-            partida.setUsuarios(usuarios);
+            //partida.setUsuarios(usuarios);
             return partidaRepository.save(partida);
         } else {
             return null;

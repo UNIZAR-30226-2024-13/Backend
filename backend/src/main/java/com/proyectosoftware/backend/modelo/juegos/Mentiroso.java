@@ -48,6 +48,7 @@ public class Mentiroso implements JuegoSinApuesta{
         this.cartasUsuarios = new HashMap<>(MAX_JUGADORES);
         this.cartas = baraja.devolverCartas();
         this.id = this.generateID();
+        this.cartasMesa = new ArrayList<>();
     }
 
     /**

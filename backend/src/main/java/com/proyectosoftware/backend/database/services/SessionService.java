@@ -28,4 +28,8 @@ public class SessionService {
         );
         return sesion;
     }
+
+    public void deleteSession(String sessionId){
+        sessionRepository.delete(getSession(sessionId).orElseThrow());
+    }
 }

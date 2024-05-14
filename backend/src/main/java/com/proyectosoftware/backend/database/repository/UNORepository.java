@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.proyectosoftware.backend.database.entidades.PartidaId;
-import com.proyectosoftware.backend.database.entidades.UNO;
+import com.proyectosoftware.backend.database.entidades.UNOEntidad;
 
 @Repository
-public interface UNORepository extends JpaRepository<UNO, PartidaId> {
+public interface UNORepository extends JpaRepository<UNOEntidad, PartidaId> {
 
-    Optional<UNO> findById(PartidaId id);
+    Optional<UNOEntidad> findById(PartidaId id);
 }

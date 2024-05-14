@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyectosoftware.backend.database.entidades.BlackJack;
+import com.proyectosoftware.backend.database.entidades.BlackJackEntidad;
 import com.proyectosoftware.backend.database.services.BlackJackService;
 
 @RestController
@@ -20,17 +20,17 @@ public class BlackJackController {
     private BlackJackService blackJackService;
 
     @GetMapping("getBlackJacks")
-    public List<BlackJack> getAllBlackJacks() {
+    public List<BlackJackEntidad> getAllBlackJacks() {
         return blackJackService.getAllBlackJacks();
     }
 
     @PostMapping("addBlackJack")
-    public BlackJack saveBlackJack(@RequestBody BlackJack BlackJack) {
+    public BlackJackEntidad saveBlackJack(@RequestBody BlackJackEntidad BlackJack) {
         return blackJackService.saveBlackJack(BlackJack);
     }
     
     @GetMapping("getBlackJack")
-    public Optional<BlackJack> getBlackJack(@RequestParam String idBlackJack) {
+    public Optional<BlackJackEntidad> getBlackJack(@RequestParam String idBlackJack) {
         return blackJackService.getBlackJack(idBlackJack);
     } 
 }

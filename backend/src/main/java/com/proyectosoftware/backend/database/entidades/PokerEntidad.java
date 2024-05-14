@@ -7,10 +7,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "poker")
-public class Poker {
-    
-    @EmbeddedId
-    private PartidaId id;
+public class PokerEntidad extends Partida{
 
     @Column(name = "bote", columnDefinition = "integer default 0")
     private int bote;
@@ -24,22 +21,14 @@ public class Poker {
     @Column(name = "mazo")
     private String mazo;
 
-    public Poker() {}
+    public PokerEntidad() {}
 
-    public Poker(PartidaId id, int bote, int ultimaApuesta, String cartasMesa, String mazo) {
-        this.id = id;
+    public PokerEntidad(String id, int bote, int ultimaApuesta, String cartasMesa, String mazo) {
+        super(id);
         this.bote = bote;
         this.ultimaApuesta = ultimaApuesta;
         this.cartasMesa = cartasMesa;
         this.mazo = mazo;
-    }
-
-    public PartidaId getId() {
-        return id;
-    }
-
-    public void setId(PartidaId id) {
-        this.id = id;
     }
 
     public int getBote() {

@@ -41,6 +41,7 @@ public interface Juego extends Estado, UniqueIDGenerator{
         StringBuilder mensaje = new StringBuilder("juego");
         mensaje.append("-");
         mensaje.append(getClass().getSimpleName());
+        mensaje.append("-");
         mensaje.append(UUID.randomUUID().toString().split("-")[0]);
         return mensaje.toString();
     }

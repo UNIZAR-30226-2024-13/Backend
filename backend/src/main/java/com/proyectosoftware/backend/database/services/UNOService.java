@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.proyectosoftware.backend.database.entidades.Partida;
 import com.proyectosoftware.backend.database.entidades.PartidaId;
-import com.proyectosoftware.backend.database.entidades.UNO;
+import com.proyectosoftware.backend.database.entidades.UNOEntidad;
 import com.proyectosoftware.backend.database.repository.PartidaRepository;
 import com.proyectosoftware.backend.database.repository.UNORepository;
 
@@ -23,15 +23,15 @@ public class UNOService {
 
     public UNOService() {}
 
-    public List<UNO> getAllUNOs(){
+    public List<UNOEntidad> getAllUNOs(){
         return unoRepository.findAll();
     }
 
-    public UNO saveUNO(UNO uno){
+    public UNOEntidad saveUNO(UNOEntidad uno){
         return unoRepository.save(uno);
     }
 
-    public Optional<UNO> getUNO(String idUno){
+    public Optional<UNOEntidad> getUNO(String idUno){
         PartidaId partida = new PartidaId();
         Optional<Partida> partidaOptional = partidaRepository.findById(idUno);
         if(partidaOptional.isPresent()){

@@ -7,27 +7,17 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "cinquillo")
-public class Cinquillo {
+public class CinquilloEntidad extends Partida{
 
-    @EmbeddedId
-    private PartidaId id;
     
     @Column(name = "escaleras")
     private String escaleras;
 
-    public Cinquillo() {}
+    public CinquilloEntidad() {}
 
-    public Cinquillo(PartidaId id, String escaleras) {
-        this.id = id;
+    public CinquilloEntidad(String id, String escaleras) {
+        super(id);
         this.escaleras = escaleras;
-    }
-
-    public PartidaId getId() {
-        return id;
-    }
-
-    public void setId(PartidaId id) {
-        this.id = id;
     }
 
     public String getEscaleras() {

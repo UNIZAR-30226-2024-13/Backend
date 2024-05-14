@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyectosoftware.backend.database.entidades.UNO;
+import com.proyectosoftware.backend.database.entidades.UNOEntidad;
 import com.proyectosoftware.backend.database.services.UNOService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,17 +21,17 @@ public class UNOController {
     private UNOService unoService;
 
     @GetMapping("getUNOs")
-    public List<UNO> getAllUNOs() {
+    public List<UNOEntidad> getAllUNOs() {
         return unoService.getAllUNOs();
     }
 
     @PostMapping("addUNO")
-    public UNO saveUNO(@RequestBody UNO uno) {
+    public UNOEntidad saveUNO(@RequestBody UNOEntidad uno) {
         return unoService.saveUNO(uno);
     }
     
     @GetMapping("getUNO")
-    public Optional<UNO> getUNO(@RequestParam String idUNO) {
+    public Optional<UNOEntidad> getUNO(@RequestParam String idUNO) {
         return unoService.getUNO(idUNO);
     } 
 }

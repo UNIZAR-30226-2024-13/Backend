@@ -1,41 +1,33 @@
 package com.proyectosoftware.backend.database.entidades;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "mentiroso")
-public class Mentiroso {
+@JsonInclude(value = Include.NON_NULL)
+public class MentirosoEntidad extends Partida{
     
-    @EmbeddedId
-    private PartidaId id;
-
     @Column(name = "cartas_mesa")
     private String cartasMesa;
-
+    
     @Column(name = "numero")
     private int numero;
-
+    
     @Column(name = "ultimasCartas")
-    private int ultimasCartas;
+    private int cartasUltimaJugada;
 
-    public Mentiroso() {}
+    public MentirosoEntidad() {}
 
-    public Mentiroso(PartidaId id, String cartasMesa, int numero, int ultimasCartas) {
-        this.id = id;
+    public MentirosoEntidad(String id, String cartasMesa, int numero, int ultimasCartas) {
+        super(id);
         this.cartasMesa = cartasMesa;
         this.numero = numero;
-        this.ultimasCartas = ultimasCartas;
-    }
-
-    public PartidaId getId() {
-        return id;
-    }
-
-    public void setId(PartidaId id) {
-        this.id = id;
+        this.cartasUltimaJugada = ultimasCartas;
     }
 
     public String getCartasMesa() {
@@ -54,11 +46,11 @@ public class Mentiroso {
         this.numero = numero;
     }
 
-    public int getUltimasCartas() {
-        return ultimasCartas;
+    public int getCartasUltimaJugada() {
+        return cartasUltimaJugada;
     }
 
-    public void setUltimasCartas(int ultimasCartas) {
-        this.ultimasCartas = ultimasCartas;
+    public void setUltimasCartas(int cartasUltimaJugada) {
+        this.cartasUltimaJugada = cartasUltimaJugada;
     }
 }

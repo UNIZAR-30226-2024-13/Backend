@@ -7,10 +7,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "uno")
-public class UNO {
-    
-    @EmbeddedId
-    private PartidaId id;
+public class UNOEntidad extends Partida{
 
     @Column(name = "mazo")
     private String mazo;
@@ -21,21 +18,13 @@ public class UNO {
     @Column(name = "ultima_carta")
     private String ultimaCarta;
 
-    public UNO() {}
+    public UNOEntidad() {}
 
-    public UNO(PartidaId id, String mazo, int sentido, String ultimaCarta) {
-        this.id = id;
+    public UNOEntidad(String id, String mazo, int sentido, String ultimaCarta) {
+        super(id);
         this.mazo = mazo;
         this.sentido = sentido;
         this.ultimaCarta = ultimaCarta;
-    }
-
-    public PartidaId getId() {
-        return id;
-    }
-
-    public void setId(PartidaId id) {
-        this.id = id;
     }
 
     public String getMazo() {
