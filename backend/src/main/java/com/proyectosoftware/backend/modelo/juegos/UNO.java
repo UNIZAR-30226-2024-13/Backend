@@ -22,7 +22,7 @@ public class UNO implements JuegoSinApuesta{
     private Baraja baraja;
     private List <Carta> mazo;
     private List <Carta> ultimaCarta;
-    private Map<Integer, Usuario> usuarios; 
+    private Map<Integer, String> usuarios; 
     private Map<Integer, List<Carta>> manoUsuarios;
     private int sentido = 0;
     private int turno = 0;
@@ -232,8 +232,8 @@ public class UNO implements JuegoSinApuesta{
     /**
      * Devuelve el string del usuario ganador
      */ 
-    public String ganadorPartida(Usuario u){
-        return u.generateID();
+    public String ganadorPartida(String idUsaurio){
+        return idUsaurio;
     }
     
    
@@ -301,7 +301,7 @@ public class UNO implements JuegoSinApuesta{
     }
 
     @Override
-    public void nuevoUsuario(Usuario usuario) {
+    public void nuevoUsuario(String idUsuario) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'nuevoUsuario'");
     }

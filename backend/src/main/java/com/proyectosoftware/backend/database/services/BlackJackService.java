@@ -32,11 +32,7 @@ public class BlackJackService {
     }
 
     public Optional<BlackJackEntidad> getBlackJack(String idBlackJack){
-        PartidaId partida = new PartidaId();
-        Optional<Partida> partidaOptional = partidaRepository.findById(idBlackJack);
-        if(partidaOptional.isPresent()){
-            partida.setPartida(partidaOptional.get());
-        }
-        return blackJackRepository.findById(partida);
+    
+        return blackJackRepository.findById(idBlackJack);
     }
 }

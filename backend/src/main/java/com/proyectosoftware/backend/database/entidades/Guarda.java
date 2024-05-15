@@ -23,7 +23,7 @@ import jakarta.persistence.Table;
 @JsonIgnoreProperties({"partida","usuario"})
 public class Guarda {
 
-    static protected class IdCompuesto implements Serializable{
+    static public class IdCompuesto implements Serializable{
         private String idUsuario;
         private String idPartida;
 		public IdCompuesto(String idUsuario, String idPartida) {
@@ -45,6 +45,25 @@ public class Guarda {
 		public void setIdPartida(String idPartida) {
 			this.idPartida = idPartida;
 		}
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((idUsuario == null) ? 0 : idUsuario.hashCode());
+			result = prime * result + ((idPartida == null) ? 0 : idPartida.hashCode());
+			return result;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			IdCompuesto other = (IdCompuesto) obj;
+			return idPartida.equals(other.idPartida) && idUsuario.equals(idUsuario);
+		}
     }
 
     @MapsId
@@ -60,16 +79,29 @@ public class Guarda {
     private Partida partida;
 
     @Id
+	@Column(name = "idUsuario")
     private String idUsuario;
     
     @Id
+	@Column(name = "idPartida")
     private String idPartida;
 
-    @Column(name = "cartasUsuario")
-    private String cartas;
+    @Column(name = "cartasUsuario", columnDefinition = "character varying 255 default ''")
+    private String cartas = "";
 
-    @Column(name = "turnoEnPartida")
-    private Integer turnoEnPartida;
+    @Column(name = "turno_en_partida", columnDefinition = "integer default -1")
+    private Integer turnoEnPartida = -1;
+
+	public Guarda(){
+
+	}
+
+	public Guarda(UsuarioEntidad usuario, Partida partida, String cartas, Integer turnoEnPartida){
+		this.usuario = usuario;
+		this.partida = partida;
+		this.cartas = cartas;
+		this.turnoEnPartida = turnoEnPartida;
+	}
 
 	public UsuarioEntidad getUsuario() {
 		return usuario;

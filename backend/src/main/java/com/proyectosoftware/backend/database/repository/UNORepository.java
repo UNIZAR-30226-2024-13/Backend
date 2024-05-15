@@ -9,7 +9,7 @@ import com.proyectosoftware.backend.database.entidades.PartidaId;
 import com.proyectosoftware.backend.database.entidades.UNOEntidad;
 
 @Repository
-public interface UNORepository extends JpaRepository<UNOEntidad, PartidaId> {
+public interface UNORepository extends JpaRepository<UNOEntidad, String> {
 
-    Optional<UNOEntidad> findById(PartidaId id);
+    Optional<UNOEntidad> findById(String id);
 }

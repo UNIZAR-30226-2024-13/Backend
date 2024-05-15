@@ -32,13 +32,13 @@ public class BlackJack implements JuegoConApuesta {
     private Baraja baraja;
     private int turno;
 
-    private HashMap<String, Integer> fichas_usuario;       // Diccionario con los usuarios y sus fichas a usar en la partida
-    private HashMap<String, List<Carta>> cartas_usuario;    // Diccionario con los usuarios y sus cartas a usar en la partida
-    private HashMap<String, Boolean> plantado;             // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
+    private HashMap<Integer, Integer> fichas_usuario;       // Diccionario con los usuarios y sus fichas a usar en la partida
+    private HashMap<Integer, List<Carta>> cartas_usuario;    // Diccionario con los usuarios y sus cartas a usar en la partida
+    private HashMap<Integer, Boolean> plantado;             // Diccionario con los usuarios y si se han plantado o no (inicializar a false)
     private List<Carta> cartas_croupier;                // Lista de cartas del croupier (Carta de índice 0 está boca arriba y la otra boca abajo)
-    private HashMap<String, Integer> apuesta_usuario;      // Diccionario con los usuarios y su apuesta en la partida
-    private HashMap<String, Usuario> usuarios;
-    private HashMap<String, Boolean> apuesta_plus;
+    private HashMap<Integer, Integer> apuesta_usuario;      // Diccionario con los usuarios y su apuesta en la partida
+    private HashMap<Integer, String> usuarios;
+    private HashMap<Integer, Boolean> apuesta_plus;
 
     /**
      * Constructor por defecto
@@ -81,12 +81,13 @@ public class BlackJack implements JuegoConApuesta {
      * @param usuario   - Usuario al que le toca jugar
      * @param accion    - Accion que realiza el usuario
     */
-    public void jugada(Usuario usuario, Accion accion) {
+    public void jugada(String idUsuario, Accion accion) {
+        int turnoEnJuego = turnoEnPartida(idUsuario);
         if (accion == Accion.PEDIR_CARTA) {
-            if (!jugadorPlantado(usuario)) {
-                pedirCarta(usuario);
-                if (valorMano(cartas_usuario.get(usuario.getID())) >= 21) { // Si el usuario llega o se pasa de 21, se retira de la partida
-                    plantarse(usuario);
+            if (!jugadorPlantado(idUsuario)) {
+                pedirCarta(idUsuario);
+                if (valorMano(cartas_usuario.get(turnoEnJuego)) >= 21) { // Si el usuario llega o se pasa de 21, se retira de la partida
+                    plantarse(idUsuario);
                     siguenteTurno();
                 }
             }
@@ -95,8 +96,8 @@ public class BlackJack implements JuegoConApuesta {
             }
         }
         else { // accion == PLANTARSE
-            if (!jugadorPlantado(usuario)) {
-                plantarse(usuario);
+            if (!jugadorPlantado(idUsuario)) {
+                plantarse(idUsuario);
                 siguenteTurno();
             }
             else {
@@ -114,8 +115,8 @@ public class BlackJack implements JuegoConApuesta {
      * @param usuario           - Usuario al que le toca jugar
      * @param apuestaInicial    - Apuesta inicial que realiza el usuario
     */
-    public void jugadaInicial(Usuario usuario, int apuestaInicial) {
-        apostar(usuario.getID(), apuestaInicial);   // Cada usuario realiza su apuesta inicial
+    public void jugadaInicial(String idUsuario, int apuestaInicial) {
+        apostar(idUsuario, apuestaInicial);   // Cada usuario realiza su apuesta inicial
     }
 
 
@@ -124,19 +125,19 @@ public class BlackJack implements JuegoConApuesta {
      * y se comprueba que jugadores han ganado, perdido o empatado contra la banca
     */
     public void jugadaFinal() {
-        List<Usuario> usuarios_ganadores;
+        List<String> usuarios_ganadores;
         turnoCroupier();
         usuarios_ganadores = comprobarGanadores();
     }
 
 
-    public void nuevoUsuario(Usuario usuario) {
+    public void nuevoUsuario(String idUsuario) {
         int numeroUsuarios = usuarios.size(); 
         if (numeroUsuarios < MAX_JUGADORES) {
-            usuarios.put(usuario.getID(), usuario);
-            cartas_usuario.put(usuario.getID(), new ArrayList<Carta>());
-            apuesta_plus.put(usuario.getID(), false);
-            plantado.put(usuario.getID(), false);
+            usuarios.put(numeroUsuarios, idUsuario);
+            cartas_usuario.put(numeroUsuarios, new ArrayList<Carta>());
+            apuesta_plus.put(numeroUsuarios, false);
+            plantado.put(numeroUsuarios, false);
             if (usuarios.size() == MAX_JUGADORES) {
                 iniciarPartida();
             }
@@ -186,27 +187,41 @@ public class BlackJack implements JuegoConApuesta {
      */
     @Override
     public void apostar(String usuario, int apuesta) {
-        int fichas_disponibles = fichas_usuario.get(usuario);
+        int turnoUsuario = turnoEnPartida(usuario);
+        int fichas_disponibles = fichas_usuario.get(turnoUsuario);
         if (apuesta > fichas_disponibles) {
             //Mandar error al control y esperar a nueva apuesta
         }
         else {
             fichas_disponibles -= apuesta;
-            fichas_usuario.put(usuario, fichas_disponibles);
-            apuesta_usuario.put(usuario, apuesta);
+            fichas_usuario.put(turnoUsuario, fichas_disponibles);
+            apuesta_usuario.put(turnoUsuario, apuesta);
             //Mandar al control las fichas disponibles
         }
     }
 
+    /**
+     * Retorna el turno del jugador en el juego
+     * @param usuario - el id del usaurio
+     * @return - el turno
+     */
+    public int turnoEnPartida(String usuario){
+        for (int turno : usuarios.keySet()) {
+            if(usuarios.get(turno).equals(usuario)){
+                return turno;
+            }
+        }
+        return -1;
+    }
 
     /**
      * Suma una carta aleatoria a las cartas de un usuario
      * @param usuario - Usuario que va a sumar una carta
     */
-    public void pedirCarta(Usuario usuario) {
+    public void pedirCarta(String idUsuario) {
         Carta carta_sacada = mazo.get(0);
         mazo.remove(0);                                         // Se saca una carta y se saca del mazo
-        cartas_usuario.get(usuario.getID()).add(carta_sacada);  // Se añade la carta a las cartas del usuario
+        cartas_usuario.get(turnoEnPartida(idUsuario)).add(carta_sacada);  // Se añade la carta a las cartas del usuario
     }
     
 
@@ -214,8 +229,8 @@ public class BlackJack implements JuegoConApuesta {
      * Planta al usuario con las cartas que tiene
      * @param usuario - Usuario que se planta
     */
-    public void plantarse(Usuario usuario) {
-        plantado.put(usuario.getID(), true);   // Pone a true su booleano de plantado
+    public void plantarse(String idUsuario) {
+        plantado.put(turnoEnPartida(idUsuario), true);   // Pone a true su booleano de plantado
     }
     
 
@@ -249,8 +264,8 @@ public class BlackJack implements JuegoConApuesta {
      * @param usuario - Usuario a evaluar
      * @return boolean - True sí y sólo sí "usuario" se ha plantado
     */
-    public boolean jugadorPlantado(Usuario usuario) {
-        return plantado.get(usuario.getID());
+    public boolean jugadorPlantado(String idUsuario) {
+        return plantado.get(turnoEnPartida(idUsuario));
     }
 
 
@@ -282,12 +297,12 @@ public class BlackJack implements JuegoConApuesta {
                 cartas.add(mazo.get(0));                // Se saca una carta y se añade al array
                 mazo.remove(0);
             }
-            String usuario = usuarios.get(i).getID();
+            String usuario = usuarios.get(i);
             List<Carta> cartas_temp = new ArrayList<>();
             cartas_temp.addAll(cartas);
-            cartas_usuario.put(usuario, cartas_temp);
-            if (valorMano(cartas_usuario.get(usuario)) == 21) {
-                apuesta_plus.put(usuario, true);
+            cartas_usuario.put(i, cartas_temp);
+            if (valorMano(cartas_usuario.get(i)) == 21) {
+                apuesta_plus.put(i, true);
             }
         }
         for (int i = 0; i < 2; i++) {                   // Reparto de cartas al croupier
@@ -302,34 +317,34 @@ public class BlackJack implements JuegoConApuesta {
      * y se retocan sus fichas
      * @return Lista de usuarios que han ganado a la banca
     */
-    public List<Usuario> comprobarGanadores() {
+    public List<String> comprobarGanadores() {
         int cuenta_croupier = valorMano(cartas_croupier);
-        List<Usuario> usuarios_ganadores = new ArrayList<>();
+        List<String> usuarios_ganadores = new ArrayList<>();
 
-        for (String usuario : cartas_usuario.keySet()) {
-            List<Carta> cartas = cartas_usuario.get(usuario);
+        for (int turno : cartas_usuario.keySet()) {
+            List<Carta> cartas = cartas_usuario.get(turno);
 
             int cuenta = valorMano(cartas);
-            int apuesta_realizada_usuario = apuesta_usuario.get(usuario);
-            int fichas_del_usuario = fichas_usuario.get(usuario);
+            int apuesta_realizada_usuario = apuesta_usuario.get(turno);
+            int fichas_del_usuario = fichas_usuario.get(turno);
 
             if (cuenta > 21) {      // Si un jugador se pasa de 21, pierde independientemente de las cartas del croupier
                 // usuario pierde
             }
             else if (cuenta_croupier > 21) {
-                if (!apuesta_plus.get(usuario))
-                    fichas_usuario.put(usuario, fichas_del_usuario + 2*(apuesta_realizada_usuario));
+                if (!apuesta_plus.get(turno))
+                    fichas_usuario.put(turno, fichas_del_usuario + 2*(apuesta_realizada_usuario));
                 else
-                    fichas_usuario.put(usuario, fichas_del_usuario + 2*(apuesta_realizada_usuario) + (apuesta_realizada_usuario/2));
-                usuarios_ganadores.add(usuarios.get(usuario));
+                    fichas_usuario.put(turno, fichas_del_usuario + 2*(apuesta_realizada_usuario) + (apuesta_realizada_usuario/2));
+                usuarios_ganadores.add(usuarios.get(turno));
                 // usuario gana
             }
             else if (cuenta <= 21 && cuenta > cuenta_croupier) {
-                if (!apuesta_plus.get(usuario))
-                    fichas_usuario.put(usuario, fichas_del_usuario + 2*(apuesta_realizada_usuario));
+                if (!apuesta_plus.get(turno))
+                    fichas_usuario.put(turno, fichas_del_usuario + 2*(apuesta_realizada_usuario));
                 else
-                    fichas_usuario.put(usuario, fichas_del_usuario + 2*(apuesta_realizada_usuario) + (apuesta_realizada_usuario/2));
-                usuarios_ganadores.add(usuarios.get(usuario));
+                    fichas_usuario.put(turno, fichas_del_usuario + 2*(apuesta_realizada_usuario) + (apuesta_realizada_usuario/2));
+                usuarios_ganadores.add(usuarios.get(turno));
                 // usuario gana
             }
             else if (cuenta <= 21 && cuenta < cuenta_croupier) {

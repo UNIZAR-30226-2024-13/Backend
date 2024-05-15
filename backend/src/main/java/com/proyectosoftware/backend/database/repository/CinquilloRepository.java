@@ -10,7 +10,7 @@ import com.proyectosoftware.backend.database.entidades.PartidaId;
 
 
 @Repository
-public interface CinquilloRepository extends JpaRepository<CinquilloEntidad, PartidaId> {
+public interface CinquilloRepository extends JpaRepository<CinquilloEntidad, String> {
 
-    Optional<CinquilloEntidad> findById(PartidaId id);
+    Optional<CinquilloEntidad> findById(String id);
 }

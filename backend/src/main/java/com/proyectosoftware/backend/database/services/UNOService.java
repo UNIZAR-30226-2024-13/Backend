@@ -32,12 +32,7 @@ public class UNOService {
     }
 
     public Optional<UNOEntidad> getUNO(String idUno){
-        PartidaId partida = new PartidaId();
-        Optional<Partida> partidaOptional = partidaRepository.findById(idUno);
-        if(partidaOptional.isPresent()){
-            partida.setPartida(partidaOptional.get());
-        }
-        
-        return unoRepository.findById(partida);
+   
+        return unoRepository.findById(idUno);
     }
 }

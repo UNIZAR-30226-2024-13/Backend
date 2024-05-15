@@ -24,7 +24,7 @@ public class Cinquillo implements JuegoSinApuesta{
 
     private Baraja baraja;
     private List<Carta> mazo;
-    private Map<Integer, Usuario> usuarios; 
+    private Map<Integer, String> usuarios; 
     private Map<Integer, List<Carta>> manosUsuarios;
     private Map<String, List<Carta>> escaleras;
 
@@ -62,11 +62,11 @@ public class Cinquillo implements JuegoSinApuesta{
      * Añade un jugador a la partida si esta no esta completa
      * @param usuario - Jugador a añadir en la partida
      */
-    public void nuevoUsuario(Usuario usuario){
+    public void nuevoUsuario(String idUsuario){
         int numeroUsuarios = usuarios.size(); 
 
         if (numeroUsuarios < MAX_USUARIOS){
-            usuarios.put(numeroUsuarios, usuario);
+            usuarios.put(numeroUsuarios, idUsuario);
         }
     }
 
@@ -123,7 +123,7 @@ public class Cinquillo implements JuegoSinApuesta{
     public void jugada(Usuario usuario, Carta carta){
         int clave = -1;
         for (int i : usuarios.keySet()) {
-            if(usuarios.get(i).getID().equals(usuario.getID())){
+            if(usuarios.get(i).equals(usuario.getID())){
                 clave = i;
             }
         }
@@ -211,7 +211,7 @@ public class Cinquillo implements JuegoSinApuesta{
         
         for (Integer clave : this.usuarios.keySet()) {
             JSONObject usuarioJSON = new JSONObject();
-            usuarioJSON.put("ID", this.usuarios.get(clave).getID());
+            usuarioJSON.put("ID", this.usuarios.get(clave));
             usuarioJSON.put("turno_en_juego", clave);
             usuarioJSON.put("cartas", cartasToString(this.manosUsuarios.get(clave)));
             usuariosArray.add(usuarioJSON);

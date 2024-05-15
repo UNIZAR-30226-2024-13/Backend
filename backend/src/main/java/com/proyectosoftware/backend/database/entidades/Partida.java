@@ -114,6 +114,7 @@ public class Partida {
 		this.privada = privada;
 	}
 
+    @OneToMany
 	public Set<Guarda> getGuarda() {
 		return guarda;
 	}

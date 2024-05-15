@@ -69,12 +69,12 @@ public class UsuarioService {
     public UsuarioEntidad borrarAmigo(String nombreUsuario, String nombreAmigo) throws Exception {
         UsuarioEntidad usuario = usuarioRepository
                                 .findByNombre(nombreUsuario)
-                                .orElseThrow(() -> new Exception("El amigo con ID '" + nombreAmigo + "' no existe."));
+                                .orElseThrow(() -> new Exception("El amigo con nombre '" + nombreAmigo + "' no existe."));
         UsuarioEntidad amigo = usuarioRepository
                                 .findByNombre(nombreAmigo)
-                                .orElseThrow(() -> new Exception("El usuario con ID '" + nombreUsuario + "' no existe."));
+                                .orElseThrow(() -> new Exception("El usuario con nombre '" + nombreUsuario + "' no existe."));
         if(!usuario.getAmigos().contains(amigo) || !amigo.getAmigos().contains(usuario)){
-            throw new Exception("El usuario con ID '" + nombreUsuario + "' y el usuario con id '" + nombreAmigo + "' no son amigos.");
+            throw new Exception("El usuario con nombre'" + nombreUsuario + "' y el usuario con nombre '" + nombreAmigo + "' no son amigos.");
         }
         usuario.getAmigos().remove(amigo);
         amigo.getAmigos().remove(usuario);

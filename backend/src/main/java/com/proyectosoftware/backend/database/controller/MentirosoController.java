@@ -2,10 +2,7 @@ package com.proyectosoftware.backend.database.controller;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,15 +50,7 @@ public class MentirosoController{
             UsuarioEntidad usuario = usuarioService.getUsuarioByName(usuarioSesion).orElseThrow();
             if(sessionService.getSession(usuario.getId()).orElseThrow().getSessionToken().equals(sessionToken)){
                 Mentiroso juego = new Mentiroso();
-                MentirosoEntidad mentirosoEntidad = new MentirosoEntidad();
-
-                JSONObject estado = juego.guardar();
-                
-                mentirosoEntidad.setId((String) estado.get("ID"));
-                mentirosoEntidad.setTurno((Integer) estado.get("turno"));
-                mentirosoEntidad.setCartasMesa((String) estado.get("cartas_mesa"));
-                mentirosoEntidad.setUltimasCartas((Integer) estado.get("ultimas_cartas"));
-                mentirosoEntidad.setNumero((Integer) estado.get("numero_actual"));
+                MentirosoEntidad mentirosoEntidad = new MentirosoEntidad(juego.guardar());
                 
                 mentirosoEntidad.setActiva(true);
                 mentirosoEntidad.setPrivada(esPrivada);
@@ -130,7 +119,6 @@ public class MentirosoController{
         try {
             String idUsuario = usuarioService.getUsuarioByName(usuarioSesion).orElseThrow().getId();
             if(sessionService.getSession(idUsuario).orElseThrow().getSessionToken().equals(sessionToken)){
-                sessionService.deleteSession(idUsuario);
                 try {
                     return new ApiResponse<>(
                         "OK",
@@ -162,6 +150,54 @@ public class MentirosoController{
             );
         }
     }
+
+    @PostMapping("/{idJuego}/addUsuario")
+    public ApiResponse<MentirosoEntidad> addUsuario(@PathVariable String idJuego, @RequestParam String nombreUsuario, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
+        try {
+            UsuarioEntidad usuario = usuarioService.getUsuarioByName(usuarioSesion).orElseThrow();
+            if(sessionService.getSession(usuario.getId()).orElseThrow().getSessionToken().equals(sessionToken)){
+                try {
+                    usuario = usuarioService.getUsuarioByName(nombreUsuario).orElseThrow();
+                    MentirosoEntidad mentirosoEntidad = mentirosoService.getMentiroso(idJuego).orElseThrow();
+                    Mentiroso juego = new Mentiroso(mentirosoEntidad.toJSON());
+                    juego.nuevoUsuario(usuario.getId());
+                    mentirosoService.fromJSON(mentirosoEntidad, juego.guardar());
+                    usuarioService.saveUsuario(usuario);
+                    mentirosoService.saveMentiroso(mentirosoEntidad);
+
+                    return new ApiResponse<>(
+                        "Usuario añadido",
+                        true,
+                        mentirosoEntidad
+                    );
+                } catch (NoSuchElementException e) {
+                    return new ApiResponse<>(
+                        "Juego no encontrado",
+                        false
+                    );
+                }
+            } else{
+                return new ApiResponse<>(
+                    "Credenciales malos",
+                    false
+                );
+            }
+        } catch (NoSuchElementException e) {
+            return new ApiResponse<>(
+                "El usuario no ha iniciado sesion",
+                false
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ApiResponse<>(
+                e.getMessage(),
+                false
+            );
+        }
+    }
+    
+
+
 
     @GetMapping("/test")
     public String getTest() {

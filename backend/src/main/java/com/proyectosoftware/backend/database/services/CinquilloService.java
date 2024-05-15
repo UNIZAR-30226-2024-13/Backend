@@ -32,12 +32,8 @@ public class CinquilloService {
     }
 
     public Optional<CinquilloEntidad> getCinquillo(String idCinquillo) {
-        PartidaId partida = new PartidaId();
-        Optional<Partida> partidaOptional = partidaRepository.findById(idCinquillo);
-        if(partidaOptional.isPresent()){
-            partida.setPartida(partidaOptional.get());
-        }
-        return cinquilloRepository.findById(partida);
+        
+        return cinquilloRepository.findById(idCinquillo);
     }
     
 }

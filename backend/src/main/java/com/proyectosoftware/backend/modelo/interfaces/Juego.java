@@ -28,7 +28,7 @@ public interface Juego extends Estado, UniqueIDGenerator{
      * Anaide un usuario al juego
      * @param usuario   - El usuario
      */
-    public void nuevoUsuario(Usuario usuario);
+    public void nuevoUsuario(String idUsuario);
 
     /**
      * {@inheritDoc}

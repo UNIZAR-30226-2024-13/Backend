@@ -54,11 +54,11 @@ public class Poker implements JuegoConApuesta{
     private List<Carta> cartas_mesa;
     private Baraja baraja;
     private List<Carta> mazo;
-    private List<Usuario> usuarios;
+    private Map<Integer, String> usuarios;
     private Set<String> usuarios_con_apuesta;
-    private Map<String, Integer> fichas_usuario; //Diccionario con los usuarios y sus fichas a usar en la partida
-    private Map<String, List<Carta>> cartas_usuario; // Diccionario con los usuarios y sus cartas a usar en la partida
-    private Map<String, Mano> mano_usuario; //Diccionario con los usuarios y su mano en una partida
+    private Map<Integer, Integer> fichas_usuario; //Diccionario con los usuarios y sus fichas a usar en la partida
+    private Map<Integer, List<Carta>> cartas_usuario; // Diccionario con los usuarios y sus cartas a usar en la partida
+    private Map<Integer, Mano> mano_usuario; //Diccionario con los usuarios y su mano en una partida
     /**
      * Constructor por defecto poker
      */
@@ -70,7 +70,7 @@ public class Poker implements JuegoConApuesta{
         ronda = 0;
         ultima_apuesta = 0;
         cartas_mesa = new ArrayList<>();
-        usuarios = new ArrayList<>(MAX_JUGADORES);
+        usuarios = new HashMap<>(MAX_JUGADORES);
         usuarios_con_apuesta = new HashSet<>(MAX_JUGADORES);
         fichas_usuario = new HashMap<>(MAX_JUGADORES);
         cartas_usuario = new HashMap<>(MAX_JUGADORES);
@@ -135,10 +135,10 @@ public class Poker implements JuegoConApuesta{
      * Añade un nuevo usuario a la partida mientras no supere el máximo de jugadores
      * @param usuario   - Usuario que se añade a la partida
      */
-    public void nuevoUsuario(Usuario usuario){
+    public void nuevoUsuario(String idUsuario){
         int numeroUsuarios = usuarios.size(); 
         if (numeroUsuarios < MAX_JUGADORES){
-            usuarios.add(usuario);
+            usuarios.put( numeroUsuarios, idUsuario);
             if(usuarios.size() == numeroUsuarios){
                 repartirCartas();
             }
@@ -162,7 +162,7 @@ public class Poker implements JuegoConApuesta{
                 cartas.add(mazo.get(0));
                 mazo.remove(0);
             }
-            cartas_usuario.put(usuarios.get(i).getID(), new ArrayList<>(cartas));
+            cartas_usuario.put(i, new ArrayList<>(cartas));
         }
         for (int i = 0; i < 3; i++) {
             cartas_mesa.add(mazo.get(0));
@@ -170,6 +170,19 @@ public class Poker implements JuegoConApuesta{
         }
     }
 
+    /**
+     * Retorna el turno del jugador en el juego
+     * @param usuario - el id del usaurio
+     * @return - el turno
+     */
+    public int turnoEnPartida(String usuario){
+        for (int turno : usuarios.keySet()) {
+            if(usuarios.get(turno).equals(usuario)){
+                return turno;
+            }
+        }
+        return -1;
+    }
 
 
     /**
@@ -179,14 +192,14 @@ public class Poker implements JuegoConApuesta{
      */
     @Override
     public void apostar(String usuario, int apuesta){
-        int fichas_disponibles = fichas_usuario.get(usuario);
+        int fichas_disponibles = fichas_usuario.get(turnoEnPartida(usuario));
         if (apuesta > fichas_disponibles) {
             //Mandar error al control y esperar a nueva apuesta
         }
         else {
             fichas_disponibles -= apuesta;
             bote += apuesta;
-            fichas_usuario.put(usuario,fichas_disponibles);
+            fichas_usuario.put(turnoEnPartida(usuario), fichas_disponibles);
             ultima_apuesta = apuesta;
             //Mandar al control las fichas disponibles
         }
@@ -197,9 +210,9 @@ public class Poker implements JuegoConApuesta{
      * @param usaurio   - Id del suario que va a aumentar sus fichas
      */
     public void sumarFichas(String usuario) {
-        int fichas_disponibles = fichas_usuario.get(usuario);
+        int fichas_disponibles = fichas_usuario.get(turnoEnPartida(usuario));
         fichas_disponibles += bote;
-        fichas_usuario.put(usuario, fichas_disponibles);
+        fichas_usuario.put(turnoEnPartida(usuario), fichas_disponibles);
         //Almacenar fichas totales en la BD
     }
     
@@ -385,7 +398,7 @@ public class Poker implements JuegoConApuesta{
         List<String> usuariosApuesta = new ArrayList<>(usuarios_con_apuesta);
         for (int i = 0; i < usuariosApuesta.size(); i++) {
             id_usuario = usuariosApuesta.get(i);
-            List<Carta> carta_usuario = cartas_usuario.get(id_usuario);
+            List<Carta> carta_usuario = cartas_usuario.get(turnoEnPartida(id_usuario));
             for (int j = 0; j < 2; j++) {
                 cartas_mano.add(carta_usuario.get(j));
             }
@@ -394,12 +407,12 @@ public class Poker implements JuegoConApuesta{
             }
             
             mano = verificarMano(cartas_mano);
-            mano_usuario.put(id_usuario, mano);
+            mano_usuario.put(turnoEnPartida(id_usuario), mano);
             cartas_mano.clear();
         }
-        mejor_mano = mano_usuario.get(usuariosApuesta.get(0));
+        mejor_mano = mano_usuario.get(turnoEnPartida(usuariosApuesta.get(0)));
         for (int i = 1; i < usuariosApuesta.size(); i++) {
-            mano = mano_usuario.get(usuariosApuesta.get(i));
+            mano = mano_usuario.get(turnoEnPartida(usuariosApuesta.get(i)));
             if (mano.getPrioridad() > mejor_mano.getPrioridad() || (mano.getPrioridad() == mejor_mano.getPrioridad() &&
                 mano.getValor() > mejor_mano.getValor())) {
                 mejor_mano.setNombre(mano.getNombre());

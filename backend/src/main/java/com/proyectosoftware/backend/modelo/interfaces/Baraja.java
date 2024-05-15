@@ -17,7 +17,9 @@ public interface Baraja {
      */
     public default List<Carta> parsearCartas(String cartasBaraja){
         List<Carta> cartas = new ArrayList<>();
-        
+        if (cartasBaraja == null) {
+            return cartas;
+        }
         if (cartasBaraja.equals("")) {
             return cartas;
         }
