@@ -1,7 +1,12 @@
 package com.proyectosoftware.backend.database.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import javax.naming.SizeLimitExceededException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,8 +67,8 @@ public class MentirosoController{
                 mentirosoEntidad.getGuarda().add(guarda);
                 
                 partidaService.savePartida(mentirosoEntidad);
-                mentirosoService.saveMentiroso(mentirosoEntidad);
-                usuarioService.saveUsuario(usuario); 
+                //mentirosoService.saveMentiroso(mentirosoEntidad);
+                //usuarioService.saveUsuario(usuario); 
                 
                 return new ApiResponse<>(
                     "OK",
@@ -92,30 +97,7 @@ public class MentirosoController{
     
     @GetMapping("/getMentiroso/{id}")
     public ApiResponse<MentirosoEntidad> getMentiroso(@PathVariable String id, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
-        /**
-         * JSONObject estado = juego.guardar();
-                
-                estado.put("ID", this.id);
-                estado.put("turno", this.turno);
-                estado.put("usuarios", usuariosArray);
-                estado.put("cartas_mesa", cartasToString(this.cartasMesa));
-                estado.put("ultimas_cartas", this.cartasUltimaJugada);
-                estado.put("numero_actual", this.numeroActual);
-
-                _____
-            JSONArray usuarioArray = (JSONArray)estado.get("usuarios");
-                for (Object object : usuarioArray) {
-                    JSONObject infoUsuario = (JSONObject) object;
-                
-                    mentirosoEntidad.getGuarda().
-                    String id = (String) infoUsuario.get("ID");
-                    int orden = (Integer) infoUsuario.get("turno_en_juego");
-                    String cartasString = (String) infoUsuario.get("cartas");
-
-                    this.usuarios.put(orden, null);
-                    this.cartasUsuarios.put(orden, baraja.parsearCartas(cartasString));
-                }
-         */
+        
         try {
             String idUsuario = usuarioService.getUsuarioByName(usuarioSesion).orElseThrow().getId();
             if(sessionService.getSession(idUsuario).orElseThrow().getSessionToken().equals(sessionToken)){
@@ -154,15 +136,21 @@ public class MentirosoController{
     @PostMapping("/{idJuego}/addUsuario")
     public ApiResponse<MentirosoEntidad> addUsuario(@PathVariable String idJuego, @RequestParam String nombreUsuario, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
         try {
-            UsuarioEntidad usuario = usuarioService.getUsuarioByName(usuarioSesion).orElseThrow();
-            if(sessionService.getSession(usuario.getId()).orElseThrow().getSessionToken().equals(sessionToken)){
+            String idUsuario = usuarioService.getUsuarioByName(usuarioSesion).orElseThrow().getId();
+            if(sessionService.getSession(idUsuario).orElseThrow().getSessionToken().equals(sessionToken)){
                 try {
-                    usuario = usuarioService.getUsuarioByName(nombreUsuario).orElseThrow();
+                    UsuarioEntidad usuario = usuarioService.getUsuarioByName(nombreUsuario).orElseThrow();
+                    if(mentirosoService.estaUsuarioEnPartida(usuario.getId(), idJuego)){
+                        return new ApiResponse<>(
+                            "El usuario " + nombreUsuario + " ya pertenece al juego",
+                            false
+                        );
+                    }
                     MentirosoEntidad mentirosoEntidad = mentirosoService.getMentiroso(idJuego).orElseThrow();
                     Mentiroso juego = new Mentiroso(mentirosoEntidad.toJSON());
                     juego.nuevoUsuario(usuario.getId());
                     mentirosoService.fromJSON(mentirosoEntidad, juego.guardar());
-                    usuarioService.saveUsuario(usuario);
+                    //usuarioService.saveUsuario(usuario);
                     mentirosoService.saveMentiroso(mentirosoEntidad);
 
                     return new ApiResponse<>(
@@ -173,6 +161,11 @@ public class MentirosoController{
                 } catch (NoSuchElementException e) {
                     return new ApiResponse<>(
                         "Juego no encontrado",
+                        false
+                    );
+                } catch (SizeLimitExceededException e){
+                    return new ApiResponse<>(
+                        "El juego esta lleno",
                         false
                     );
                 }
@@ -195,10 +188,91 @@ public class MentirosoController{
             );
         }
     }
+
+    @PostMapping("/{idJuego}/jugada")
+    public ApiResponse<MentirosoEntidad> jugada(@PathVariable String idJuego, @RequestBody Map<String,String> datos, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
+        try {
+            UsuarioEntidad usuario = usuarioService.getUsuarioByName(usuarioSesion).orElseThrow();
+            if(sessionService.getSession(usuario.getId()).orElseThrow().getSessionToken().equals(sessionToken)){
+                Optional<MentirosoEntidad> mentirosoEntidad = mentirosoService.getMentiroso(idJuego);
+                if(mentirosoEntidad.isEmpty()){
+                    return new ApiResponse<>(
+                        "El juego no existe",
+                        false
+                    );
+                }
+
+                if(!mentirosoService.estaUsuarioEnPartida(usuario.getId(), mentirosoEntidad.get().getId())){
+                    return new ApiResponse<>(
+                        "El usuario" + usuarioSesion + " no pertenece a esta parida",
+                        false
+                    );
+                }
+
+                if(!datos.keySet().containsAll(List.of("cartas","accion","numero"))){
+                    return new ApiResponse<>(
+                        "Faltan datos",
+                        false
+                    );
+                }
+
+                MentirosoEntidad juegoEntidad = mentirosoEntidad.get();
+                if(juegoEntidad.getTurno() != mentirosoService.buscaUsuarioEnPartida(usuario.getId(), juegoEntidad.getId()).get().getTurnoEnPartida()){
+                    return new ApiResponse<>(
+                        "El usuario se ha equivocado de turno",
+                        false
+                    );
+                }
+                Mentiroso juego = new Mentiroso(juegoEntidad.toJSON());
+                if(datos.get("accion").isEmpty()){
+                    if(datos.get("numero").isEmpty()){
+                        return new ApiResponse<>(
+                            "Datos erroneos",
+                            false
+                        );
+                    }
+                    juego.jugada(usuario.getId(), juego.parseCartas(datos.get("cartas")), Integer.parseInt(datos.get("numero")));
+                } else{
+                    if(datos.get("accion").equals("mentir")){
+                        juego.jugada(usuario.getId(), juego.parseCartas(datos.get("cartas")), Mentiroso.Accion.MENTIR);
+                    }else if (datos.get("accion").equals("levantar")){
+                        juego.jugada(usuario.getId(), new ArrayList<>(), Mentiroso.Accion.LEVANTAR);
+                    }else{
+                        return new ApiResponse<>(
+                            "Datos erroneos",
+                            false
+                        );
+                    }
+                }
+                mentirosoService.fromJSON(juegoEntidad, juego.guardar());
+                mentirosoService.saveMentiroso(juegoEntidad);
+                return new ApiResponse<>(
+                    "Nuevo estado",
+                    true,
+                    juegoEntidad
+                );
+
+            } else{
+                return new ApiResponse<>(
+                    "Credenciales malos",
+                    false
+                );
+            }
+        } catch (NoSuchElementException e) {
+            return new ApiResponse<>(
+                "El usuario ha iniciado sesion",
+                false
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ApiResponse<>(
+                e.getMessage(),
+                false
+            );
+        }
+    }
     
-
-
-
+    
     @GetMapping("/test")
     public String getTest() {
         return "Yes";

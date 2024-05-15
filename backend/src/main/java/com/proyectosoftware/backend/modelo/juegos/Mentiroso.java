@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.naming.SizeLimitExceededException;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -68,12 +70,12 @@ public class Mentiroso implements JuegoSinApuesta{
 
     /**
      * Jugada inicial sin cartas en la mesa
-     * @param usuario   - El usuario que realiza la jugada. Debe represetnar el usuario del turno actual
+     * @param idUsuario   - El usuario que realiza la jugada. Debe represetnar el usuario del turno actual
      * @param cartas    - Cartas que se ponen en la mesa
      * @param numero    - Numero que se pone en la mesa
      */
-    public void jugada(Usuario usuario, List<Carta> cartas, int numero){
-        int clave = ordenUsuario(usuario);
+    public void jugada(String idUsuario, List<Carta> cartas, int numero){
+        int clave = ordenUsuario(idUsuario);
         List<Carta> cartasUsuario = cartasUsuarios.get(clave);
 
         cartasUsuario.removeAll(cartas);
@@ -94,7 +96,7 @@ public class Mentiroso implements JuegoSinApuesta{
      * @param cartas    - Cartas que se ponen en la mesa. Puede ser nulo.
      * @param accion    - Accion a realizar.
      */
-    public void jugada(Usuario usuario, List<Carta> cartas, Accion accion){
+    public void jugada(String usuario, List<Carta> cartas, Accion accion){
         if(numeroActual == -1){
             /**
              * TODO: Mala jugada, lanzar error
@@ -176,12 +178,12 @@ public class Mentiroso implements JuegoSinApuesta{
 
     /**
      * Busca el orden del usuairo en la partida
-     * @param usuario   - Usuario a buscar
+     * @param idUsuario   - Usuario a buscar
      * @return El orden, o {@code -1} si no se encuentra
      */
-    private int ordenUsuario(Usuario usuario){
+    private int ordenUsuario(String idUsuario){
         for (int i : usuarios.keySet()) {
-            if(usuarios.get(i).equals(usuario.getID())){
+            if(usuarios.get(i).equals(idUsuario)){
                 return i;
             }
         }
@@ -240,10 +242,12 @@ public class Mentiroso implements JuegoSinApuesta{
     /**
      * Aniade un usuario al juego
      * @param usuario usuario a aniadir
+     * @throws SizeLimitExceededException 
      */
     @Override
-    public void nuevoUsuario(String idUsuario){
+    public void nuevoUsuario(String idUsuario) throws SizeLimitExceededException{
         int numeroUsuarios = usuarios.size(); 
+        
         if (numeroUsuarios < MAX_JUGADORES){
             usuarios.put(numeroUsuarios, idUsuario);
             cartasUsuarios.put(numeroUsuarios, new ArrayList<Carta>());
@@ -251,9 +255,7 @@ public class Mentiroso implements JuegoSinApuesta{
                 iniciarPartida();
             }
         } else{
-            /**
-             * TODO: lanzar error juego lleno
-             */
+            throw new SizeLimitExceededException("Maximo limite de jugadores alcanzado");
         }
     }
 
@@ -378,5 +380,9 @@ public class Mentiroso implements JuegoSinApuesta{
         if (turno == MAX_JUGADORES) {
             turno = 0;
         }
+    }
+
+    public List<Carta> parseCartas(String cartasString){
+        return baraja.parsearCartas(cartasString);
     }
 }

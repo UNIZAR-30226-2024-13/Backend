@@ -51,6 +51,7 @@ public class Partida {
          */
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "partida")
+    @JsonIgnoreProperties({"idPartida"})
     private Set<Guarda> guarda = new HashSet<>();
 
     public Partida() {}

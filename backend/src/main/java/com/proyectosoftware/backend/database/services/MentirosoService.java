@@ -13,6 +13,7 @@ import com.proyectosoftware.backend.database.entidades.MentirosoEntidad;
 import com.proyectosoftware.backend.database.entidades.Partida;
 import com.proyectosoftware.backend.database.entidades.PartidaId;
 import com.proyectosoftware.backend.database.entidades.UsuarioEntidad;
+import com.proyectosoftware.backend.database.repository.GuardaRepository;
 import com.proyectosoftware.backend.database.repository.MentirosoRepository;
 import com.proyectosoftware.backend.database.repository.PartidaRepository;
 import com.proyectosoftware.backend.database.repository.UsuarioRepository;
@@ -26,6 +27,9 @@ public class MentirosoService {
     @Autowired
     private UsuarioRepository UsuarioRepository;
 
+    @Autowired
+    private GuardaRepository guardaRepository;
+
     public MentirosoService() {}
 
     public List<MentirosoEntidad> getAllMentiroso(){
@@ -38,6 +42,14 @@ public class MentirosoService {
 
     public Optional<MentirosoEntidad> getMentiroso(String idMentiroso){
         return mentirosoRepository.findById(idMentiroso);
+    }
+
+    public boolean estaUsuarioEnPartida(String idUsuario, String idMentiroso){
+        return guardaRepository.findByUsuarioIdAndPartidaId(idUsuario, idMentiroso).isPresent();
+    }
+    
+    public Optional<Guarda> buscaUsuarioEnPartida(String idUsuario, String idMentiroso){
+        return guardaRepository.findByUsuarioIdAndPartidaId(idUsuario, idMentiroso);
     }
 
     public void fromJSON(MentirosoEntidad mentirosoEntidad, JSONObject estado) {
@@ -56,18 +68,26 @@ public class MentirosoService {
             
             String id = (String) infoUsuario.get("ID");
             UsuarioEntidad usuarioEntidad = UsuarioRepository.findById(id).orElseThrow();
+            Optional<Guarda> guardaUsuario = guardaRepository.findByUsuarioIdAndPartidaId(id, mentirosoEntidad.getId());
             
-            Guarda guarda = new Guarda();
-            guarda.setUsuario(usuarioEntidad);
-            guarda.setPartida(mentirosoEntidad);
-
-            guarda.setCartas((String) infoUsuario.get("cartas"));
-            guarda.setTurnoEnPartida((Integer) infoUsuario.get("turno_en_juego"));
-            
-            usuarioEntidad.getPartidas().add(guarda);
-            mentirosoEntidad.getGuarda().add(guarda);
-
-            UsuarioRepository.save(usuarioEntidad);
+            if(!guardaUsuario.isPresent()){
+                Guarda guarda = new Guarda();
+                guarda.setUsuario(usuarioEntidad);
+                guarda.setPartida(mentirosoEntidad);
+    
+                guarda.setCartas((String) infoUsuario.get("cartas"));
+                guarda.setTurnoEnPartida((Integer) infoUsuario.get("turno_en_juego"));
+                
+                usuarioEntidad.getPartidas().add(guarda);
+                mentirosoEntidad.getGuarda().add(guarda);
+    
+                UsuarioRepository.save(usuarioEntidad);
+            } else{
+                Guarda guarda = guardaUsuario.get();
+                guarda.setCartas((String) infoUsuario.get("cartas"));
+                guarda.setTurnoEnPartida((Integer) infoUsuario.get("turno_en_juego"));
+                UsuarioRepository.save(usuarioEntidad);
+            }
         }
     }
 }

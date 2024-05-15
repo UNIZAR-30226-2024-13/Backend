@@ -2,6 +2,8 @@ package com.proyectosoftware.backend.modelo.interfaces;
 
 import java.util.UUID;
 
+import javax.naming.SizeLimitExceededException;
+
 import org.json.simple.JSONObject;
 
 import com.proyectosoftware.backend.modelo.Usuario;
@@ -27,8 +29,9 @@ public interface Juego extends Estado, UniqueIDGenerator{
     /**
      * Anaide un usuario al juego
      * @param usuario   - El usuario
+     * @throws SizeLimitExceededException 
      */
-    public void nuevoUsuario(String idUsuario);
+    public void nuevoUsuario(String idUsuario) throws SizeLimitExceededException;
 
     /**
      * {@inheritDoc}
