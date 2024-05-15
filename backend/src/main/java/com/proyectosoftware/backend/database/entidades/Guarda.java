@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 
 @Entity
@@ -53,6 +54,11 @@ public class Guarda {
 		this.partida = partida;
 		this.cartas = cartas;
 		this.turnoEnPartida = turnoEnPartida;
+	}
+
+	@PreRemove
+	public void onDelete(){
+		this.usuario.deleteGuarda(this);
 	}
 
 	public UsuarioEntidad getUsuario() {

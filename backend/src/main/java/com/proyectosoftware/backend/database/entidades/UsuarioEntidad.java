@@ -148,4 +148,8 @@ public class UsuarioEntidad {
     public boolean tieneSesion(){
         return this.session != null;
     }
+
+	public void deleteGuarda(Guarda guarda) {
+		partidas.remove(guarda);
+	}
 }

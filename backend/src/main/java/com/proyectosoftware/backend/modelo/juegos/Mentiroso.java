@@ -78,8 +78,13 @@ public class Mentiroso implements JuegoSinApuesta{
         int clave = ordenUsuario(idUsuario);
         List<Carta> cartasUsuario = cartasUsuarios.get(clave);
 
-        cartasUsuario.removeAll(cartas);
-        cartasMesa.addAll(cartas);
+        
+        for (Carta carta : cartas) {
+
+            cartasUsuario.remove(carta);
+            cartasMesa.add(carta);
+        }
+        
 
         numeroActual = numero;
         cartasUltimaJugada = cartas.size();
@@ -95,19 +100,18 @@ public class Mentiroso implements JuegoSinApuesta{
      * @param usuario   - Usuario que realiza la jugada. Debe ser el mismo que el turno actual
      * @param cartas    - Cartas que se ponen en la mesa. Puede ser nulo.
      * @param accion    - Accion a realizar.
+     * @throws Exception 
      */
-    public void jugada(String usuario, List<Carta> cartas, Accion accion){
+    public void jugada(String usuario, List<Carta> cartas, Accion accion) throws Exception{
         if(numeroActual == -1){
-            /**
-             * TODO: Mala jugada, lanzar error
-             */
+            throw new Exception("Jugada ilegal");
         }else{
             int clave = ordenUsuario(usuario);
             
             List<Carta> cartasUsuario = cartasUsuario(clave);
 
             if(accion == Accion.MENTIR){
-                cartasUsuario.removeAll(cartas);
+                cartasUsuario.removeIf(carta->{return cartas.contains(carta);});
                 cartasMesa.addAll(cartas);
                 cartasUltimaJugada = cartas.size();
                 siguenteTurno();
@@ -195,7 +199,7 @@ public class Mentiroso implements JuegoSinApuesta{
      * @return {@code True} si se ha mentido
      */
     private boolean miente(){
-        for(Carta carta: cartasMesa.subList(cartasMesa.size() - cartasUltimaJugada - 1, cartasMesa.size() - 1)){
+        for(Carta carta: cartasMesa.subList(cartasMesa.size() - cartasUltimaJugada, cartasMesa.size())){
             if(carta.getNumero() != numeroActual){
                 return true;
             }

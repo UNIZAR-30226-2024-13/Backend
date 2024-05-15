@@ -45,8 +45,34 @@ public class MentirosoController{
     private UsuarioService usuarioService;
 
     @GetMapping("/getMentirosos")
-    public List<MentirosoEntidad> getAllMentiroso() {
-        return mentirosoService.getAllMentiroso();
+    public ApiResponse<List<MentirosoEntidad>> getAllMentiroso(@RequestParam String usuarioSesion, @RequestParam String sessionToken) {
+        try {
+            UsuarioEntidad usuario = usuarioService.getUsuarioByName(usuarioSesion).orElseThrow();
+            if(sessionService.getSession(usuario.getId()).orElseThrow().getSessionToken().equals(sessionToken)){
+               return new ApiResponse<>(
+                    "OK",
+                    true,
+                    mentirosoService.getAllMentiroso()
+               );
+            } else{
+                return new ApiResponse<>(
+                    "Credenciales malos",
+                    false
+                );
+            }
+        } catch (NoSuchElementException e) {
+            return new ApiResponse<>(
+                "El usuario ha iniciado sesion",
+                false
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ApiResponse<>(
+                e.getMessage(),
+                false
+            );
+        }
+    
     }
 
     @PostMapping("/addMentiroso")
@@ -200,6 +226,11 @@ public class MentirosoController{
                         "El juego no existe",
                         false
                     );
+                }else if(mentirosoEntidad.get().getGuarda().size() < 4){
+                    return new ApiResponse<>(
+                        "El juego no ha empezado",
+                        false
+                    );
                 }
 
                 if(!mentirosoService.estaUsuarioEnPartida(usuario.getId(), mentirosoEntidad.get().getId())){
@@ -231,6 +262,7 @@ public class MentirosoController{
                             false
                         );
                     }
+                    
                     juego.jugada(usuario.getId(), juego.parseCartas(datos.get("cartas")), Integer.parseInt(datos.get("numero")));
                 } else{
                     if(datos.get("accion").equals("mentir")){
@@ -270,11 +302,5 @@ public class MentirosoController{
                 false
             );
         }
-    }
-    
-    
-    @GetMapping("/test")
-    public String getTest() {
-        return "Yes";
     }
 }
