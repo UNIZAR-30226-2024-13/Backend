@@ -53,6 +53,13 @@ public class MentirosoController{
                     "OK",
                     true,
                     mentirosoService.getAllMentiroso()
+                        .stream()
+                        .filter(
+                            juego->{
+                                return !juego.isPrivada() || mentirosoService.estaUsuarioEnPartida(usuario.getId(), juego.getId());
+                            }
+                        )
+                        .toList()
                );
             } else{
                 return new ApiResponse<>(
