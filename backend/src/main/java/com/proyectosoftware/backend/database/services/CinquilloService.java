@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.proyectosoftware.backend.database.entidades.CinquilloEntidad;
 import com.proyectosoftware.backend.database.entidades.Partida;
-import com.proyectosoftware.backend.database.entidades.PartidaId;
 import com.proyectosoftware.backend.database.repository.CinquilloRepository;
 import com.proyectosoftware.backend.database.repository.PartidaRepository;
 

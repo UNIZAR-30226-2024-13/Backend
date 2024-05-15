@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyectosoftware.backend.database.entidades.Partida;
-import com.proyectosoftware.backend.database.entidades.PartidaId;
 import com.proyectosoftware.backend.database.entidades.UNOEntidad;
 import com.proyectosoftware.backend.database.repository.PartidaRepository;
 import com.proyectosoftware.backend.database.repository.UNORepository;

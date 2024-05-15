@@ -4,6 +4,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+
+import javax.naming.SizeLimitExceededException;
+
 import org.assertj.core.api.Assertions;
 
 import com.proyectosoftware.backend.modelo.Usuario;
@@ -29,10 +32,15 @@ public class MentirosoTest {
 
     @Test
     public void estadoCorrecto(){
-        juego.nuevoUsuario(usuario1);
-        juego.nuevoUsuario(usuario2);
-        juego.nuevoUsuario(usuario3);
-        juego.nuevoUsuario(usuario4);
+        try {
+			juego.nuevoUsuario(usuario1.getID());
+            juego.nuevoUsuario(usuario2.getID());
+            juego.nuevoUsuario(usuario3.getID());
+            juego.nuevoUsuario(usuario4.getID());
+		} catch (SizeLimitExceededException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         mentiroso = ((Mentiroso)juego);
 
@@ -56,11 +64,15 @@ public class MentirosoTest {
 
     @Test
     public void cargaEstadoCorrecto(){
-        juego.nuevoUsuario(usuario1);
-        juego.nuevoUsuario(usuario2);
-        juego.nuevoUsuario(usuario3);
-        juego.nuevoUsuario(usuario4);
-
+        try {
+			juego.nuevoUsuario(usuario1.getID());
+            juego.nuevoUsuario(usuario2.getID());
+            juego.nuevoUsuario(usuario3.getID());
+            juego.nuevoUsuario(usuario4.getID());
+		} catch (SizeLimitExceededException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         mentiroso = ((Mentiroso)juego);
 
         JSONObject json = mentiroso.guardar();

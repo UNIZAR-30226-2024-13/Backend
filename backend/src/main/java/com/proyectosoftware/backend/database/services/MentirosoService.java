@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.proyectosoftware.backend.database.entidades.Guarda;
 import com.proyectosoftware.backend.database.entidades.MentirosoEntidad;
 import com.proyectosoftware.backend.database.entidades.Partida;
-import com.proyectosoftware.backend.database.entidades.PartidaId;
 import com.proyectosoftware.backend.database.entidades.UsuarioEntidad;
 import com.proyectosoftware.backend.database.repository.GuardaRepository;
 import com.proyectosoftware.backend.database.repository.MentirosoRepository;

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyectosoftware.backend.database.entidades.Partida;
-import com.proyectosoftware.backend.database.entidades.PartidaId;
 import com.proyectosoftware.backend.database.entidades.PokerEntidad;
 import com.proyectosoftware.backend.database.repository.PartidaRepository;
 import com.proyectosoftware.backend.database.repository.PokerRepository;
@@ -32,12 +31,7 @@ public class PokerService {
     }
 
     public Optional<PokerEntidad> getPoker(String idPoker){
-        PartidaId partida = new PartidaId();
-        Optional<Partida> partidaOptional = partidaRepository.findById(idPoker);
-        if(partidaOptional.isPresent()){
-            partida.setPartida(partidaOptional.get());
-        }
         
-        return pokerRepository.findById(partida);
+        return pokerRepository.findById(idPoker);
     }
 }

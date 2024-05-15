@@ -28,8 +28,8 @@ public interface Baraja {
             String[] datosCarta = carta.split(",");
             int color = Integer.parseInt(datosCarta[0]);
             int numero = Integer.parseInt(datosCarta[1]); 
+            cartas.add(new Carta(numero, color));
             if(esCartaDeLaBaraja(numero, color)){
-                cartas.add(new Carta(numero, color));
             }else {
                 /**
                  * TODO: lanzar error
