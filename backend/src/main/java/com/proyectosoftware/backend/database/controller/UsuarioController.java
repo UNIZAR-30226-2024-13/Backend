@@ -25,6 +25,9 @@ import com.proyectosoftware.backend.database.services.SessionService;
 import com.proyectosoftware.backend.database.services.UsuarioService;
 import com.proyectosoftware.backend.modelo.Usuario;
 
+/**
+ * Controlador REST para gestionar operaciones relacionadas con usuarios.
+ */
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
@@ -47,6 +50,12 @@ public class UsuarioController {
     @Autowired
     private LoginService loginService;
 
+    /**
+     * Endpoint para iniciar sesión.
+     * 
+     * @param datos Un mapa con las credenciales de inicio de sesión.
+     * @return Una respuesta API con el resultado del inicio de sesión.
+     */
     @PostMapping("/login")
     @ResponseBody
     public ApiResponse<Map<String, Object>> login(@RequestBody Map<String, String> datos){
@@ -59,7 +68,7 @@ public class UsuarioController {
 
             UsuarioEntidad usuario = usuarioService.getUsuarioByName(nombreUsuario)
                 .orElseThrow(
-                    () -> new NoSuchElementException("El usuario no existed")
+                    () -> new NoSuchElementException("El usuario no existe")
                 );
 
             if(loginService.isValid(usuario.getId(), hashPasswd)){
@@ -69,7 +78,7 @@ public class UsuarioController {
                 respuesta.put(USUARIO, usuarioService.saveUsuario(usuario));
                 
                 return new ApiResponse<>(
-                    "Session iniciada",
+                    "Sesión iniciada",
                     true,
                     respuesta
                 );
@@ -101,6 +110,13 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Endpoint para cerrar sesión.
+     * 
+     * @param usuarioSesion El nombre del usuario en sesión.
+     * @param sessionToken El token de la sesión.
+     * @return Una respuesta API con el resultado del cierre de sesión.
+     */
     @DeleteMapping("/logout")
     @ResponseBody
     public ApiResponse<String> logout(@RequestParam String usuarioSesion, @RequestParam String sessionToken){
@@ -120,17 +136,24 @@ public class UsuarioController {
             }
         } catch (NoSuchElementException e) {
             return new ApiResponse<>(
-                "El usuario no ha iniciado sesion",
+                "El usuario no ha iniciado sesión",
                 false
             );
         } catch (Exception e) {
             return new ApiResponse<>(
-                "El usuario ha iniciado sesion",
+                "El usuario ha iniciado sesión",
                 false
             );
         }
     }
 
+    /**
+     * Endpoint para obtener todos los usuarios.
+     * 
+     * @param usuarioSesion El nombre del usuario en sesión.
+     * @param sessionToken El token de la sesión.
+     * @return Una respuesta API con la lista de usuarios.
+     */
     @GetMapping("/getUsuarios")
     @ResponseBody
     public ApiResponse<List<UsuarioEntidad>> getAllUsuarios(@RequestParam String usuarioSesion, @RequestParam String sessionToken) {
@@ -151,14 +174,20 @@ public class UsuarioController {
             
         } catch (NoSuchElementException e) {
             return new ApiResponse<>(
-                "El usuario no ha iniciado sesion",
+                "El usuario no ha iniciado sesión",
                 false
             );
         }
     }
 
+    /**
+     * Endpoint para crear un nuevo usuario.
+     * 
+     * @param datos Un mapa con los datos del nuevo usuario.
+     * @return Una respuesta API con el resultado de la creación del usuario.
+     */
     @SuppressWarnings("unchecked")
-	@PostMapping("/newUsuario")
+    @PostMapping("/newUsuario")
     @ResponseBody
     public ApiResponse<UsuarioEntidad> saveUsuario(@RequestBody Map<String, Object> datos) {
         try {
@@ -196,7 +225,7 @@ public class UsuarioController {
             
             //loginService.saveLogin(usuarioEntidad.getLogin());
             return new ApiResponse<>(
-                "Usuario aniadido con exito",
+                "Usuario añadido con éxito",
                 true,
                 usuarioService.saveUsuario(usuarioEntidad)
             );    
@@ -211,7 +240,7 @@ public class UsuarioController {
             System.err.println(e.getMessage());
             System.err.println(e.getClass().getName());
             return new ApiResponse<>(
-                "Faltan datos para crear el usaurio",
+                "Faltan datos para crear el usuario",
                 false
             );
         } 
@@ -225,6 +254,15 @@ public class UsuarioController {
         }
     }
                 
+    /**
+     * Endpoint para obtener un usuario por ID o nombre.
+     * 
+     * @param tipo El tipo de búsqueda ('byId' o 'byNombre').
+     * @param value El valor del ID o nombre del usuario.
+     * @param usuarioSesion El nombre del usuario en sesión.
+     * @param sessionToken El token de la sesión.
+     * @return Una respuesta API con el usuario encontrado.
+     */
     @GetMapping("/getUsuario")
     @ResponseBody
     public ApiResponse<UsuarioEntidad> getUsuario(@RequestParam String tipo, @RequestParam String value, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
@@ -238,19 +276,19 @@ public class UsuarioController {
                     usuario = usuarioService.getUsuarioByName(value);
                 }else{
                     return new ApiResponse<>(
-                        "El tipo de busqueda solo puede se 'byId' o 'byNombre'",
+                        "El tipo de búsqueda solo puede ser 'byId' o 'byNombre'",
                         false
                     );
                 }
             
                 if (!usuario.isPresent()) {
                     return new ApiResponse<>(
-                        "No existe el usuario'" + value + "'",
+                        "No existe el usuario '" + value + "'",
                         false
                     );
                 }
                 return new ApiResponse<>(
-                    "Usuario'" + value + "'",
+                    "Usuario '" + value + "'",
                     true,
                     usuario.get()
                 );
@@ -262,12 +300,21 @@ public class UsuarioController {
             }
         } catch (NoSuchElementException e) {
             return new ApiResponse<>(
-                "El usuario no ha iniciado sesion",
+                "El usuario no ha iniciado sesión",
                 false
             );
         }
     } 
 
+    /**
+     * Endpoint para agregar un amigo a la lista de amigos de un usuario.
+     * 
+     * @param nombreUsuario El nombre del usuario.
+     * @param nombreAmigo El nombre del amigo a agregar.
+     * @param usuarioSesion El nombre del usuario en sesión.
+     * @param sessionToken El token de la sesión.
+     * @return Una respuesta API con el resultado de la operación.
+     */
     @PostMapping("/addAmigo")
     @ResponseBody
     public ApiResponse<UsuarioEntidad> agregarAmigo(@RequestParam String nombreUsuario, @RequestParam String nombreAmigo, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
@@ -276,7 +323,7 @@ public class UsuarioController {
             if(sessionService.getSession(idUsuario).orElseThrow().getSessionToken().equals(sessionToken)){
                 UsuarioEntidad usuario = usuarioService.agregarAmigo(nombreUsuario, nombreAmigo);
                 return new ApiResponse<>(
-                    "Amigo '" + nombreAmigo + "' agregado con exito en la lista de amigos de '" + nombreUsuario + "'",
+                    "Amigo '" + nombreAmigo + "' agregado con éxito en la lista de amigos de '" + nombreUsuario + "'",
                     true,
                     usuario
                     );
@@ -288,7 +335,7 @@ public class UsuarioController {
             }
         } catch (NoSuchElementException e) {
             return new ApiResponse<>(
-                "El usuario no ha iniciado sesion",
+                "El usuario no ha iniciado sesión",
                 false
             );
         } catch (Exception e) {
@@ -299,6 +346,15 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Endpoint para eliminar un amigo de la lista de amigos de un usuario.
+     * 
+     * @param nombreUsuario El nombre del usuario.
+     * @param nombreAmigo El nombre del amigo a eliminar.
+     * @param usuarioSesion El nombre del usuario en sesión.
+     * @param sessionToken El token de la sesión.
+     * @return Una respuesta API con el resultado de la operación.
+     */
     @DeleteMapping("/deleteAmigo")
     @ResponseBody
     public ApiResponse<UsuarioEntidad> deleteAmigo(@RequestParam String nombreUsuario, @RequestParam String nombreAmigo, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
@@ -319,7 +375,7 @@ public class UsuarioController {
             }
         } catch (NoSuchElementException e) {
             return new ApiResponse<>(
-                "El usuario no ha iniciado sesion",
+                "El usuario no ha iniciado sesión",
                 false
             );
         } catch (Exception e) {
@@ -330,6 +386,15 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Endpoint para eliminar un usuario por ID o nombre.
+     * 
+     * @param tipo El tipo de búsqueda ('byId' o 'byNombre').
+     * @param value El valor del ID o nombre del usuario.
+     * @param usuarioSesion El nombre del usuario en sesión.
+     * @param sessionToken El token de la sesión.
+     * @return Una respuesta API con el resultado de la operación.
+     */
     @DeleteMapping("/deleteUsuario")
     @ResponseBody
     public ApiResponse<UsuarioEntidad> deleteUsuario(@RequestParam String tipo, @RequestParam String value, @RequestParam String usuarioSesion, @RequestParam String sessionToken){
@@ -342,7 +407,7 @@ public class UsuarioController {
                     usuarioService.deleteUsuarioByNombre(value);
                 }else{
                     return new ApiResponse<>(
-                        "El tipo de busqueda solo puede se 'byId' o 'byNombre'",
+                        "El tipo de búsqueda solo puede ser 'byId' o 'byNombre'",
                         false
                     );
                 }
@@ -358,7 +423,7 @@ public class UsuarioController {
             }
         } catch (NoSuchElementException e) {
             return new ApiResponse<>(
-                "El usuario no ha iniciado sesion",
+                "El usuario no ha iniciado sesión",
                 false
             );
         } catch (Exception e) {

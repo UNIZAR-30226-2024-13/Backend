@@ -44,6 +44,12 @@ public class MentirosoController{
     @Autowired
     private UsuarioService usuarioService;
 
+    /**
+     * Obtiene todos los juegos de Mentiroso disponibles para un usuario.
+     * @param usuarioSesion El nombre de usuario que solicita la lista de juegos.
+     * @param sessionToken El token de sesión del usuario.
+     * @return ApiResponse con una lista de MentirosoEntidad.
+     */
     @GetMapping("/getMentirosos")
     public ApiResponse<List<MentirosoEntidad>> getAllMentiroso(@RequestParam String usuarioSesion, @RequestParam String sessionToken) {
         try {
@@ -82,6 +88,13 @@ public class MentirosoController{
     
     }
 
+    /**
+     * Crea un nuevo juego de Mentiroso.
+     * @param esPrivada Booleano que indica si el juego es privado o no.
+     * @param usuarioSesion El nombre de usuario que crea el juego.
+     * @param sessionToken El token de sesión del usuario.
+     * @return ApiResponse con el juego creado.
+     */
     @PostMapping("/addMentiroso")
     public ApiResponse<MentirosoEntidad> newMentiroso(@RequestParam boolean esPrivada, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
         try {
@@ -128,6 +141,13 @@ public class MentirosoController{
         }
     }
     
+    /**
+     * Obtiene un juego de Mentiroso por su ID.
+     * @param id El ID del juego a obtener.
+     * @param usuarioSesion El nombre de usuario que solicita el juego.
+     * @param sessionToken El token de sesión del usuario.
+     * @return ApiResponse con el juego solicitado.
+     */
     @GetMapping("/getMentiroso/{id}")
     public ApiResponse<MentirosoEntidad> getMentiroso(@PathVariable String id, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
         
@@ -166,6 +186,14 @@ public class MentirosoController{
         }
     }
 
+    /**
+     * Agrega un usuario a un juego de Mentiroso.
+     * @param idJuego El ID del juego al que se agrega el usuario.
+     * @param nombreUsuario El nombre del usuario a agregar.
+     * @param usuarioSesion El nombre de usuario que realiza la operación.
+     * @param sessionToken El token de sesión del usuario.
+     * @return ApiResponse con el juego actualizado.
+     */
     @PostMapping("/{idJuego}/addUsuario")
     public ApiResponse<MentirosoEntidad> addUsuario(@PathVariable String idJuego, @RequestParam String nombreUsuario, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
         try {
@@ -222,6 +250,14 @@ public class MentirosoController{
         }
     }
 
+    /**
+     * Realiza una jugada en un juego de Mentiroso.
+     * @param idJuego El ID del juego en el que se realiza la jugada.
+     * @param datos Mapa con los datos de la jugada.
+     * @param usuarioSesion El nombre de usuario que realiza la jugada.
+     * @param sessionToken El token de sesión del usuario.
+     * @return ApiResponse con el juego actualizado.
+     */
     @PostMapping("/{idJuego}/jugada")
     public ApiResponse<MentirosoEntidad> jugada(@PathVariable String idJuego, @RequestBody Map<String,String> datos, @RequestParam String usuarioSesion, @RequestParam String sessionToken) {
         try {
