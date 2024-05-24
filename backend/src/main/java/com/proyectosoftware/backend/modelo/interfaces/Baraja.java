@@ -17,7 +17,9 @@ public interface Baraja {
      */
     public default List<Carta> parsearCartas(String cartasBaraja){
         List<Carta> cartas = new ArrayList<>();
-        
+        if (cartasBaraja == null) {
+            return cartas;
+        }
         if (cartasBaraja.equals("")) {
             return cartas;
         }
@@ -26,8 +28,8 @@ public interface Baraja {
             String[] datosCarta = carta.split(",");
             int color = Integer.parseInt(datosCarta[0]);
             int numero = Integer.parseInt(datosCarta[1]); 
-            if(esCartaDeLaBaraja(color, numero)){
-                cartas.add(new Carta(numero, color));
+            cartas.add(new Carta(numero, color));
+            if(esCartaDeLaBaraja(numero, color)){
             }else {
                 /**
                  * TODO: lanzar error

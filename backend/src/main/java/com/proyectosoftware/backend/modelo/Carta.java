@@ -41,6 +41,22 @@ public class Carta {
     public String toString() {
         return Integer.toString(color) + "," + Integer.toString(numero);
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Carta other = (Carta) obj;
+		if (numero != other.numero)
+			return false;
+		if (color != other.color)
+			return false;
+		return true;
+	}
     
     /**
      * 

@@ -6,9 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyectosoftware.backend.database.entidades.Cinquillo;
+import com.proyectosoftware.backend.database.entidades.CinquilloEntidad;
 import com.proyectosoftware.backend.database.entidades.Partida;
-import com.proyectosoftware.backend.database.entidades.PartidaId;
 import com.proyectosoftware.backend.database.repository.CinquilloRepository;
 import com.proyectosoftware.backend.database.repository.PartidaRepository;
 
@@ -23,21 +22,17 @@ public class CinquilloService {
 
     public CinquilloService(){}
 
-    public List<Cinquillo> getAllCinquillo(){
+    public List<CinquilloEntidad> getAllCinquillo(){
         return cinquilloRepository.findAll();
     }
 
-    public Cinquillo saveCinquillo(Cinquillo cinquillo) {
+    public CinquilloEntidad saveCinquillo(CinquilloEntidad cinquillo) {
         return cinquilloRepository.save(cinquillo);
     }
 
-    public Optional<Cinquillo> getCinquillo(String idCinquillo) {
-        PartidaId partida = new PartidaId();
-        Optional<Partida> partidaOptional = partidaRepository.findById(idCinquillo);
-        if(partidaOptional.isPresent()){
-            partida.setPartida(partidaOptional.get());
-        }
-        return cinquilloRepository.findById(partida);
+    public Optional<CinquilloEntidad> getCinquillo(String idCinquillo) {
+        
+        return cinquilloRepository.findById(idCinquillo);
     }
     
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.naming.SizeLimitExceededException;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -30,7 +32,7 @@ public class Mentiroso implements JuegoSinApuesta{
     private Baraja baraja;
     private List<Carta> cartas;
 
-    private Map<Integer, Usuario> usuarios;
+    private Map<Integer, String> usuarios;
     private Map<Integer, List<Carta>> cartasUsuarios;
     
     private int turno;
@@ -38,6 +40,9 @@ public class Mentiroso implements JuegoSinApuesta{
     private int cartasUltimaJugada;
     private List<Carta> cartasMesa;
     private String id;
+
+    private boolean activa;
+    private boolean esPrivada;
 
     /**
      * Prepara un nuevo juego
@@ -48,6 +53,7 @@ public class Mentiroso implements JuegoSinApuesta{
         this.cartasUsuarios = new HashMap<>(MAX_JUGADORES);
         this.cartas = baraja.devolverCartas();
         this.id = this.generateID();
+        this.cartasMesa = new ArrayList<>();
     }
 
     /**
@@ -64,16 +70,21 @@ public class Mentiroso implements JuegoSinApuesta{
 
     /**
      * Jugada inicial sin cartas en la mesa
-     * @param usuario   - El usuario que realiza la jugada. Debe represetnar el usuario del turno actual
+     * @param idUsuario   - El usuario que realiza la jugada. Debe represetnar el usuario del turno actual
      * @param cartas    - Cartas que se ponen en la mesa
      * @param numero    - Numero que se pone en la mesa
      */
-    public void jugada(Usuario usuario, List<Carta> cartas, int numero){
-        int clave = ordenUsuario(usuario);
+    public void jugada(String idUsuario, List<Carta> cartas, int numero){
+        int clave = ordenUsuario(idUsuario);
         List<Carta> cartasUsuario = cartasUsuarios.get(clave);
 
-        cartasUsuario.removeAll(cartas);
-        cartasMesa.addAll(cartas);
+        
+        for (Carta carta : cartas) {
+
+            cartasUsuario.remove(carta);
+            cartasMesa.add(carta);
+        }
+        
 
         numeroActual = numero;
         cartasUltimaJugada = cartas.size();
@@ -89,19 +100,18 @@ public class Mentiroso implements JuegoSinApuesta{
      * @param usuario   - Usuario que realiza la jugada. Debe ser el mismo que el turno actual
      * @param cartas    - Cartas que se ponen en la mesa. Puede ser nulo.
      * @param accion    - Accion a realizar.
+     * @throws Exception 
      */
-    public void jugada(Usuario usuario, List<Carta> cartas, Accion accion){
+    public void jugada(String usuario, List<Carta> cartas, Accion accion) throws Exception{
         if(numeroActual == -1){
-            /**
-             * TODO: Mala jugada, lanzar error
-             */
+            throw new Exception("Jugada ilegal");
         }else{
             int clave = ordenUsuario(usuario);
             
             List<Carta> cartasUsuario = cartasUsuario(clave);
 
             if(accion == Accion.MENTIR){
-                cartasUsuario.removeAll(cartas);
+                cartasUsuario.removeIf(carta->{return cartas.contains(carta);});
                 cartasMesa.addAll(cartas);
                 cartasUltimaJugada = cartas.size();
                 siguenteTurno();
@@ -172,12 +182,12 @@ public class Mentiroso implements JuegoSinApuesta{
 
     /**
      * Busca el orden del usuairo en la partida
-     * @param usuario   - Usuario a buscar
+     * @param idUsuario   - Usuario a buscar
      * @return El orden, o {@code -1} si no se encuentra
      */
-    private int ordenUsuario(Usuario usuario){
+    private int ordenUsuario(String idUsuario){
         for (int i : usuarios.keySet()) {
-            if(usuarios.get(i).getID().equals(usuario.getID())){
+            if(usuarios.get(i).equals(idUsuario)){
                 return i;
             }
         }
@@ -189,7 +199,7 @@ public class Mentiroso implements JuegoSinApuesta{
      * @return {@code True} si se ha mentido
      */
     private boolean miente(){
-        for(Carta carta: cartasMesa.subList(cartasMesa.size() - cartasUltimaJugada - 1, cartasMesa.size() - 1)){
+        for(Carta carta: cartasMesa.subList(cartasMesa.size() - cartasUltimaJugada, cartasMesa.size())){
             if(carta.getNumero() != numeroActual){
                 return true;
             }
@@ -236,20 +246,20 @@ public class Mentiroso implements JuegoSinApuesta{
     /**
      * Aniade un usuario al juego
      * @param usuario usuario a aniadir
+     * @throws SizeLimitExceededException 
      */
     @Override
-    public void nuevoUsuario(Usuario usuario){
+    public void nuevoUsuario(String idUsuario) throws SizeLimitExceededException{
         int numeroUsuarios = usuarios.size(); 
+        
         if (numeroUsuarios < MAX_JUGADORES){
-            usuarios.put(numeroUsuarios, usuario);
+            usuarios.put(numeroUsuarios, idUsuario);
             cartasUsuarios.put(numeroUsuarios, new ArrayList<Carta>());
             if(usuarios.size() == MAX_JUGADORES){
                 iniciarPartida();
             }
         } else{
-            /**
-             * TODO: lanzar error juego lleno
-             */
+            throw new SizeLimitExceededException("Maximo limite de jugadores alcanzado");
         }
     }
 
@@ -293,13 +303,15 @@ public class Mentiroso implements JuegoSinApuesta{
     public JSONObject guardar() {
         JSONObject estado = new JSONObject();
         JSONArray usuariosArray = new JSONArray();
-        
-        for (Integer clave : this.usuarios.keySet()) {
-            JSONObject usuarioJSON = new JSONObject();
-            usuarioJSON.put("ID", this.usuarios.get(clave).getID());
-            usuarioJSON.put("turno_en_juego", clave);
-            usuarioJSON.put("cartas", cartasToString(cartasUsuario(clave)));
-            usuariosArray.add(usuarioJSON);
+        if(this.usuarios.keySet().size() != 0){
+
+            for (Integer clave : this.usuarios.keySet()) {
+                JSONObject usuarioJSON = new JSONObject();
+                usuarioJSON.put("ID", this.usuarios.get(clave));
+                usuarioJSON.put("turno_en_juego", clave);
+                usuarioJSON.put("cartas", cartasToString(cartasUsuario(clave)));
+                usuariosArray.add(usuarioJSON);
+            }
         }
         estado.put("ID", this.id);
         estado.put("turno", this.turno);
@@ -307,6 +319,8 @@ public class Mentiroso implements JuegoSinApuesta{
         estado.put("cartas_mesa", cartasToString(this.cartasMesa));
         estado.put("ultimas_cartas", this.cartasUltimaJugada);
         estado.put("numero_actual", this.numeroActual);
+        estado.put("activa", this.activa);
+        estado.put("es_privada", this.esPrivada);
 
         return estado;
     }
@@ -336,21 +350,22 @@ public class Mentiroso implements JuegoSinApuesta{
         this.cartasMesa = baraja.parsearCartas((String) estado.get("cartas_mesa"));
         this.cartasUltimaJugada = (Integer) estado.get("ultimas_cartas");
         this.numeroActual = (Integer) estado.get("numero_actual");
+        this.activa = (boolean) estado.get("activa");
+        this.esPrivada = (boolean) estado.get("es_privada");
         JSONArray usuarioArray = (JSONArray)estado.get("usuarios");
         for (Object object : usuarioArray) {
             JSONObject infoUsuario = (JSONObject) object;
            
-            //TODO: con un id de un usaurio, acceder al objeto del usuario
             String id = (String) infoUsuario.get("ID");
-            int orden = (Integer) infoUsuario.get("turno_en_juego");
+            Integer orden = (Integer) infoUsuario.get("turno_en_juego");
             String cartasString = (String) infoUsuario.get("cartas");
 
-            this.usuarios.put(orden, null);
+            this.usuarios.put(orden, id);
             this.cartasUsuarios.put(orden, baraja.parsearCartas(cartasString));
         }
     }
 
-    public List<Carta> cartasUsuario(int ordenUsuario){
+    public List<Carta> cartasUsuario(Integer ordenUsuario){
         return cartasUsuarios.get(ordenUsuario);
     }
 
@@ -369,5 +384,9 @@ public class Mentiroso implements JuegoSinApuesta{
         if (turno == MAX_JUGADORES) {
             turno = 0;
         }
+    }
+
+    public List<Carta> parseCartas(String cartasString){
+        return baraja.parsearCartas(cartasString);
     }
 }

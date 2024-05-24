@@ -8,6 +8,8 @@ import org.json.simple.JSONObject;
 
 import com.proyectosoftware.backend.modelo.Usuario;
 
+import javax.naming.SizeLimitExceededException;
+
 import org.json.simple.JSONObject;
 
 import com.proyectosoftware.backend.modelo.Usuario;
@@ -33,8 +35,9 @@ public interface Juego extends Estado, UniqueIDGenerator{
     /**
      * Anaide un usuario al juego
      * @param usuario   - El usuario
+     * @throws SizeLimitExceededException 
      */
-    public void nuevoUsuario(Usuario usuario);
+    public void nuevoUsuario(String idUsuario) throws SizeLimitExceededException;
 
     /**
      * {@inheritDoc}
@@ -47,6 +50,7 @@ public interface Juego extends Estado, UniqueIDGenerator{
         StringBuilder mensaje = new StringBuilder("juego");
         mensaje.append("-");
         mensaje.append(getClass().getSimpleName());
+        mensaje.append("-");
         mensaje.append(UUID.randomUUID().toString().split("-")[0]);
         return mensaje.toString();
     }

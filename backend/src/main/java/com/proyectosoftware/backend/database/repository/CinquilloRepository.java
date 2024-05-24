@@ -5,12 +5,11 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.proyectosoftware.backend.database.entidades.Cinquillo;
-import com.proyectosoftware.backend.database.entidades.PartidaId;
+import com.proyectosoftware.backend.database.entidades.CinquilloEntidad;
 
 
 @Repository
-public interface CinquilloRepository extends JpaRepository<Cinquillo, PartidaId> {
+public interface CinquilloRepository extends JpaRepository<CinquilloEntidad, String> {
 
-    Optional<Cinquillo> findById(PartidaId id);
+    Optional<CinquilloEntidad> findById(String id);
 }

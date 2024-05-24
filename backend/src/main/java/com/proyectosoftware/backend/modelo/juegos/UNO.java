@@ -27,7 +27,7 @@ public class UNO implements JuegoSinApuesta{
     private Baraja baraja;
     private List <Carta> mazo;
     private List <Carta> ultimaCarta;
-    private Map<Integer, Usuario> usuarios; 
+    private Map<Integer, String> usuarios; 
     private Map<Integer, List<Carta>> manoUsuarios;
 
     private int sentido = 0;

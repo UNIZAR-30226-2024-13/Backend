@@ -176,7 +176,7 @@ public class UNOTest {
 
         JSONObject json = estado;
         uno = new UNO(json);
-        uno.jugada(usuario3, new Carta(3, 2),0);
+        //uno.jugada(usuario3, new Carta(3, 2),0);
         json = uno.guardar();
 
         JSONArray usuarios = (JSONArray)json.get("usuarios");

@@ -4,10 +4,9 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.proyectosoftware.backend.database.entidades.BlackJack;
-import com.proyectosoftware.backend.database.entidades.PartidaId;
+import com.proyectosoftware.backend.database.entidades.BlackJackEntidad;
 
-public interface BlackJackRepository extends JpaRepository<BlackJack, PartidaId> {
+public interface BlackJackRepository extends JpaRepository<BlackJackEntidad, String> {
     
-    Optional<BlackJack> findById(PartidaId id);
+    Optional<BlackJackEntidad> findById(String id);
 }

@@ -14,14 +14,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
+@JsonIgnoreProperties({"login"})
 public class UsuarioEntidad {
-    
     @Id
     @Column(name = "id")
     private String id;
@@ -32,15 +33,19 @@ public class UsuarioEntidad {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "fichas", columnDefinition = "integer default 100")
-    private int fichas;
+    @Column(name = "fichas", columnDefinition = "integer default '100'")
+    private int fichas = 100;
 
     @Column(name = "pais")
     private String pais;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     private Login login;
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn
+    private Session session;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(
@@ -48,20 +53,22 @@ public class UsuarioEntidad {
         joinColumns = @JoinColumn(name = "usuario1", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "usuario2", referencedColumnName = "id")
     )
-    @JsonIgnoreProperties({ "amigos","partidas" })
-    @JsonIncludeProperties({ "id", "nombre" })
-    private Set<UsuarioEntidad> amigos;
+    @JsonIgnoreProperties({"amigos", "partidas"})
+    @JsonIncludeProperties({"id", "nombre"})
+    private Set<UsuarioEntidad> amigos = new HashSet<>();;
 
-    @ManyToMany(mappedBy = "usuarios")
-    private Set<Partida> partidas = new HashSet<>();
+    @OneToMany(mappedBy = "usuario")
+    @JsonIncludeProperties({"idPartida"})
+    private Set<Guarda> partidas = new HashSet<>();
 
-    public UsuarioEntidad() {}
+    public static UsuarioEntidad newInstance() {
+        UsuarioEntidad usuarioEntidad = new UsuarioEntidad();
+        usuarioEntidad.setLogin(new Login(usuarioEntidad));
+        return usuarioEntidad;
+    }
 
-    public UsuarioEntidad(String id, String nombre, String email, int fichas, String pais) {
-        this.nombre = nombre;
-        this.email = email;
-        this.fichas = fichas;
-        this.pais = pais;
+    public UsuarioEntidad() {
+        super();
     }
 
     public String getId() {
@@ -113,11 +120,36 @@ public class UsuarioEntidad {
         this.amigos = amigos;
     }
 
-    public Set<Partida> getPartidas() {
+    public Set<Guarda> getPartidas() {
         return partidas;
     }
 
-    public void setPartidas(Set<Partida> partidas) {
+    public void setPartidas(Set<Guarda> partidas) {
         this.partidas = partidas;
     }
+
+	private void setLogin(Login login) {
+		this.login = login;
+	}
+
+    public Login getLogin() {
+		return login;
+	}
+
+	public Session crearSesion(){
+        this.session = new Session(this);
+        return session;
+    }
+
+    public void deleteSession(){
+        this.session = null;
+    }
+
+    public boolean tieneSesion(){
+        return this.session != null;
+    }
+
+	public void deleteGuarda(Guarda guarda) {
+		partidas.remove(guarda);
+	}
 }

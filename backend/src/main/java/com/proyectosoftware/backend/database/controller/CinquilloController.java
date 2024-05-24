@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proyectosoftware.backend.database.entidades.Cinquillo;
+import com.proyectosoftware.backend.database.entidades.CinquilloEntidad;
 import com.proyectosoftware.backend.database.services.CinquilloService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,17 +22,17 @@ public class CinquilloController {
    private CinquilloService cinquilloService;
 
    @GetMapping("getCinquillos")
-   public List<Cinquillo> getAllCinquillo() {
+   public List<CinquilloEntidad> getAllCinquillo() {
        return cinquilloService.getAllCinquillo();
    } 
 
    @PostMapping("addCinquillo")
-   public Cinquillo saveCinquillo(@RequestBody Cinquillo cinquillo) {
+   public CinquilloEntidad saveCinquillo(@RequestBody CinquilloEntidad cinquillo) {
         return cinquilloService.saveCinquillo(cinquillo);
    }
 
    @GetMapping("getCinquillo")
-   public Optional<Cinquillo> getCinquillo(@RequestParam String idCinquillo) {
+   public Optional<CinquilloEntidad> getCinquillo(@RequestParam String idCinquillo) {
        return cinquilloService.getCinquillo(idCinquillo);
    }
    
